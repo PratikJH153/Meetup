@@ -1,4 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
 import 'package:meetupapp/views/authentication/login_page.dart';
 import 'package:meetupapp/views/authentication/register_page.dart';
 import 'package:meetupapp/views/authentication/user_details_register_page.dart';
