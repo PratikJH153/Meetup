@@ -4,8 +4,8 @@ import 'package:meetupapp/view/home_page.dart';
 
 Future<void> main() async {
 
-  await Firebase.initializeApp();
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   runApp(MaterialApp(
     initialRoute: '/',
