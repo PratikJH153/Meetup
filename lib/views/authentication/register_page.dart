@@ -1,30 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:meetupapp/helper/auth.dart';
 import 'package:meetupapp/views/authentication/user_details_register_page.dart';
 import 'package:meetupapp/widgets/appbar_widget.dart';
 import 'package:meetupapp/widgets/auth_button.dart';
 import 'package:meetupapp/widgets/textfield_widget.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterPage extends StatelessWidget {
   static const routeName = "/register";
-  const RegisterPage({Key? key}) : super(key: key);
-
-  @override
-  _RegisterPageState createState() => _RegisterPageState();
-}
-
-class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _submit() async {
+  RegisterPage({Key? key}) : super(key: key);
+
+  void _submit(BuildContext ctx) async {
     final form = _formKey.currentState;
     if (form!.validate()) {
       form.save();
-      Navigator.pushNamed(context, UserDetailsRegisterPage.routeName);
+      Navigator.pushNamed(
+        ctx,
+        UserDetailsRegisterPage.routeName,
+        arguments: {
+          "username": _usernameController.text.trim(),
+          "email": _emailController.text.trim(),
+          "password": _passwordController.text.trim(),
+        },
+      );
     }
   }
 
@@ -35,7 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: AuthButton(
         label: "Next",
-        onTapHandler: _submit,
+        onTapHandler: () => _submit(context),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),

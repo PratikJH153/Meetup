@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:meetupapp/helper/auth.dart';
+import 'package:meetupapp/helper/auth_provider.dart';
+import 'package:meetupapp/views/authentication/register_page.dart';
+import 'package:meetupapp/views/home.dart';
 import 'package:meetupapp/widgets/appbar_widget.dart';
 import 'package:meetupapp/widgets/auth_button.dart';
 import 'package:meetupapp/widgets/textfield_widget.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = "/login";
@@ -18,15 +22,36 @@ class _LoginPageState extends State<LoginPage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _submit() async {
+  bool _isLoading = false;
+
+  void _submit(BuildContext ctx) async {
     final form = _formKey.currentState;
     if (form!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
       form.save();
-      AuthService.loginWithEmailAndPassword(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-        context,
-      );
+      try {
+        await AuthService.loginWithEmailAndPassword(
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
+          context,
+        );
+        setState(() {
+          _isLoading = false;
+        });
+
+        Navigator.of(ctx)
+            .pushNamedAndRemoveUntil(HomePage.routeName, (route) => false);
+      } catch (err) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -35,10 +60,14 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: appBar("LoginPage"),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: AuthButton(
-        label: "Login",
-        onTapHandler: _submit,
-      ),
+      floatingActionButton: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : AuthButton(
+              label: "Login",
+              onTapHandler: () => _submit(context),
+            ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -56,7 +85,9 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () => Navigator.of(context).pushNamed(
+                RegisterPage.routeName,
+              ),
               child: const Text("Register Here"),
             ),
           ],
