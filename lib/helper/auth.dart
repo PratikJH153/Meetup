@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../widgets/snackbar_widget.dart';
 
 String generateExceptionMessage(err) {
   String errorMessage;
@@ -31,10 +30,7 @@ void errorPrompt(var err, BuildContext context) {
   final String errorMessage = generateExceptionMessage(err);
   print('ERRIOUOIUO : $errorMessage');
   ScaffoldMessenger.of(context).showSnackBar(
-    snackbar(
-      context: context,
-      errorMessage: errorMessage,
-    ),
+    const SnackBar(content: Text("Error!"),)
   );
 }
 
