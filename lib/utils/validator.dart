@@ -66,6 +66,30 @@ class Validator {
     return null;
   }
 
+  static String? validatePostTitle({required String? title}) {
+    if (title == null) {
+      return null;
+    }
+
+    if (title.trim().isEmpty) {
+      return 'Post must have a title!';
+    }
+
+    return null;
+  }
+
+  static String? validatePostDesc({required String? desc}) {
+    if (desc == null) {
+      return null;
+    }
+
+    if (desc.trim().isEmpty) {
+      return 'Kindly add a Description';
+    }
+
+    return null;
+  }
+
   static String? validateGender({required String? genderText}) {
     if (genderText == null) {
       return null;
@@ -77,6 +101,7 @@ class Validator {
 
     return null;
   }
+
   static String? validateAge({required String? ageText}) {
     if (ageText == null) {
       return null;

@@ -59,15 +59,6 @@ class FireAuth {
     return user;
   }
 
-  static Future<void> signOut()async{
-      try {
-        await FirebaseAuth.instance.signOut();
-      } on Exception catch (e) {
-        print("Sign Out Failed");
-        Fluttertoast.showToast(msg: "Sign Out Failed");
-      }
-  }
-
   static Future<User?> refreshUser(User user) async {
     FirebaseAuth auth = FirebaseAuth.instance;
 

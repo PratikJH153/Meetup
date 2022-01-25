@@ -13,7 +13,7 @@ class Post {
 
   factory Post.fromJson(Map<dynamic, dynamic> data) {
     return Post(
-      postID: data["id"],
+      postID: data["_id"],
       title: data["title"],
       desc: data["description"],
       author: data["author"]

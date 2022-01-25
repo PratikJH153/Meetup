@@ -31,10 +31,13 @@ Future<Map> GET(String url) async {
 
 Future<Map> POST(String url, Map? body) async {
   try {
+    print("bodododod");
+    print(body);
     final res = await dio.post(endpoint + url,
         data: jsonEncode(body),
         options:
             Options(headers: {Headers.acceptHeader: Headers.jsonContentType}));
+
 
     return Map.castFrom(res.data);
   } on Exception catch (e) {
@@ -43,6 +46,23 @@ Future<Map> POST(String url, Map? body) async {
     return {"flutter-caught-error": e};
   }
 }
+
+Future<Map> POST_ALT(String url, Map? body) async {
+  try {
+    print("bodododod");
+    print(body);
+    final res = await http.post(Uri.parse(endpoint + url),
+        body: jsonEncode(body),
+        headers: {Headers.acceptHeader: Headers.jsonContentType});
+
+    return jsonDecode(res.body);
+  } on Exception catch (e) {
+    print(e.toString());
+    print("ERROR IN:: $filename");
+    return {"flutter-caught-error": e};
+  }
+}
+
 
 Future<Map> DELETE(String url) async {
   final uri = Uri.parse(endpoint + url);
