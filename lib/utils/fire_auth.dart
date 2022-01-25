@@ -49,16 +49,23 @@ class FireAuth {
       );
       user = userCredential.user;
     } on FirebaseAuthException catch (e) {
-      String err = "No user found for that email";
       if (e.code == 'user-not-found') {
-        Fluttertoast.showToast(msg: err);
+        Fluttertoast.showToast(msg: "User not found!");
       } else if (e.code == 'wrong-password') {
-        err = 'Wrong password provided.';
-        Fluttertoast.showToast(msg: err);
+        Fluttertoast.showToast(msg: "Incorrect User-Password combination!");
       }
     }
 
     return user;
+  }
+
+  static Future<void> signOut()async{
+      try {
+        await FirebaseAuth.instance.signOut();
+      } on Exception catch (e) {
+        print("Sign Out Failed");
+        Fluttertoast.showToast(msg: "Sign Out Failed");
+      }
   }
 
   static Future<User?> refreshUser(User user) async {

@@ -1,15 +1,17 @@
-class User {
+class UserClass {
   final String? userID;
-  final String username;
-  final String email;
-  final String profileURL;
-  final String gender;
-  final int age;
-  final String bio;
-  final List<String> interests;
+  final String? username;
+  final String? email;
+  final String? profileURL;
+  final String? gender;
+  final int? age;
+  final String? bio;
+  final List? interests;
+  final int? matched;
 
-  User({
+  UserClass({
     this.userID,
+    this.matched,
     required this.username,
     required this.email,
     this.profileURL =
@@ -20,22 +22,23 @@ class User {
     required this.interests,
   });
 
-  factory User.fromJson(Map<String, dynamic> userData) {
-    return User(
+  factory UserClass.fromJson(Map<dynamic, dynamic> userData) {
+    return UserClass(
       userID: userData["_id"],
-      username: userData["username"],
-      email: userData["email"],
-      profileURL: userData["profileURL"],
-      gender: userData["gender"],
-      age: userData["age"],
-      bio: userData["bio"],
-      interests: userData["interests"],
+      username: userData["username"]??"null",
+      email: userData["email"]??"null",
+      profileURL: userData["profileURL"]??"null",
+      gender: userData["gender"]??"null",
+      age: userData["age"]??-1,
+      bio: userData["bio"]??"This is my bio",
+      interests: userData["interests"]??[],
+      matched: userData["matched"]
     );
   }
 
-  static Map<String, dynamic> toJson(User user) {
+  static Map<String, dynamic> toJson(UserClass user) {
     return {
-      "_id": user.userID,
+      "id": user.userID,
       "username": user.username,
       "email": user.email,
       "profileURL": user.profileURL,

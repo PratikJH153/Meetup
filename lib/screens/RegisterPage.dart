@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:meetupapp/helper/user_db_helper.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/helper/APIS.dart';
+import 'package:meetupapp/screens/HomePage.dart';
 import '/utils/fire_auth.dart';
 import '/utils/validator.dart';
-import 'profile_page.dart';
+import 'LoginPage.dart';
 
 class RegisterPage extends StatefulWidget {
+  static const id = "/registerPage";
+
   const RegisterPage({Key? key}) : super(key: key);
 
   @override
@@ -44,6 +48,15 @@ class _RegisterPageState extends State<RegisterPage> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Register'),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => LoginPage()));
+            },
+            icon: const Icon(Icons.arrow_back),
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -179,69 +192,82 @@ class _RegisterPageState extends State<RegisterPage> {
                         _isProcessing
                             ? const CircularProgressIndicator()
                             : Row(
-                                children: [
-                                  Expanded(
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        setState(() {
-                                          _isProcessing = true;
-                                        });
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  setState(() {
+                                    _isProcessing = true;
+                                  });
 
-                                        if (_registerFormKey.currentState!
-                                            .validate()) {
-                                          User? user = await FireAuth
-                                              .registerUsingEmailPassword(
-                                            name: _nameTextController.text,
-                                            email: _emailTextController.text,
-                                            password:
-                                                _passwordTextController.text,
-                                          );
+                                  bool correctValuesEntered =
+                                  _registerFormKey.currentState!
+                                      .validate();
 
-                                          Map userMap = {
-                                            "username": _nameTextController.text.toString(),
-                                            "email": _emailTextController.text.toString(),
-                                            "gender": _genderTextController.text.toString(),
-                                            "age": _ageTextController.text.toString(),
-                                            "bio": _bioTextController.text.toString(),
-                                            "interests":
-                                                _interestTextController.text.split(" ").toList()
-                                          };
+                                  if (correctValuesEntered) {
+                                    // IF THE FORM HAS BEEN VALIDATED
+                                    final user = await FireAuth
+                                        .registerUsingEmailPassword(
+                                      name: _nameTextController.text,
+                                      email: _emailTextController.text,
+                                      password:
+                                      _passwordTextController.text,
+                                    );
 
-                                          final userCreation = await UserDBHelper.POST(
-                                              endpoint+addUsersURL,
-                                              userMap);
+                                    // if (false) {
+                                    if (user==null) {
+                                      Fluttertoast.showToast(msg: "Couldn't create user!");
+                                      return;
+                                    }
+                                    else {
+                                      Map userMap = {
+                                        "id": user
+                                            .uid
+                                            .toString(),
+                                        "username": _nameTextController
+                                            .text
+                                            .toString(),
+                                        "email": _emailTextController.text
+                                            .toString(),
+                                        "gender": _genderTextController
+                                            .text
+                                            .toString(),
+                                        "age": _ageTextController.text
+                                            .toString(),
+                                        "bio": _bioTextController.text
+                                            .toString(),
+                                        "interests":
+                                        _interestTextController.text
+                                            .split(" ")
+                                            .toList()
+                                      };
 
-                                          print("User Created!!");
-                                          print(userCreation);
+                                      await user_apis().addUser(userMap);
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_)=> const HomePage()
+                                          )
+                                      );
+                                    }
+                                  } else {
+                                    setState(() {
+                                      _isProcessing = false;
+                                    });
+                                  }
 
-                                          setState(() {
-                                            _isProcessing = false;
-                                          });
-
-                                          if (user != null) {
-                                            Navigator.of(context)
-                                                .pushAndRemoveUntil(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProfilePage(user: user),
-                                              ),
-                                              ModalRoute.withName('/'),
-                                            );
-                                          }
-                                        } else {
-                                          setState(() {
-                                            _isProcessing = false;
-                                          });
-                                        }
-                                      },
-                                      child: const Text(
-                                        'Sign up',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
+                                  setState(() {
+                                    _isProcessing = false;
+                                  });
+                                },
+                                child: const Text(
+                                  'Sign up',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   )

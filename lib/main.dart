@@ -1,7 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'screens/login_page.dart';
+import 'wrapper.dart';
 
-void main() => runApp(MyApp());
+Future<void> main()async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -14,10 +20,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            textStyle: const TextStyle(
+            textStyle: TextStyle(
               fontSize: 24.0,
             ),
-            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+            padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
           ),
         ),
         textTheme: TextTheme(
@@ -26,10 +32,10 @@ class MyApp extends StatelessWidget {
             color: Colors.blue.shade700,
             fontWeight: FontWeight.w500,
           ),
-          bodyText1: const TextStyle(fontSize: 18.0),
+          bodyText1: TextStyle(fontSize: 18.0),
         ),
       ),
-      home: SafeArea(child: LoginPage()),
+      home: Wrapper(),
     );
   }
 }
