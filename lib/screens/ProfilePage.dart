@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:meetupapp/helper/APIS.dart';
 import 'package:meetupapp/models/user.dart';
+import 'package:meetupapp/screens/post/AddPostPage.dart';
 import 'package:meetupapp/utils/GlobalLoader.dart';
 import 'package:provider/provider.dart';
 import '/providers/UserProvider.dart';
@@ -37,7 +38,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 30),
                   InkWell(
                     onTap: ()async{
-
                     },
                     child: Container(
                       color: Colors.blue,

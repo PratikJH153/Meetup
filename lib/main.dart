@@ -9,7 +9,7 @@ Future<void> main()async{
   await Firebase.initializeApp();
 
   runApp(
-    MyApp()
+    const MyApp()
   );
 }
 

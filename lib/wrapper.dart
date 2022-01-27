@@ -23,10 +23,6 @@ class _WrapperState extends State<Wrapper> {
         else{
           return HomePage();
         }
-
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
       },
     );
   }
