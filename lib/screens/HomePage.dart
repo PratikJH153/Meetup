@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/providers/UserProvider.dart';
+import 'package:meetupapp/screens/ProfilePage.dart';
+import 'package:provider/provider.dart';
 import '/screens/FeedScreen.dart';
 import 'community/SearchCommunityScreen.dart';
 import '/utils/fire_auth.dart';
@@ -39,6 +42,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _getPostsAndUsersForCurrentUser(String id) async {
+
+    UserProvider userProvider = Provider.of<UserProvider>(context,listen: false);
+    final the_user = await _users.getSingleUserData(id);
+    userProvider.setUser(the_user);
+    print("USER DATA HERE!!!!");
+    print(the_user);
+
     final u = await _users.getRecommendations(id);
     final p = await _posts.getPosts();
 
@@ -67,11 +77,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    user = FirebaseAuth.instance.currentUser;
+
     setState(() {
       _isLoading = true;
     });
 
-    user = FirebaseAuth.instance.currentUser;
     _getPostsAndUsersForCurrentUser(user!.uid).then((value) {
       setState(() {
         _isLoading = false;
@@ -87,8 +98,7 @@ class _HomePageState extends State<HomePage> {
     final List<Widget> _widgetOptions = <Widget>[
       FeedScreen(users: users, posts: posts),
       SearchCommunityScreen(),
-      const Text('Profile Page',
-          style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+      ProfilePage(),
     ];
     return Scaffold(
       appBar: AppBar(

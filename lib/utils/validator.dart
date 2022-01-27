@@ -1,16 +1,4 @@
 class Validator {
-  static String? validateName({required String? name}) {
-    if (name == null) {
-      return null;
-    }
-
-    if (name.isEmpty) {
-      return 'Name can\'t be empty';
-    }
-
-    return null;
-  }
-
   static String? validateEmail({required String? email}) {
     if (email == null) {
       return null;
@@ -28,89 +16,58 @@ class Validator {
     return null;
   }
 
-  static String? validatePassword({required String? password}) {
-    if (password == null) {
+  static String? validateTextField(
+      {required String? result, String? message = "Check entered value!"}) {
+    if (result == null) {
       return null;
     }
 
-    if (password.isEmpty) {
-      return 'Password can\'t be empty';
-    } else if (password.length < 6) {
-      return 'Enter a password with length at least 6';
+    if (result.isEmpty) {
+      return message;
     }
-
-    return null;
   }
 
-  static String? validateInterests({required String? interestText}) {
-    if (interestText == null) {
+  static String? validatePassword(
+      {required String? result, String? message = "Check entered value!"}) {
+    if (result == null) {
       return null;
     }
 
-    if (interestText.trim().isEmpty) {
-      return 'Enter at-least one interest';
+    if (result.isEmpty) {
+      return message;
     }
-
-    return null;
+    if (result.length < 6) {
+      return "Password must be at-least than 6 characters long!";
+    }
   }
 
-  static String? validateBio({required String? Bio}) {
-    if (Bio == null) {
+  static String? validateNumberField(
+      {required String? result,
+      bool isDecimal = false,
+      String? message = "Check entered value!"}) {
+    if (result == null) {
       return null;
     }
 
-    if (Bio.trim().isEmpty) {
-      return 'Kindly add a bio';
+    if (result.isEmpty) {
+      return message;
     }
 
-    return null;
-  }
-
-  static String? validatePostTitle({required String? title}) {
-    if (title == null) {
-      return null;
+    try {
+      switch (isDecimal) {
+        case true:
+          {
+            double.parse(result);
+            break;
+          }
+        case false:
+          {
+            int.parse(result);
+            break;
+          }
+      }
+    } catch (e) {
+      return "Enter a proper value!";
     }
-
-    if (title.trim().isEmpty) {
-      return 'Post must have a title!';
-    }
-
-    return null;
-  }
-
-  static String? validatePostDesc({required String? desc}) {
-    if (desc == null) {
-      return null;
-    }
-
-    if (desc.trim().isEmpty) {
-      return 'Kindly add a Description';
-    }
-
-    return null;
-  }
-
-  static String? validateGender({required String? genderText}) {
-    if (genderText == null) {
-      return null;
-    }
-
-    if (genderText.trim().isEmpty) {
-      return 'Specify your Gender!';
-    }
-
-    return null;
-  }
-
-  static String? validateAge({required String? ageText}) {
-    if (ageText == null) {
-      return null;
-    }
-
-    if (ageText.trim().isEmpty) {
-      return 'Enter your age!';
-    }
-
-    return null;
   }
 }

@@ -1,24 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '/helper/APIS.dart';
-import '/screens/community/CommunityView.dart';
-import '/utils/validator.dart';
-import '/models/community.dart';
+import 'package:meetupapp/helper/APIS.dart';
+import 'package:meetupapp/utils/validator.dart';
 
-class AddPost extends StatefulWidget {
-  Community community;
-
-  AddPost(this.community);
-
+class AddCommunity extends StatefulWidget {
   @override
-  State<AddPost> createState() => _AddPostState();
+  State<AddCommunity> createState() => _AddCommunityState();
 }
 
-class _AddPostState extends State<AddPost> {
+class _AddCommunityState extends State<AddCommunity> {
+  // community_apis().addCommunity(
   final _registerFormKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
+  final TextEditingController _tagsController = TextEditingController();
 
   final _focusTitle = FocusNode();
   final _focusDesc = FocusNode();
@@ -30,13 +26,10 @@ class _AddPostState extends State<AddPost> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            title: Text("Add post to ${widget.community.title}"),
+            title: Text("Create New Community"),
             leading: IconButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_)=>CommunityView(widget.community))
-                );
+                Navigator.pop(context);
               },
               icon: const Icon(Icons.arrow_back, color: Colors.white),
             ),
@@ -53,9 +46,7 @@ class _AddPostState extends State<AddPost> {
                       controller: _titleController,
                       focusNode: _focusTitle,
                       validator: (value) => Validator.validateTextField(
-                        result: value,
-                        message: "Check Post title!"
-                      ),
+                          result: value, message: "Check Post title!"),
                       decoration: InputDecoration(
                         hintText: "Post Title",
                         errorBorder: UnderlineInputBorder(
@@ -72,11 +63,25 @@ class _AddPostState extends State<AddPost> {
                       focusNode: _focusDesc,
                       maxLines: 5,
                       validator: (value) => Validator.validateTextField(
-                        result: value,
-                        message: "Invalid Description!"
-                      ),
+                          result: value, message: "Invalid Description!"),
                       decoration: InputDecoration(
                         hintText: "Description",
+                        errorBorder: UnderlineInputBorder(
+                          borderRadius: BorderRadius.circular(6.0),
+                          borderSide: const BorderSide(
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _tagsController,
+                      validator: (value) => Validator.validateTextField(
+                        result: value,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: "Post Title",
                         errorBorder: UnderlineInputBorder(
                           borderRadius: BorderRadius.circular(6.0),
                           borderSide: const BorderSide(
@@ -97,13 +102,15 @@ class _AddPostState extends State<AddPost> {
 
                         if (isValidInput) {
                           Map postData = {
-                            "title": _titleController.text,
-                            "description": _descController.text.trim(),
-                            "author": FirebaseAuth.instance.currentUser!.uid,
-                            "c_id": widget.community.communityID
+                            "title": "ShowerThoughts",
+                            "description":
+                                "A community to post that one thought you came across in the shower",
+                            "tags": ["Statement", "interesting", "New"],
+                            "levelCupCakes": 100
                           };
 
-                          Map m1 = await post_apis().addPost(postData);
+                          Map m1 =
+                              await community_apis().addCommunity(postData);
                           print("Add post results!!");
                           print(m1);
                         }

@@ -2,7 +2,7 @@ class Post {
   final String? postID;
   final String? title;
   final String? desc;
-  final Map? author;
+  final String? author;
 
   Post({
     this.postID,
@@ -16,7 +16,7 @@ class Post {
       postID: data["_id"],
       title: data["title"],
       desc: data["description"],
-      author: data["author"]
+      author: "Author"
     );
   }
 

@@ -68,12 +68,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   Form(
                     key: _registerFormKey,
                     child: Column(
-                      children: <Widget>[
+                      children: <Widget>[ 
                         TextFormField(
                           controller: _nameTextController,
                           focusNode: _focusName,
-                          validator: (value) => Validator.validateName(
-                            name: value,
+                          validator: (value) => Validator.validateTextField(
+                            result: value,
+                            message: "Enter a valid name!"
                           ),
                           decoration: InputDecoration(
                             hintText: "Username",
@@ -106,9 +107,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         TextFormField(
                           controller: _ageTextController,
                           focusNode: _focusAge,
-                          validator: (value) => Validator.validateAge(
-                            ageText: value,
-                          ),
+                          keyboardType: TextInputType.number,
+                          validator: (value) => Validator.validateTextField(
+                              result: value, message: "Enter a valid age"),
                           decoration: InputDecoration(
                             hintText: "Enter your age",
                             errorBorder: UnderlineInputBorder(
@@ -125,7 +126,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           focusNode: _focusPassword,
                           obscureText: true,
                           validator: (value) => Validator.validatePassword(
-                            password: value,
+                            result: value,
                           ),
                           decoration: InputDecoration(
                             hintText: "Password",
@@ -141,8 +142,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         TextFormField(
                           controller: _interestTextController,
                           focusNode: _focusInterest,
-                          validator: (value) => Validator.validateInterests(
-                            interestText: value,
+                          validator: (value) => Validator.validateTextField(
+                            result: value,
+                            message: "Enter valid interests!",
                           ),
                           decoration: InputDecoration(
                             hintText: "Interests(Space separated)",
@@ -158,9 +160,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         TextFormField(
                           controller: _bioTextController,
                           focusNode: _focusBio,
-                          validator: (value) => Validator.validateBio(
-                            Bio: value,
-                          ),
+                          validator: (value) => Validator.validateTextField(
+                              result: value, message: "Invalid Bio entered!"),
                           decoration: InputDecoration(
                             hintText: "Bio(Description)",
                             errorBorder: UnderlineInputBorder(
@@ -175,8 +176,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         TextFormField(
                           controller: _genderTextController,
                           focusNode: _focusGender,
-                          validator: (value) => Validator.validateGender(
-                            genderText: value,
+                          validator: (value) => Validator.validateTextField(
+                            result: value,
+                            message: "Enter a valid gender",
                           ),
                           decoration: InputDecoration(
                             hintText: "Gender",
@@ -192,82 +194,79 @@ class _RegisterPageState extends State<RegisterPage> {
                         _isProcessing
                             ? const CircularProgressIndicator()
                             : Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  setState(() {
-                                    _isProcessing = true;
-                                  });
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        setState(() {
+                                          _isProcessing = true;
+                                        });
 
-                                  bool correctValuesEntered =
-                                  _registerFormKey.currentState!
-                                      .validate();
+                                        bool correctValuesEntered =
+                                            _registerFormKey.currentState!
+                                                .validate();
 
-                                  if (correctValuesEntered) {
-                                    // IF THE FORM HAS BEEN VALIDATED
-                                    final user = await FireAuth
-                                        .registerUsingEmailPassword(
-                                      name: _nameTextController.text,
-                                      email: _emailTextController.text,
-                                      password:
-                                      _passwordTextController.text,
-                                    );
+                                        if (correctValuesEntered) {
+                                          // IF THE FORM HAS BEEN VALIDATED
+                                          final user = await FireAuth
+                                              .registerUsingEmailPassword(
+                                            name: _nameTextController.text,
+                                            email: _emailTextController.text,
+                                            password:
+                                                _passwordTextController.text,
+                                          );
 
-                                    // if (false) {
-                                    if (user==null) {
-                                      Fluttertoast.showToast(msg: "Couldn't create user!");
-                                      return;
-                                    }
-                                    else {
-                                      Map userMap = {
-                                        "id": user
-                                            .uid
-                                            .toString(),
-                                        "username": _nameTextController
-                                            .text
-                                            .toString(),
-                                        "email": _emailTextController.text
-                                            .toString(),
-                                        "gender": _genderTextController
-                                            .text
-                                            .toString(),
-                                        "age": _ageTextController.text
-                                            .toString(),
-                                        "bio": _bioTextController.text
-                                            .toString(),
-                                        "interests":
-                                        _interestTextController.text
-                                            .split(" ")
-                                            .toList()
-                                      };
+                                          // if (false) {
+                                          if (user == null) {
+                                            Fluttertoast.showToast(
+                                                msg: "Couldn't create user!");
+                                            return;
+                                          } else {
+                                            Map userMap = {
+                                              "id": user.uid.toString(),
+                                              "username": _nameTextController
+                                                  .text
+                                                  .toString(),
+                                              "email": _emailTextController.text
+                                                  .toString(),
+                                              "gender": _genderTextController
+                                                  .text
+                                                  .toString(),
+                                              "age": _ageTextController.text
+                                                  .toString(),
+                                              "bio": _bioTextController.text
+                                                  .toString(),
+                                              "interests":
+                                                  _interestTextController.text
+                                                      .split(" ")
+                                                      .toList()
+                                            };
 
-                                      await user_apis().addUser(userMap);
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_)=> HomePage()
-                                          )
-                                      );
-                                    }
-                                  } else {
-                                    setState(() {
-                                      _isProcessing = false;
-                                    });
-                                  }
+                                            await user_apis().addUser(userMap);
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        HomePage()));
+                                          }
+                                        } else {
+                                          setState(() {
+                                            _isProcessing = false;
+                                          });
+                                        }
 
-                                  setState(() {
-                                    _isProcessing = false;
-                                  });
-                                },
-                                child: const Text(
-                                  'Sign up',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
+                                        setState(() {
+                                          _isProcessing = false;
+                                        });
+                                      },
+                                      child: const Text(
+                                        'Sign up',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
                       ],
                     ),
                   )

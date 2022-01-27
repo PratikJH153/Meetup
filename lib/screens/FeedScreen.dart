@@ -69,10 +69,6 @@ class _FeedScreenState extends State<FeedScreen>{
                 itemCount: widget.posts.length,
                 itemBuilder: (BuildContext context, int index) {
                   Post currPost = widget.posts[index];
-                  String author = "";
-                  if (currPost.author != null) {
-                    author = currPost.author!["username"];
-                  }
 
                   return Container(
                     padding: const EdgeInsets.symmetric(
@@ -85,7 +81,6 @@ class _FeedScreenState extends State<FeedScreen>{
                       children: [
                         Text(currPost.title.toString()),
                         const SizedBox(height: 10),
-                        Text(author),
                       ],
                     ),
                   );

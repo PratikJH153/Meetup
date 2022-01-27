@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                     focusNode: _focusPassword,
                     obscureText: true,
                     validator: (value) => Validator.validatePassword(
-                      password: value,
+                      result: value,
                     ),
                     decoration: InputDecoration(
                       hintText: "Password",

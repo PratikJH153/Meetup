@@ -40,8 +40,8 @@ class post_apis{
   }
 
   Future<Map> addPost(Map body) async {
-    String endpoint = "posts/addUser/";
-    return POST_ALT(endpoint,body);
+    String endpoint = "posts/addPost/";
+    return POST(endpoint,body);
   }
 
   Future<Map> getSinglePost(String id) async {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 
@@ -29,15 +30,16 @@ Future<Map> GET(String url) async {
   }
 }
 
-Future<Map> POST(String url, Map? body) async {
+Future<Map> POST(String url, Map? body, {String? message}) async {
   try {
-    print("bodododod");
-    print(body);
     final res = await dio.post(endpoint + url,
         data: jsonEncode(body),
         options:
             Options(headers: {Headers.acceptHeader: Headers.jsonContentType}));
 
+    if(message!=null) {
+      Fluttertoast.showToast(msg: message);
+    }
 
     return Map.castFrom(res.data);
   } on Exception catch (e) {
@@ -49,7 +51,6 @@ Future<Map> POST(String url, Map? body) async {
 
 Future<Map> POST_ALT(String url, Map? body) async {
   try {
-    print("bodododod");
     print(body);
     final res = await http.post(Uri.parse(endpoint + url),
         body: jsonEncode(body),

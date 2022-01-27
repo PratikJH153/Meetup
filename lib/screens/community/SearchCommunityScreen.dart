@@ -23,6 +23,8 @@ class _SearchCommunityScreenState extends State<SearchCommunityScreen> {
     community_apis().getCommunities().then((value) {
       List communityMaps = value["result"] ?? [];
       communityMaps.forEach((element) {
+        print(element);
+        print("----");
         communities!.add(Community.fromJson(element));
       });
 
