@@ -1,10 +1,8 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
-import 'package:meetupapp/helper/ERROR_CODE_CUSTOM.dart';
 
 const filename = "user_db_helper.dart";
 const userFolder = "users";
@@ -20,23 +18,15 @@ Future<Map> GET(String url) async {
 
   try {
     final res = await http.get(uri);
+    print("This is res.body:");
+    print(res.body);
+    print("------");
 
     return jsonDecode(res.body) as Map;
-  } on SocketException {
-    print("This is socket exception");
-    return {
-      "flutter-caught-error": "Socket Exception",
-      "message": ErrorCodesCustom[100],
-      "errCode": 100 // Server connection error
-    };
   } on Exception catch (e) {
     print(e.toString());
     print("ERROR IN:: $filename" + "::line 21");
-    return {
-      "flutter-caught-error": e,
-      "message": ErrorCodesCustom[999],
-      "errCode": 999
-    };
+    return {"flutter-caught-error": e};
   }
 }
 
@@ -47,7 +37,7 @@ Future<Map> POST(String url, Map? body, {String? message}) async {
         options:
             Options(headers: {Headers.acceptHeader: Headers.jsonContentType}));
 
-    if (message != null) {
+    if(message!=null) {
       Fluttertoast.showToast(msg: message);
     }
 
@@ -74,6 +64,7 @@ Future<Map> POST_ALT(String url, Map? body) async {
   }
 }
 
+
 Future<Map> DELETE(String url) async {
   final uri = Uri.parse(endpoint + url);
   final request = http.Request("DELETE", uri);
@@ -86,13 +77,16 @@ Future<Map> DELETE(String url) async {
     final result = await response.stream.bytesToString();
 
     if (response.statusCode != 200) {
-      return {"status": 0, "result": "error"};
-    } else {
+      return {"status":0,"result":"error"};
+    }
+    else{
       return jsonDecode(result);
     }
   } on Exception catch (e) {
-    return {"status": 0, "result": "error"};
+    return {"status":0,"result":"error"};
   }
+
+
 }
 
 /// TODO: NOT WORKKING
@@ -100,12 +94,14 @@ Future<Map> PATCH(String url, Map? body) async {
   final uri = Uri.parse(endpoint + url);
 
   try {
-    final res = await http.patch(uri, body: jsonEncode(body), headers: {
+    final res = await http.patch(uri,
+        body: jsonEncode(body), headers: {
       HttpHeaders.acceptHeader: Headers.jsonContentType,
     });
 
     return jsonDecode(res.body);
   } on Exception catch (e) {
-    return {"status": 0, "result": "error"};
+    return {"status":0,"result":"error"};
   }
+
 }

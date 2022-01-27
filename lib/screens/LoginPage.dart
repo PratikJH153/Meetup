@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '/screens/HomePage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/screens/HomePage.dart';
 import '/utils/fire_auth.dart';
 import '/utils/validator.dart';
 import 'RegisterPage.dart';
@@ -29,6 +30,9 @@ class _LoginPageState extends State<LoginPage> {
         _focusPassword.unfocus();
       },
       child: Scaffold(
+          // appBar: AppBar(
+          //   title: const Text('Meetup App'),
+          // ),
           body: Padding(
         padding: const EdgeInsets.only(left: 24.0, right: 24.0),
         child: Column(
