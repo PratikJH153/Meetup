@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../widgets/snackbar_widget.dart';
 
 String generateExceptionMessage(err) {
   String errorMessage;
@@ -30,9 +29,8 @@ String generateExceptionMessage(err) {
 void errorPrompt(var err, BuildContext context) {
   final String errorMessage = generateExceptionMessage(err);
   print('ERRIOUOIUO : $errorMessage');
-  snackbar(
-    context: context,
-    errorMessage: errorMessage,
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text("Error!"),)
   );
 }
 
@@ -50,7 +48,7 @@ class AuthService {
       email: _email,
       password: _password,
     )
-        .catchError((err) async {
+        .catchError((err) {
       errorPrompt(err, context);
     });
 
@@ -105,7 +103,7 @@ class AuthService {
     return _auth.currentUser!;
   }
 
-  Future<void> signOut() async {
-    return await _auth.signOut();
+  static Future<void> signOut() async {
+    return await FirebaseAuth.instance.signOut();
   }
 }
