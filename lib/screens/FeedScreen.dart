@@ -8,14 +8,15 @@ import '/providers/UserProvider.dart';
 import '/utils/GlobalLoader.dart';
 import 'package:provider/provider.dart';
 
-class FeedScreen extends StatefulWidget {
-  FeedScreen({Key? key}) : super(key: key);
+class FeedPage extends StatefulWidget {
+  static const routeName = "/feedpage";
+  const FeedPage({Key? key}) : super(key: key);
 
   @override
-  _FeedScreenState createState() => _FeedScreenState();
+  _FeedPageState createState() => _FeedPageState();
 }
 
-class _FeedScreenState extends State<FeedScreen> {
+class _FeedPageState extends State<FeedPage> {
   bool _isLoading = false;
   bool _wentWrong = false;
   List posts = [];
@@ -76,13 +77,8 @@ class _FeedScreenState extends State<FeedScreen> {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_)=> AddPost()
-            )
-          );
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => AddPost()));
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),

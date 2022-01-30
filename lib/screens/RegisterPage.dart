@@ -8,7 +8,7 @@ import '/utils/validator.dart';
 import 'LoginPage.dart';
 
 class RegisterPage extends StatefulWidget {
-  static const id = "/registerPage";
+  static const routeName = "/registerPage";
 
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -68,14 +68,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   Form(
                     key: _registerFormKey,
                     child: Column(
-                      children: <Widget>[ 
+                      children: <Widget>[
                         TextFormField(
                           controller: _nameTextController,
                           focusNode: _focusName,
                           validator: (value) => Validator.validateTextField(
-                            result: value,
-                            message: "Enter a valid name!"
-                          ),
+                              result: value, message: "Enter a valid name!"),
                           decoration: InputDecoration(
                             hintText: "Username",
                             errorBorder: UnderlineInputBorder(
@@ -243,11 +241,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                             };
 
                                             await user_apis().addUser(userMap);
-                                            Navigator.pushReplacement(
+                                            Navigator.pushNamedAndRemoveUntil(
                                                 context,
-                                                MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        HomePage()));
+                                                HomePage.routeName,
+                                                (route) => false);
                                           }
                                         } else {
                                           setState(() {

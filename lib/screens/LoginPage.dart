@@ -6,6 +6,9 @@ import '/utils/validator.dart';
 import 'RegisterPage.dart';
 
 class LoginPage extends StatefulWidget {
+  static const routeName = "/loginpage";
+  const LoginPage({Key? key}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -103,10 +106,8 @@ class _LoginPageState extends State<LoginPage> {
                                     );
 
                                     if (user != null) {
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (c) => HomePage()));
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          HomePage.routeName, (route) => false);
                                     }
                                     setState(() {
                                       _isProcessing = false;

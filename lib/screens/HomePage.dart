@@ -12,7 +12,8 @@ import '/helper/loader.dart';
 import 'LoginPage.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage();
+  static const routeName = "/homepage";
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -93,7 +94,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
     final List<Widget> _widgetOptions = <Widget>[
-      FeedScreen(),
+      FeedPage(),
       ProfilePage(),
     ];
     return _isLoading

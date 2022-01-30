@@ -39,28 +39,28 @@ Future<Map> GET(String url) async {
 }
 
 Future<Map> POST(String url, Map? body, {String? message}) async {
+  try {
+    final result = await Dio().post(endpoint + url,
+        data: jsonEncode(body),
+        options:
+            Options(headers: {Headers.acceptHeader: Headers.jsonContentType}));
 
-    try {
-      final result = await Dio().post(endpoint + url,
-          data: jsonEncode(body),
-          options: Options(headers: {Headers.acceptHeader: Headers.jsonContentType}));
+    var dataResult = Map.castFrom(result.data);
 
-      var dataResult = Map.castFrom(result.data);
-
-      return dataResult;
-    } on SocketException {
-      return {
-        "flutter-caught-error": "Socket Exception",
-        "message": ErrorCodesCustom[100],
-        "errCode": 100 // Server connection error
-      };
-    } on Exception catch (e) {
-      return {
-        "message": ErrorCodesCustom[999],
-        "errCode": 999,
-        "flutter-caught-error": e,
-      };
-    }
+    return dataResult;
+  } on SocketException {
+    return {
+      "flutter-caught-error": "Socket Exception",
+      "message": ErrorCodesCustom[100],
+      "errCode": 100 // Server connection error
+    };
+  } on Exception catch (e) {
+    return {
+      "message": ErrorCodesCustom[999],
+      "errCode": 999,
+      "flutter-caught-error": e,
+    };
+  }
 }
 
 Future<Map> POST_ALT(String url, Map? body) async {
