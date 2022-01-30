@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   bool _wentWrong = false;
   bool _isLoading = false;
 
-  final user_apis _users = user_apis();
+  final UserAPIS _users = UserAPIS();
 
   int _selectedIndex = 0;
   List pages = [];

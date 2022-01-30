@@ -32,26 +32,27 @@ class _ProfilePageState extends State<ProfilePage> {
     bool userLoaded = user == null;
 
     return Scaffold(
-        body: !userLoaded
-            ? Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(user.username.toString()),
-                    const SizedBox(height: 30),
-                    InkWell(
-                      onTap: () async {},
-                      child: Container(
-                        color: Colors.blue,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
-                        child: const Text("Add Community",
-                            style: TextStyle(color: Colors.white)),
-                      ),
-                    )
-                  ],
-                ),
-              )
-            : GlobalLoader());
+      body: !userLoaded
+          ? Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(user.username.toString()),
+                  const SizedBox(height: 30),
+                  InkWell(
+                    onTap: () async {},
+                    child: Container(
+                      color: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      child: const Text("Add Community",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  )
+                ],
+              ),
+            )
+          : const GlobalLoader(),
+    );
   }
 }

@@ -1,6 +1,6 @@
 import '/helper/user_db_helper.dart';
 
-class user_apis {
+class UserAPIS {
   Future<Map> getUsers() async {
     String endpoint = "users/getAllUsers/";
     return GET(endpoint);
@@ -18,7 +18,7 @@ class user_apis {
 
   Future<Map> addUser(Map body) async {
     String endpoint = "users/addUser/";
-    return POST(endpoint,body);
+    return POST(endpoint, body);
   }
 
   Future<Map> deleteUser(String id) async {
@@ -30,10 +30,9 @@ class user_apis {
     String endpoint = "users/updateSingleUser/$id";
     return PATCH(endpoint, body);
   }
-
 }
 
-class post_apis{
+class PostAPIS {
   dynamic getPosts() async {
     String endpoint = "posts/getAllPosts/";
     return GET(endpoint);
@@ -41,7 +40,7 @@ class post_apis{
 
   Future<Map> addPost(Map body) async {
     String endpoint = "posts/addPost/";
-    return POST(endpoint,body);
+    return POST(endpoint, body);
   }
 
   Future<Map> getSinglePost(String id) async {
@@ -50,7 +49,7 @@ class post_apis{
   }
 }
 
-class community_apis{
+class community_apis {
   Future<Map> getCommunities() async {
     String endpoint = "communities/getAllCommunities";
     return GET(endpoint);

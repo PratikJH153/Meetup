@@ -30,7 +30,7 @@ class _AddPostState extends State<AddPost> {
       _isProcessing = true;
     });
 
-    final m1 = await post_apis().addPost(postData);
+    final m1 = await PostAPIS().addPost(postData);
     setState(() {
       _isProcessing = false;
     });

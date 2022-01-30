@@ -50,10 +50,10 @@ class _RegisterPageState extends State<RegisterPage> {
           title: const Text('Register'),
           leading: IconButton(
             onPressed: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => LoginPage()));
+              Navigator.pushReplacementNamed(
+                context,
+                LoginPage.routeName,
+              );
             },
             icon: const Icon(Icons.arrow_back),
           ),
@@ -240,7 +240,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                                       .toList()
                                             };
 
-                                            await user_apis().addUser(userMap);
+                                            await UserAPIS().addUser(userMap);
                                             Navigator.pushNamedAndRemoveUntil(
                                                 context,
                                                 HomePage.routeName,

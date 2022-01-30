@@ -31,7 +31,7 @@ class _FeedPageState extends State<FeedPage> {
       // IF THE POSTS AREN'T LOADED PREVIOUSLY
 
       print("CALLING /getAllPosts");
-      final data = await post_apis().getPosts();
+      final data = await PostAPIS().getPosts();
       // FETCHING THE POSTS
 
       if (data["errCode"] != null) {

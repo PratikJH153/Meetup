@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:meetupapp/helper/ERROR_CODE_CUSTOM.dart';
 
@@ -13,6 +12,7 @@ const getUsersURL = "$userFolder/getUsers/";
 const addUsersURL = "$userFolder/addUser/";
 const endpoint = "http://10.0.2.2:9000/";
 
+// ignore: non_constant_identifier_names
 Future<Map> GET(String url) async {
   final uri = Uri.parse(endpoint + url);
 
@@ -38,6 +38,7 @@ Future<Map> GET(String url) async {
   }
 }
 
+// ignore: non_constant_identifier_names
 Future<Map> POST(String url, Map? body, {String? message}) async {
   try {
     final result = await Dio().post(endpoint + url,
