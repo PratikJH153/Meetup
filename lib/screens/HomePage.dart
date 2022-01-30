@@ -1,12 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/providers/UserProvider.dart';
-import 'package:meetupapp/screens/ProfilePage.dart';
 import 'package:provider/provider.dart';
 import '/screens/FeedScreen.dart';
-import 'community/SearchCommunityScreen.dart';
-import '/utils/fire_auth.dart';
+import '/providers/UserProvider.dart';
+import '/screens/ProfilePage.dart';
 import '/models/post.dart';
 import '/models/user.dart';
 import '/helper/APIS.dart';
@@ -29,7 +27,6 @@ class _HomePageState extends State<HomePage> {
   bool _isLoading = false;
 
   final user_apis _users = user_apis();
-  final post_apis _posts = post_apis();
 
   int _selectedIndex = 0;
   List pages = [];
@@ -97,7 +94,6 @@ class _HomePageState extends State<HomePage> {
     Size s = MediaQuery.of(context).size;
     final List<Widget> _widgetOptions = <Widget>[
       FeedScreen(),
-      SearchCommunityScreen(),
       ProfilePage(),
     ];
     return _isLoading
@@ -130,10 +126,6 @@ class _HomePageState extends State<HomePage> {
                       BottomNavigationBarItem(
                           icon: Icon(Icons.home, color: Colors.white),
                           label: 'Home',
-                          backgroundColor: Colors.blue),
-                      BottomNavigationBarItem(
-                          icon: Icon(Icons.search, color: Colors.white),
-                          label: 'Search',
                           backgroundColor: Colors.blue),
                       BottomNavigationBarItem(
                         icon: Icon(Icons.person, color: Colors.white),
