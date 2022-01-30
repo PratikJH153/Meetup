@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meetupapp/screens/LoginPage.dart';
 import 'package:meetupapp/screens/RegisterPage.dart';
+import 'package:meetupapp/widgets/ask_account_widget.dart';
 
 class GetStartedPage extends StatelessWidget {
   static const routeName = "/getstarted";
@@ -30,7 +31,7 @@ class GetStartedPage extends StatelessWidget {
                     "Let's start a Meetup.",
                     style: TextStyle(
                       fontSize: 40,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(
@@ -39,10 +40,13 @@ class GetStartedPage extends StatelessWidget {
                   Text(
                     "Here is the place where the 'Magic' happens, surround yourselves with a mist of Like minds! JOIN US!",
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 13,
                       letterSpacing: 1,
+                      wordSpacing: 1,
                       height: 1.5,
-                      color: Colors.grey[700],
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Quicksand",
+                      color: Colors.grey[500],
                     ),
                   ),
                   const SizedBox(
@@ -73,25 +77,11 @@ class GetStartedPage extends StatelessWidget {
                     ),
                   ),
                   Center(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 6,
-                      ),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          primary: Colors.black,
-                        ),
-                        onPressed: () => Navigator.of(context).pushNamed(
-                          LoginPage.routeName,
-                        ),
-                        child: const Text(
-                          "I already have an account",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.1,
-                            fontSize: 15,
-                          ),
-                        ),
+                    child: askAccountWidget(
+                      title: "I already have an account",
+                      tapHandler: () => Navigator.pushNamed(
+                        context,
+                        LoginPage.routeName,
                       ),
                     ),
                   ),

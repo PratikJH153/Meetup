@@ -28,16 +28,19 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Authentication',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          scaffoldBackgroundColor: const Color(0xFFfafbff),
           brightness: Brightness.light,
           primarySwatch: Colors.blue,
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               textStyle: const TextStyle(
                 fontSize: 24.0,
+                fontFamily: "Ubuntu",
               ),
               padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
             ),
           ),
+          fontFamily: "Ubuntu",
           textTheme: TextTheme(
             headline1: TextStyle(
               fontSize: 46.0,
