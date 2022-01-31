@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,11 @@ class _HomePageState extends State<HomePage> {
 
   int _selectedIndex = 0;
   List pages = [];
+
+  final List<Widget> _widgetOptions = <Widget>[
+    FeedPage(),
+    ProfilePage(),
+  ];
 
   void _onItemTapped(int index) {
     if (_selectedIndex != index) {
@@ -93,53 +99,41 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
-    final List<Widget> _widgetOptions = <Widget>[
-      FeedPage(),
-      ProfilePage(),
-    ];
+
     return _isLoading
         ? const Scaffold(body: GlobalLoader())
         : _wentWrong
             ? const Scaffold(body: Center(child: Text("Something went wrong!")))
             : Scaffold(
-                appBar: AppBar(
-                  title: const Text('Profile'),
-                  actions: [
-                    _isLoading
-                        ? const Center(child: GlobalLoader())
-                        : IconButton(
-                            onPressed: () async {
-                              setState(() {
-                                _isLoading = true;
-                              });
-                              await FirebaseAuth.instance.signOut();
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => LoginPage()));
-                            },
-                            icon: const Icon(Icons.logout),
-                            color: Colors.white)
-                  ],
-                ),
-                bottomNavigationBar: BottomNavigationBar(
-                    items: const <BottomNavigationBarItem>[
-                      BottomNavigationBarItem(
-                          icon: Icon(Icons.home, color: Colors.white),
-                          label: 'Home',
-                          backgroundColor: Colors.blue),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.person, color: Colors.white),
-                        label: 'Profile',
-                        backgroundColor: Colors.blue,
+                bottomNavigationBar: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 5,
+                  ),
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(CupertinoIcons.bolt_horizontal),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(CupertinoIcons.add),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(CupertinoIcons.person),
                       ),
                     ],
-                    type: BottomNavigationBarType.shifting,
-                    currentIndex: _selectedIndex,
-                    selectedItemColor: Colors.black,
-                    iconSize: 40,
-                    onTap: _onItemTapped,
-                    elevation: 5),
+                  ),
+                ),
                 body: _widgetOptions[_selectedIndex],
               );
   }
