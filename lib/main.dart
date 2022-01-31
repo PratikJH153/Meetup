@@ -6,6 +6,7 @@ import 'package:meetupapp/screens/LoginPage.dart';
 import 'package:meetupapp/screens/ProfilePage.dart';
 import 'package:meetupapp/screens/RegisterPage.dart';
 import 'package:meetupapp/screens/get_started_page.dart';
+import 'package:meetupapp/screens/post/AddPostPage.dart';
 import 'providers/UserProvider.dart';
 import 'package:provider/provider.dart';
 import 'wrapper.dart';
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
           GetStartedPage.routeName: (ctx) => const GetStartedPage(),
           ProfilePage.routeName: (ctx) => const ProfilePage(),
           FeedPage.routeName: (ctx) => const FeedPage(),
+          AddPost.routeName: (ctx) => const AddPost(),
         },
       ),
     );

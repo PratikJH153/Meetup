@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/screens/post/AddPostPage.dart';
+import 'package:meetupapp/widgets/bottom_add_button.dart';
+import 'package:meetupapp/widgets/bottom_nav_button.dart';
 import 'package:provider/provider.dart';
 import '/screens/FeedScreen.dart';
 import '/providers/UserProvider.dart';
@@ -100,41 +103,50 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
 
-    return _isLoading
-        ? const Scaffold(body: GlobalLoader())
-        : _wentWrong
-            ? const Scaffold(body: Center(child: Text("Something went wrong!")))
-            : Scaffold(
-                bottomNavigationBar: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 5,
-                  ),
-                  margin: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(CupertinoIcons.bolt_horizontal),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(CupertinoIcons.add),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(CupertinoIcons.person),
-                      ),
-                    ],
-                  ),
-                ),
-                body: _widgetOptions[_selectedIndex],
-              );
+    return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Container(
+        margin: const EdgeInsets.only(bottom: 6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey[200]!,
+              blurRadius: 5,
+              spreadRadius: 0.5,
+              offset: const Offset(0, 3),
+            )
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(
+          vertical: 10,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const BottomNavButton(
+              icon: CupertinoIcons.bolt_horizontal_fill,
+              isSelected: true,
+            ),
+            BottomAddButton(tapHandler: () {
+              Navigator.pushNamed(context, AddPost.routeName);
+            }),
+            const BottomNavButton(
+              icon: CupertinoIcons.person_alt,
+              isSelected: false,
+            ),
+          ],
+        ),
+      ),
+      body: _isLoading
+          ? const GlobalLoader()
+          : _wentWrong
+              ? const Center(
+                  child: Text("Something went wrong!"),
+                )
+              : _widgetOptions[_selectedIndex],
+    );
   }
 }

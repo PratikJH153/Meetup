@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meetupapp/screens/post/AddPostPage.dart';
@@ -65,36 +66,81 @@ class _FeedPageState extends State<FeedPage> {
 
   @override
   void initState() {
-    _loadAllPosts();
+    // _loadAllPosts();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
-    UserProvider up = Provider.of<UserProvider>(context);
-    print(up.loadedPosts);
+    UserProvider up = Provider.of<UserProvider>(context, listen: false);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => AddPost()));
-        },
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
       body: _wentWrong
           ? const Center(child: Text("An error occurred!"))
           : _isLoading
               ? GlobalLoader()
-              : ListView.builder(
-                  itemCount: up.loadedPosts.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Post currPost = Post.fromJson(up.loadedPosts[index]);
-                    return ListTile(
-                      title: Text(currPost.title.toString()),
-                      subtitle: Text(currPost.desc.toString()),
-                    );
-                  }),
+              : Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                  ),
+                  color: Colors.red,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: CarouselSlider.builder(
+                          itemCount: up.loadedPosts.length,
+                          itemBuilder: (BuildContext context, int index, _) {
+                            Post currPost =
+                                Post.fromJson(up.loadedPosts[index]);
+                            return Container(
+                              height: 200,
+                              margin: EdgeInsets.only(bottom: 20),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey[200]!,
+                                    blurRadius: 5,
+                                    spreadRadius: 0.5,
+                                    offset: const Offset(0, 3),
+                                  )
+                                ],
+                              ),
+                              child: Text(
+                                currPost.title.toString(),
+                              ),
+                            );
+                          },
+                          options: CarouselOptions(
+                            viewportFraction: 0.2,
+                            scrollPhysics: const BouncingScrollPhysics(),
+                            initialPage: 0,
+                            reverse: false,
+                            autoPlay: false,
+                            enableInfiniteScroll: false,
+                            enlargeCenterPage: false,
+                            scrollDirection: Axis.vertical,
+                          ),
+                        ),
+                      ),
+                      // Expanded(
+                      //   child: ListView.builder(
+                      //     itemCount: up.loadedPosts.length,
+                      //     physics: const BouncingScrollPhysics(),
+                      //     itemBuilder: (BuildContext context, int index) {
+                      //       Post currPost = Post.fromJson(up.loadedPosts[index]);
+                      //       return ListTile(
+                      //         title: Text(currPost.title.toString()),
+                      //         subtitle: Text(currPost.desc.toString()),
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                ),
     );
   }
 }

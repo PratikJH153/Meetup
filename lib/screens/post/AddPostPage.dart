@@ -8,7 +8,8 @@ import '/helper/APIS.dart';
 import '/utils/validator.dart';
 
 class AddPost extends StatefulWidget {
-  AddPost();
+  static const routeName = "/addpost";
+  const AddPost({Key? key}) : super(key: key);
 
   @override
   State<AddPost> createState() => _AddPostState();
