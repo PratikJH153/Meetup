@@ -1,7 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meetupapp/screens/post/AddPostPage.dart';
+import 'package:meetupapp/screens/post/ViewPostPage.dart';
+import 'package:meetupapp/widgets/feed_interact_button.dart';
+import 'package:meetupapp/widgets/feed_tile.dart';
+import 'package:meetupapp/widgets/recommended_feed_tile.dart';
 import 'package:meetupapp/widgets/search_field_widget.dart';
 import '/helper/APIS.dart';
 import '/helper/ERROR_CODE_CUSTOM.dart';
@@ -95,123 +100,133 @@ class _FeedPageState extends State<FeedPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 25.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
                             children: [
-                              Text(
-                                "Hello Pratik 👋",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Hello Pratik 👋",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey[500],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  Text(
+                                    "Explore the Top Feeds!",
+                                    style: TextStyle(
+                                      color: Colors.grey[800],
+                                      fontSize: 16,
+                                      wordSpacing: 2,
+                                      fontFamily: "Raleway",
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Spacer(),
+                              Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey[100]!,
+                                      blurRadius: 2,
+                                      spreadRadius: 0.1,
+                                      offset: const Offset(0, 3),
+                                    )
+                                  ],
                                 ),
-                              ),
-                              SizedBox(
-                                height: 6,
-                              ),
-                              Text(
-                                "Discover the feeds!",
-                                style: TextStyle(
-                                  color: Colors.grey[500],
-                                  fontSize: 15,
-                                  wordSpacing: 2,
-                                  fontWeight: FontWeight.w300,
+                                child: Icon(
+                                  CupertinoIcons.search,
+                                  size: 18,
+                                  color: Color(0xFF787878),
                                 ),
                               ),
                               const SizedBox(
-                                height: 15,
+                                width: 10,
                               ),
-                              SearchField(
-                                editingController: _searchController,
-                                validatorHandler: (val) {},
-                              )
+                              Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey[100]!,
+                                      blurRadius: 2,
+                                      spreadRadius: 0.1,
+                                      offset: const Offset(0, 3),
+                                    )
+                                  ],
+                                ),
+                                child: Icon(
+                                  Icons.filter_alt_outlined,
+                                  size: 18,
+                                  color: Color(0xFF787878),
+                                ),
+                              ),
                             ],
                           ),
                         ),
                         const SizedBox(
-                          height: 30,
+                          height: 20,
                         ),
                         Expanded(
-                          child: ListView.builder(
-                            itemBuilder: (ctx, index) {
-                              Post currPost =
-                                  Post.fromJson(up.loadedPosts[index]);
-                              return Container(
-                                  margin: EdgeInsets.only(bottom: 20),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Colors.white,
-                                    // boxShadow: [
-                                    //   BoxShadow(
-                                    //     color: Colors.grey[200]!,
-                                    //     blurRadius: 5,
-                                    //     spreadRadius: 0.5,
-                                    //     offset: const Offset(0, 3),
-                                    //   )
-                                    // ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            height: 30,
-                                            width: 30,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: DecorationImage(
-                                                image: NetworkImage(
-                                                    "https://media.istockphoto.com/photos/millennial-male-team-leader-organize-virtual-workshop-with-employees-picture-id1300972574?b=1&k=20&m=1300972574&s=170667a&w=0&h=2nBGC7tr0kWIU8zRQ3dMg-C5JLo9H2sNUuDjQ5mlYfo="),
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text("Pratik JH"),
-                                              Text(
-                                                  "20 minutes ago . 5 min read"),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                          "Let's go Put ourselves out of Business!"),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 5,
-                                          vertical: 5,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFF6b7fff),
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                        ),
-                                        child: Text(
-                                          "Business",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ));
+                          child: ShaderMask(
+                            shaderCallback: (Rect rect) {
+                              return const LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.red,
+                                  Colors.transparent,
+                                  Colors.transparent,
+                                  Colors.red
+                                ],
+                                stops: [
+                                  0.0,
+                                  0.02,
+                                  0.8,
+                                  1.0
+                                ], // 10% purple, 80% transparent, 10% purple
+                              ).createShader(rect);
                             },
-                            itemCount: up.loadedPosts.length,
+                            blendMode: BlendMode.dstOut,
+                            child: ListView.builder(
+                              padding: const EdgeInsets.only(
+                                bottom: 200,
+                                top: 10,
+                              ),
+                              physics: const BouncingScrollPhysics(),
+                              itemBuilder: (ctx, index) {
+                                // Post currPost =
+                                //     Post.fromJson(up.loadedPosts[index]);
+                                return GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      barrierColor: const Color(0xFFf1e2d2),
+                                      builder: (ctx) {
+                                        return const ViewPostPage();
+                                      },
+                                    );
+                                  },
+                                  child: const FeedTile(),
+                                );
+                              },
+                              itemCount: up.loadedPosts.length,
+                            ),
                           ),
-                        )
+                        ),
 
                         // Expanded(
                         //   child: ListView.builder(

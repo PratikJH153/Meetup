@@ -13,7 +13,7 @@ class BottomAddButton extends StatelessWidget {
     return GestureDetector(
       onTap: tapHandler,
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           boxShadow: [

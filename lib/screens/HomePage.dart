@@ -131,7 +131,15 @@ class _HomePageState extends State<HomePage> {
               isSelected: true,
             ),
             BottomAddButton(tapHandler: () {
-              Navigator.pushNamed(context, AddPost.routeName);
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                barrierColor: const Color(0xFFf1e2d2),
+                builder: (ctx) {
+                  return const AddPost();
+                },
+              );
             }),
             const BottomNavButton(
               icon: CupertinoIcons.person_alt,
