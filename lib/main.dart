@@ -5,6 +5,7 @@ import 'package:meetupapp/screens/HomePage.dart';
 import 'package:meetupapp/screens/LoginPage.dart';
 import 'package:meetupapp/screens/ProfilePage.dart';
 import 'package:meetupapp/screens/RegisterPage.dart';
+import 'package:meetupapp/screens/SearchPage.dart';
 import 'package:meetupapp/screens/get_started_page.dart';
 import 'package:meetupapp/screens/post/AddPostPage.dart';
 import 'providers/UserProvider.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [ChangeNotifierProvider(create: (c) => UserProvider())],
       child: MaterialApp(
-        title: 'Flutter Authentication',
+        title: 'MeetUp',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           scaffoldBackgroundColor: const Color(0xFFfafbff),
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
           ProfilePage.routeName: (ctx) => const ProfilePage(),
           FeedPage.routeName: (ctx) => const FeedPage(),
           AddPost.routeName: (ctx) => const AddPost(),
+          SearchPage.routeName: (ctx) => const SearchPage(),
         },
       ),
     );

@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/widgets/constants.dart';
+import 'package:meetupapp/widgets/feed_interact_button.dart';
 import 'package:meetupapp/widgets/recommended_feed_tile.dart';
+import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
 
 class ViewPostPage extends StatelessWidget {
   const ViewPostPage({Key? key}) : super(key: key);
@@ -18,53 +22,15 @@ class ViewPostPage extends StatelessWidget {
           builder: (_, controller) {
             return Column(
               children: [
-                Container(
-                  margin: const EdgeInsets.only(
-                    top: 35,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 22,
-                  ),
-                  color: Colors.transparent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.close,
-                            size: 22,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.more_horiz_rounded),
-                      )
-                    ],
-                  ),
-                ),
-                Center(
-                  child: Container(
-                    height: 3,
-                    width: 80,
-                    color: Colors.white,
-                    margin: const EdgeInsets.only(
-                      bottom: 10,
-                    ),
-                  ),
+                UpperWidgetOfBottomSheet(
+                  tapHandler: () {},
+                  icon: Icons.more_horiz_rounded,
                 ),
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.only(
-                      left: 24,
-                      right: 24,
+                      left: kLeftPadding,
+                      right: kRightPadding,
                     ),
                     decoration: const BoxDecoration(
                       color: Colors.white,
@@ -137,7 +103,7 @@ class ViewPostPage extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(
-                                    width: 20,
+                                    width: 15,
                                   ),
                                   Column(
                                     crossAxisAlignment:
@@ -187,6 +153,46 @@ class ViewPostPage extends StatelessWidget {
                                   height: 1.5,
                                   color: Colors.grey[600],
                                   fontFamily: "Quicksand",
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(right: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    FeedInteractButton(
+                                      icon: CupertinoIcons
+                                          .arrowtriangle_up_circle,
+                                      label: "12",
+                                      tapHandler: () {
+                                        print("UPVOTE");
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    FeedInteractButton(
+                                      icon: CupertinoIcons
+                                          .arrowtriangle_down_circle,
+                                      label: "10",
+                                      tapHandler: () {
+                                        print("DOWNVOTE");
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    FeedInteractButton(
+                                      icon: CupertinoIcons.chat_bubble_2,
+                                      label: "5",
+                                      tapHandler: () {
+                                        print("COMMENTS");
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(

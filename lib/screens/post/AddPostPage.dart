@@ -1,10 +1,14 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meetupapp/helper/ERROR_CODE_CUSTOM.dart';
 import 'package:meetupapp/models/tag_item.dart';
+import 'package:meetupapp/screens/post/AddInterestTagPage.dart';
+import 'package:meetupapp/widgets/constants.dart';
+import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
 import '/helper/APIS.dart';
 import '/utils/validator.dart';
 
@@ -26,6 +30,7 @@ class _AddPostState extends State<AddPost> {
   final _focusDesc = FocusNode();
 
   bool _isProcessing = false;
+  String _selectedTag = "";
 
   Future<Map> _addPostAPI(Map postData) async {
     setState(() {
@@ -45,35 +50,6 @@ class _AddPostState extends State<AddPost> {
     return m1;
   }
 
-  List<TagItem> _dropdownItems = [
-    TagItem(1, "First Value"),
-    TagItem(2, "Second Item"),
-    TagItem(3, "Third Item"),
-    TagItem(4, "Fourth Item")
-  ];
-
-  List<DropdownMenuItem<TagItem>>? _dropdownMenuItems;
-  TagItem? _selectedItem;
-
-  void initState() {
-    super.initState();
-    _dropdownMenuItems = buildDropDownMenuItems(_dropdownItems);
-    _selectedItem = _dropdownMenuItems![0].value;
-  }
-
-  List<DropdownMenuItem<TagItem>> buildDropDownMenuItems(List listItems) {
-    List<DropdownMenuItem<TagItem>> items = [];
-    for (TagItem listItem in listItems) {
-      items.add(
-        DropdownMenuItem(
-          child: Text(listItem.name),
-          value: listItem,
-        ),
-      );
-    }
-    return items;
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -88,54 +64,16 @@ class _AddPostState extends State<AddPost> {
             builder: (_, controller) {
               return Column(
                 children: [
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 35,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 22,
-                    ),
-                    color: Colors.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.close,
-                              size: 22,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.done_rounded),
-                        )
-                      ],
-                    ),
-                  ),
-                  Center(
-                    child: Container(
-                      height: 3,
-                      width: 80,
-                      color: Colors.white,
-                      margin: const EdgeInsets.only(
-                        bottom: 10,
-                      ),
-                    ),
+                  UpperWidgetOfBottomSheet(
+                    tapHandler: () {},
+                    icon: CupertinoIcons.checkmark_alt,
                   ),
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.only(
-                        top: 35,
-                        left: 24,
-                        right: 24,
+                        top: kTopPadding,
+                        left: kLeftPadding,
+                        right: kLeftPadding,
                       ),
                       decoration: const BoxDecoration(
                         color: Colors.white,
@@ -147,47 +85,41 @@ class _AddPostState extends State<AddPost> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                backgroundColor: Colors.transparent,
+                                builder: (ctx) {
+                                  return AddInterestTagPage(
+                                    selectedTag: _selectedTag,
+                                    tapHandler: (val) {
+                                      setState(() {
+                                        _selectedTag = val;
+                                      });
+                                    },
+                                  );
+                                },
+                              );
+                            },
                             child: Container(
-                              padding: const EdgeInsets.only(
-                                left: 10.0,
-                                right: 10.0,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 8,
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.grey,
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
-                                    borderRadius: BorderRadius.circular(15),
-                                    value: _selectedItem,
-                                    items: _dropdownMenuItems,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _selectedItem = value as TagItem?;
-                                      });
-                                    }),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 15,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: const Text(
-                              "Tag",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                fontFamily: "Raleway",
-                                letterSpacing: 0.8,
-                                fontSize: 11,
+                              child: const Text(
+                                "Tag",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                  fontFamily: "Raleway",
+                                  letterSpacing: 0.8,
+                                  fontSize: 11,
+                                ),
                               ),
                             ),
                           ),
@@ -195,6 +127,8 @@ class _AddPostState extends State<AddPost> {
                             height: 10,
                           ),
                           TextFormField(
+                            maxLines: null,
+                            style: const TextStyle(height: 1.3),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Add an Title",
@@ -204,11 +138,9 @@ class _AddPostState extends State<AddPost> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
                           TextFormField(
-                            maxLines: 20,
+                            maxLines: null,
+                            style: const TextStyle(height: 1.5),
                             decoration: InputDecoration(
                               hintText: "Give a description (Optional)",
                               border: InputBorder.none,

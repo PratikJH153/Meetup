@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/screens/post/CommentPage.dart';
 import 'package:meetupapp/widgets/feed_interact_button.dart';
 
 class FeedTile extends StatelessWidget {
@@ -13,12 +14,12 @@ class FeedTile extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: Colors.white,
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
-              color: Colors.grey[200]!,
+              color: Color(0xFFf2f4f9),
               blurRadius: 5,
               spreadRadius: 0.5,
-              offset: const Offset(0, 4),
+              offset: Offset(0, 4),
             )
           ],
         ),
@@ -108,24 +109,41 @@ class FeedTile extends StatelessWidget {
                   ),
                 ),
                 Row(
-                  children: const [
+                  children: [
                     FeedInteractButton(
                       icon: CupertinoIcons.arrowtriangle_up_circle,
                       label: "12",
+                      tapHandler: () {
+                        print("UPVOTE");
+                      },
                     ),
-                    SizedBox(
-                      width: 13,
+                    const SizedBox(
+                      width: 5,
                     ),
                     FeedInteractButton(
                       icon: CupertinoIcons.arrowtriangle_down_circle,
                       label: "10",
+                      tapHandler: () {
+                        print("DOWNVOTE");
+                      },
                     ),
-                    SizedBox(
-                      width: 13,
+                    const SizedBox(
+                      width: 5,
                     ),
                     FeedInteractButton(
                       icon: CupertinoIcons.chat_bubble_2,
                       label: "5",
+                      tapHandler: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          barrierColor: const Color(0xFFf1e2d2),
+                          builder: (ctx) {
+                            return const CommentPage();
+                          },
+                        );
+                      },
                     ),
                   ],
                 )

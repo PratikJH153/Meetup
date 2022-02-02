@@ -2,10 +2,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/screens/SearchPage.dart';
 import 'package:meetupapp/screens/post/AddPostPage.dart';
 import 'package:meetupapp/screens/post/ViewPostPage.dart';
+import 'package:meetupapp/widgets/button_widget.dart';
+import 'package:meetupapp/widgets/constants.dart';
 import 'package:meetupapp/widgets/feed_interact_button.dart';
 import 'package:meetupapp/widgets/feed_tile.dart';
+import 'package:meetupapp/widgets/home_page_intro.dart';
 import 'package:meetupapp/widgets/recommended_feed_tile.dart';
 import 'package:meetupapp/widgets/search_field_widget.dart';
 import '/helper/APIS.dart';
@@ -27,8 +31,6 @@ class _FeedPageState extends State<FeedPage> {
   bool _isLoading = false;
   bool _wentWrong = false;
   List posts = [];
-
-  final TextEditingController _searchController = TextEditingController();
 
   int currentPostIndex = 0;
 
@@ -93,88 +95,12 @@ class _FeedPageState extends State<FeedPage> {
                 ? const GlobalLoader()
                 : Container(
                     margin: const EdgeInsets.symmetric(
-                      horizontal: 20,
+                      horizontal: kLeftPadding,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 25.0),
-                          child: Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Hello Pratik 👋",
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[500],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 6,
-                                  ),
-                                  Text(
-                                    "Explore the Top Feeds!",
-                                    style: TextStyle(
-                                      color: Colors.grey[800],
-                                      fontSize: 16,
-                                      wordSpacing: 2,
-                                      fontFamily: "Raleway",
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Spacer(),
-                              Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey[100]!,
-                                      blurRadius: 2,
-                                      spreadRadius: 0.1,
-                                      offset: const Offset(0, 3),
-                                    )
-                                  ],
-                                ),
-                                child: Icon(
-                                  CupertinoIcons.search,
-                                  size: 18,
-                                  color: Color(0xFF787878),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey[100]!,
-                                      blurRadius: 2,
-                                      spreadRadius: 0.1,
-                                      offset: const Offset(0, 3),
-                                    )
-                                  ],
-                                ),
-                                child: Icon(
-                                  Icons.filter_alt_outlined,
-                                  size: 18,
-                                  color: Color(0xFF787878),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        const HomeIntro(),
                         const SizedBox(
                           height: 20,
                         ),
@@ -223,24 +149,10 @@ class _FeedPageState extends State<FeedPage> {
                                   child: const FeedTile(),
                                 );
                               },
-                              itemCount: up.loadedPosts.length,
+                              itemCount: 5,
                             ),
                           ),
                         ),
-
-                        // Expanded(
-                        //   child: ListView.builder(
-                        //     itemCount: up.loadedPosts.length,
-                        //     physics: const BouncingScrollPhysics(),
-                        //     itemBuilder: (BuildContext context, int index) {
-                        //       Post currPost = Post.fromJson(up.loadedPosts[index]);
-                        //       return ListTile(
-                        //         title: Text(currPost.title.toString()),
-                        //         subtitle: Text(currPost.desc.toString()),
-                        //       );
-                        //     },
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),
