@@ -1,20 +1,11 @@
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/screens/SearchPage.dart';
-import 'package:meetupapp/screens/post/AddPostPage.dart';
-import 'package:meetupapp/screens/post/ViewPostPage.dart';
-import 'package:meetupapp/widgets/button_widget.dart';
-import 'package:meetupapp/widgets/constants.dart';
-import 'package:meetupapp/widgets/feed_interact_button.dart';
-import 'package:meetupapp/widgets/feed_tile.dart';
-import 'package:meetupapp/widgets/home_page_intro.dart';
-import 'package:meetupapp/widgets/recommended_feed_tile.dart';
-import 'package:meetupapp/widgets/search_field_widget.dart';
+import 'package:meetupapp/models/post.dart';
+import '/screens/post/ViewPostPage.dart';
+import '/widgets/constants.dart';
+import '/widgets/feed_tile.dart';
+import '/widgets/home_page_intro.dart';
 import '/helper/APIS.dart';
-import '/helper/ERROR_CODE_CUSTOM.dart';
-import '/models/post.dart';
 import '/providers/UserProvider.dart';
 import '/utils/GlobalLoader.dart';
 import 'package:provider/provider.dart';
@@ -86,6 +77,8 @@ class _FeedPageState extends State<FeedPage> {
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
     UserProvider up = Provider.of<UserProvider>(context, listen: false);
+    print("ran__");
+    print(up.loadedPosts);
 
     return SafeArea(
       child: Scaffold(
@@ -131,9 +124,10 @@ class _FeedPageState extends State<FeedPage> {
                                 top: 10,
                               ),
                               physics: const BouncingScrollPhysics(),
+                              itemCount: up.loadedPosts.length,
                               itemBuilder: (ctx, index) {
-                                // Post currPost =
-                                //     Post.fromJson(up.loadedPosts[index]);
+                                Post currPost =
+                                    Post.fromJson(up.loadedPosts[index]);
                                 return GestureDetector(
                                   onTap: () {
                                     showModalBottomSheet(
@@ -142,14 +136,13 @@ class _FeedPageState extends State<FeedPage> {
                                       backgroundColor: Colors.transparent,
                                       barrierColor: const Color(0xFFf1e2d2),
                                       builder: (ctx) {
-                                        return const ViewPostPage();
+                                        return ViewPostPage(currPost);
                                       },
                                     );
                                   },
-                                  child: const FeedTile(),
+                                  child: FeedTile(currPost),
                                 );
                               },
-                              itemCount: 5,
                             ),
                           ),
                         ),

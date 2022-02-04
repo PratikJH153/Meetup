@@ -1,17 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/widgets/feed_interact_button.dart';
+import '/models/post.dart';
 
 class SearchFeedTile extends StatelessWidget {
   final bool isDes;
+  final Post post;
   const SearchFeedTile({
+    required this.post,
     this.isDes = false,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
+      clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -47,19 +50,21 @@ class SearchFeedTile extends StatelessWidget {
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    "Pratik JH",
-                    style: TextStyle(
+                    post.author??"Undefined",
+                    maxLines: 2,
+                    overflow: TextOverflow.fade,
+                    style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                       fontFamily: "Quicksand",
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 3,
                   ),
-                  Text(
+                  const Text(
                     "5 min read",
                     style: TextStyle(
                       fontSize: 10,
@@ -73,11 +78,11 @@ class SearchFeedTile extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          const Text(
-            "Let's go Put ourselves out of Business!",
+          Text(
+            post.title.toString(),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               height: 1.5,

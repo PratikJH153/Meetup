@@ -57,6 +57,7 @@ class _HomePageState extends State<HomePage> {
     });
 
     print("CALLING /getSingleUserData");
+    print(id);
     final data = await _users.getSingleUserData(id);
 
     if (data["errCode"] != null) {

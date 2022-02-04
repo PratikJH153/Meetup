@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/screens/post/CommentPage.dart';
-import 'package:meetupapp/widgets/feed_interact_button.dart';
+import '/models/post.dart';
+import '/screens/post/CommentPage.dart';
+import '/widgets/feed_interact_button.dart';
 
 class FeedTile extends StatelessWidget {
-  const FeedTile({Key? key}) : super(key: key);
+  Post thePost;
+
+  FeedTile(this.thePost);
 
   @override
   Widget build(BuildContext context) {
@@ -71,11 +74,11 @@ class FeedTile extends StatelessWidget {
             const SizedBox(
               height: 12,
             ),
-            const Text(
-              "Let's go Put ourselves out of Business!",
+            Text(
+              thePost.title ?? "No title",
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 height: 1.5,
@@ -132,7 +135,9 @@ class FeedTile extends StatelessWidget {
                     ),
                     FeedInteractButton(
                       icon: CupertinoIcons.chat_bubble_2,
-                      label: "5",
+                      label: thePost.comments == null
+                          ? '0'
+                          : thePost.comments!.length.toString(),
                       tapHandler: () {
                         showModalBottomSheet(
                           context: context,

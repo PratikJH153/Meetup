@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/widgets/constants.dart';
-import 'package:meetupapp/widgets/feed_interact_button.dart';
-import 'package:meetupapp/widgets/recommended_feed_tile.dart';
-import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
+import '/models/post.dart';
+import '/widgets/constants.dart';
+import '/widgets/feed_interact_button.dart';
+import '/widgets/recommended_feed_tile.dart';
+import '/widgets/upper_widget_bottom_sheet.dart';
 
 class ViewPostPage extends StatelessWidget {
-  const ViewPostPage({Key? key}) : super(key: key);
+  Post thePost;
+  ViewPostPage(this.thePost,{Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -134,9 +136,9 @@ class ViewPostPage extends StatelessWidget {
                               const SizedBox(
                                 height: 25,
                               ),
-                              const Text(
-                                "Let's go Put ourselves out of Business! ✌️",
-                                style: TextStyle(
+                              Text(
+                                thePost.title!.toString(),
+                                style: const TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.w700,
                                   height: 1.5,

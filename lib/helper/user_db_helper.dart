@@ -10,7 +10,8 @@ const userFolder = "users";
 
 const getUsersURL = "$userFolder/getUsers/";
 const addUsersURL = "$userFolder/addUser/";
-const endpoint = "http://192.168.0.212:8000/";
+// const endpoint = "http://192.168.0.212:9000/"; /// FOR REAL DEVICE :)
+const endpoint = "http://10.0.2.2:9000/"; /// FOR EMULATORS (MEH)
 
 // ignore: non_constant_identifier_names
 Future<Map> GET(String url) async {
