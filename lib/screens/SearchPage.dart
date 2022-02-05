@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:meetupapp/models/post.dart';
-import 'package:meetupapp/providers/UserProvider.dart';
-import 'package:meetupapp/screens/post/ViewPostPage.dart';
-import 'package:meetupapp/widgets/button_widget.dart';
-import 'package:meetupapp/widgets/close_button.dart';
-import 'package:meetupapp/widgets/constants.dart';
-import 'package:meetupapp/widgets/search_feed_tile.dart';
-import 'package:meetupapp/widgets/search_field_widget.dart';
+import '/models/post.dart';
+import '/providers/UserProvider.dart';
+import '/screens/post/ViewPostPage.dart';
+import '/widgets/button_widget.dart';
+import '/widgets/close_button.dart';
+import '/widgets/constants.dart';
+import '/widgets/search_feed_tile.dart';
+import '/widgets/search_field_widget.dart';
 import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
