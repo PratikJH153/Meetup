@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/screens/post/AddInterestTagPage.dart';
-import 'package:meetupapp/widgets/comment_tile.dart';
-import 'package:meetupapp/widgets/constants.dart';
-import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
+import 'package:meetupapp/models/comment.dart';
+import '/widgets/comment_tile.dart';
+import '/widgets/upper_widget_bottom_sheet.dart';
 
 class CommentPage extends StatelessWidget {
-  const CommentPage({Key? key}) : super(key: key);
+  List comments;
+
+  CommentPage(this.comments);
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +72,9 @@ class CommentPage extends StatelessWidget {
                                   ],
                                 ),
                                 padding: const EdgeInsets.all(7),
-                                child: const Text(
-                                  "21",
-                                  style: TextStyle(
+                                child: Text(
+                                  comments.length.toString(),
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 15,
                                   ),
@@ -84,58 +85,21 @@ class CommentPage extends StatelessWidget {
                           const SizedBox(
                             height: 20,
                           ),
-                          Expanded(
-                            child: ListView.builder(
-                              physics: const BouncingScrollPhysics(),
-                              itemBuilder: (ctx, index) {
-                                return const CommentTile();
-                              },
-                              itemCount: 10,
-                            ),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.only(bottom: 10),
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFFf0f2f7),
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15),
-                                      bottomLeft: Radius.circular(15),
+                          comments.isEmpty
+                              ? const Center(child: Text("No comments yet!"))
+                              : Column(
+                                  children: [
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const BouncingScrollPhysics(),
+                                      itemBuilder: (ctx, index) {
+                                        return CommentTile(Comment.fromJson(
+                                            comments[index]));
+                                      },
+                                      itemCount: comments.length,
                                     ),
-                                  ),
-                                  child: const TextField(
-                                    decoration: InputDecoration(
-                                      hintText: "Comment here...",
-                                      border: InputBorder.none,
-                                      contentPadding: EdgeInsets.only(
-                                        left: 20,
-                                      ),
-                                    ),
-                                  ),
+                                  ],
                                 ),
-                              ), //
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
-                                  horizontal: 12,
-                                ),
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFF6b7fff),
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(15),
-                                    bottomRight: Radius.circular(15),
-                                  ),
-                                ),
-                                child: const Icon(
-                                  CupertinoIcons.location_fill,
-                                  color: Colors.white,
-                                ),
-                              )
-                            ],
-                          )
                         ],
                       ),
                     ),

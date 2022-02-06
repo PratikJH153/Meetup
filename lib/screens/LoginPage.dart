@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:meetupapp/widgets/ask_account_widget.dart';
-import 'package:meetupapp/widgets/google_signin_button.dart';
-import 'package:meetupapp/widgets/text_field_widget.dart';
+
+import '/helper/utils/fire_auth.dart';
+import '/helper/utils/validator.dart';
+import '/widgets/ask_account_widget.dart';
+import '/widgets/google_signin_button.dart';
+import '/widgets/text_field_widget.dart';
 import '/screens/HomePage.dart';
-import '/utils/fire_auth.dart';
-import '/utils/validator.dart';
 import 'RegisterPage.dart';
 
 class LoginPage extends StatefulWidget {

@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:meetupapp/screens/LoginPage.dart';
-import 'package:meetupapp/screens/RegisterPage.dart';
-import 'package:meetupapp/widgets/ask_account_widget.dart';
+import '/screens/LoginPage.dart';
+import '/screens/RegisterPage.dart';
+import '/widgets/ask_account_widget.dart';
 
 class GetStartedPage extends StatelessWidget {
   static const routeName = "/getstarted";
+
   const GetStartedPage({Key? key}) : super(key: key);
+
+  static const String _alreadyHaveAccount = "I already have an account";
+  static const String _startAMeetup = "Let's start a Meetup!";
+  static const String _descGetStarted = "Here is the place where the 'Magic' happens, surround yourselves with a mist of Like minds! JOIN US!";
+  static const String _getStarted = "Get Started";
+  static const String _fontFamily = "Quicksand";
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +35,7 @@ class GetStartedPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Let's start a Meetup.",
+                    _startAMeetup,
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.w700,
@@ -38,14 +45,14 @@ class GetStartedPage extends StatelessWidget {
                     height: 10,
                   ),
                   Text(
-                    "Here is the place where the 'Magic' happens, surround yourselves with a mist of Like minds! JOIN US!",
+                    _descGetStarted,
                     style: TextStyle(
                       fontSize: 13,
                       letterSpacing: 1,
                       wordSpacing: 1,
                       height: 1.5,
                       fontWeight: FontWeight.bold,
-                      fontFamily: "Quicksand",
+                      fontFamily: _fontFamily,
                       color: Colors.grey[500],
                     ),
                   ),
@@ -69,7 +76,7 @@ class GetStartedPage extends StatelessWidget {
                         RegisterPage.routeName,
                       ),
                       child: const Text(
-                        "Get Started",
+                        _getStarted,
                         style: TextStyle(
                           fontSize: 16,
                         ),
@@ -78,7 +85,7 @@ class GetStartedPage extends StatelessWidget {
                   ),
                   Center(
                     child: askAccountWidget(
-                      title: "I already have an account",
+                      title: _alreadyHaveAccount,
                       tapHandler: () => Navigator.pushNamed(
                         context,
                         LoginPage.routeName,

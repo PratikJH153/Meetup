@@ -1,4 +1,4 @@
-import '/helper/user_db_helper.dart';
+import 'rest_apis.dart';
 
 class UserAPIS {
   Future<Map> getUsers() async {
@@ -33,7 +33,7 @@ class UserAPIS {
 }
 
 class PostAPIS {
-  dynamic getPosts() async {
+  Future<Map> getPosts() async {
     String endpoint = "posts/getAllPosts/";
     return GET(endpoint);
   }
@@ -49,7 +49,7 @@ class PostAPIS {
   }
 }
 
-class community_apis {
+class CommunityAPIS {
   Future<Map> getCommunities() async {
     String endpoint = "communities/getAllCommunities";
     return GET(endpoint);

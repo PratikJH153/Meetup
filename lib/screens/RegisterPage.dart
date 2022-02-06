@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/helper/APIS.dart';
-import 'package:meetupapp/screens/HomePage.dart';
-import '/utils/fire_auth.dart';
-import '/utils/validator.dart';
+
+import '/helper/utils/fire_auth.dart';
+import '/helper/utils/validator.dart';
+import '/helper/backend/apis.dart';
+import '/screens/HomePage.dart';
 import 'LoginPage.dart';
 
 class RegisterPage extends StatefulWidget {

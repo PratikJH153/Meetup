@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '/models/comment.dart';
 
 class CommentTile extends StatelessWidget {
-  const CommentTile({Key? key}) : super(key: key);
+  Comment comment;
+  CommentTile(this.comment);
 
   @override
   Widget build(BuildContext context) {

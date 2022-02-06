@@ -135,9 +135,7 @@ class FeedTile extends StatelessWidget {
                     ),
                     FeedInteractButton(
                       icon: CupertinoIcons.chat_bubble_2,
-                      label: thePost.comments == null
-                          ? '0'
-                          : thePost.comments!.length.toString(),
+                      label: '',
                       tapHandler: () {
                         showModalBottomSheet(
                           context: context,
@@ -145,7 +143,7 @@ class FeedTile extends StatelessWidget {
                           backgroundColor: Colors.transparent,
                           barrierColor: const Color(0xFFf1e2d2),
                           builder: (ctx) {
-                            return const CommentPage();
+                            return CommentPage(thePost.comments??[]);
                           },
                         );
                       },

@@ -1,9 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/helper/APIS.dart';
-import 'package:meetupapp/models/post.dart';
 import '/models/user.dart';
 
 class UserProvider with ChangeNotifier {
+
   UserClass? _user;
 
   UserClass? getUser() => _user;
@@ -13,6 +13,17 @@ class UserProvider with ChangeNotifier {
   List<Map> _loadedPosts = [];
 
   List<Map> get loadedPosts => [..._loadedPosts];
+
+  List<String> _selectedTags = [];
+
+  List<String> get selectedTags => [..._selectedTags];
+
+  void upateTags(List givenTags){
+    givenTags.forEach((element) {
+      _selectedTags.add(element);
+    });
+    notifyListeners();
+  }
 
   void setPosts(List<Map> list){
     _loadedPosts = list;

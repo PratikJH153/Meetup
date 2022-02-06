@@ -1,33 +1,29 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/helper/ERROR_CODE_CUSTOM.dart';
-import 'package:meetupapp/models/tag_item.dart';
-import 'package:meetupapp/screens/post/AddInterestTagPage.dart';
-import 'package:meetupapp/widgets/constants.dart';
-import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
-import '/helper/APIS.dart';
-import '/utils/validator.dart';
+
+import '/helper/utils/loader.dart';
+import '/helper/utils/validator.dart';
+import '/helper/backend/apis.dart';
+import '/screens/post/AddInterestTagPage.dart';
+import '/widgets/constants.dart';
+import '/widgets/upper_widget_bottom_sheet.dart';
 
 class AddPost extends StatefulWidget {
   static const routeName = "/addpost";
-  const AddPost({Key? key}) : super(key: key);
+
+  const AddPost();
 
   @override
   State<AddPost> createState() => _AddPostState();
 }
 
 class _AddPostState extends State<AddPost> {
-  final _registerFormKey = GlobalKey<FormState>();
+  final _addPostFormKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
-
-  final _focusTitle = FocusNode();
-  final _focusDesc = FocusNode();
 
   bool _isProcessing = false;
   String _selectedTag = "";
@@ -37,7 +33,16 @@ class _AddPostState extends State<AddPost> {
       _isProcessing = true;
     });
 
-    final m1 = await PostAPIS().addPost(postData);
+    print("CALLING ADD POST//");
+    final m1 = await PostAPIS().addPost({
+      "title": _titleController.text,
+      "desc": _descController.text,
+      "author": FirebaseAuth.instance.currentUser!.uid,
+    });
+    print("ADD POST RESULT:");
+    print(m1);
+    print("----------------");
+
     setState(() {
       _isProcessing = false;
     });
@@ -45,8 +50,10 @@ class _AddPostState extends State<AddPost> {
     if (m1["errCode"] != null) {
       Fluttertoast.showToast(msg: "Couldn't add the Post!Try again later.");
     }
-    ;
-
+    else{
+      Fluttertoast.showToast(msg: "Added Post Successfully!");
+      Navigator.pop(context);
+    }
     return m1;
   }
 
@@ -55,7 +62,9 @@ class _AddPostState extends State<AddPost> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => Navigator.of(context).pop(),
-      child: GestureDetector(
+      child: _isProcessing
+          ? GlobalLoader(color: Colors.white)
+          : GestureDetector(
         onTap: () {},
         child: DraggableScrollableSheet(
             initialChildSize: 1,
@@ -65,7 +74,16 @@ class _AddPostState extends State<AddPost> {
               return Column(
                 children: [
                   UpperWidgetOfBottomSheet(
-                    tapHandler: () {},
+                    tapHandler: () async {
+                      if (_addPostFormKey.currentState!.validate()) {
+                        Map data = {
+                          "title": _titleController.text.toString(),
+                          "description": "test_desc",
+                          "author": FirebaseAuth.instance.currentUser!.uid
+                        };
+                        _addPostAPI(data);
+                      }
+                    },
                     icon: CupertinoIcons.checkmark_alt,
                   ),
                   Expanded(
@@ -82,75 +100,83 @@ class _AddPostState extends State<AddPost> {
                           topRight: Radius.circular(40),
                         ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                backgroundColor: Colors.transparent,
-                                builder: (ctx) {
-                                  return AddInterestTagPage(
-                                    selectedTag: _selectedTag,
-                                    tapHandler: (val) {
-                                      setState(() {
-                                        _selectedTag = val;
-                                      });
-                                    },
-                                  );
-                                },
-                              );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 15,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: const Text(
-                                "Tag",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                  fontFamily: "Raleway",
-                                  letterSpacing: 0.8,
-                                  fontSize: 11,
+                      child: Form(
+                        key: _addPostFormKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (ctx) {
+                                    return AddInterestTagPage(
+                                      selectedTag: _selectedTag,
+                                      tapHandler: (val) {
+                                        setState(() {
+                                          _selectedTag = val;
+                                        });
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: const Text(
+                                  "Tag",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w900,
+                                    fontFamily: "Raleway",
+                                    letterSpacing: 0.8,
+                                    fontSize: 11,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                            maxLines: null,
-                            style: const TextStyle(height: 1.3),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Add an Title",
-                              hintStyle: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey[800],
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextFormField(
+                              maxLines: null,
+                              controller: _titleController,
+                              style: const TextStyle(height: 1.3),
+                              validator: (value) => Validator.validateTextField(
+                                  result: value,
+                                  message: "Enter a valid Title"),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Add an Title",
+                                hintStyle: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.grey[800],
+                                ),
                               ),
                             ),
-                          ),
-                          TextFormField(
-                            maxLines: null,
-                            style: const TextStyle(height: 1.5),
-                            decoration: InputDecoration(
-                              hintText: "Give a description (Optional)",
-                              border: InputBorder.none,
-                              hintStyle: TextStyle(
-                                fontSize: 15,
-                                color: Colors.grey[700],
+                            TextFormField(
+                              maxLines: null,
+                              controller: _descController,
+                              style: const TextStyle(height: 1.5),
+                              decoration: InputDecoration(
+                                hintText: "Give a description (Optional)",
+                                border: InputBorder.none,
+                                hintStyle: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.grey[700],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/models/post.dart';
+import 'package:provider/provider.dart';
+
+import '/helper/utils/loader.dart';
+import '/helper/backend/apis.dart';
 import '/screens/post/ViewPostPage.dart';
+import '/models/post.dart';
 import '/widgets/constants.dart';
 import '/widgets/feed_tile.dart';
 import '/widgets/home_page_intro.dart';
-import '/helper/APIS.dart';
 import '/providers/UserProvider.dart';
-import '/utils/GlobalLoader.dart';
-import 'package:provider/provider.dart';
 
 class FeedPage extends StatefulWidget {
   static const routeName = "/feedpage";
@@ -28,32 +29,90 @@ class _FeedPageState extends State<FeedPage> {
   Future<void> _loadAllPosts() async {
     UserProvider u = Provider.of<UserProvider>(context, listen: false);
 
+    List <Map>testData = [
+        {
+          "_id": "61fe3371496a7ddcae57f60a",
+          "title": "Hitler hmmmm",
+          "description": "Garam Ande",
+          "author": {
+            "_id": "dZQj6jM7y2Psu8FsWhSa9p3Fv8s1",
+            "username": "atharv",
+            "profileURL": "https://raw.githubusercontent.com/AKAMasterMind404/meetup-backend/main/assets/placeholder-no-man-1.png?token=GHSAT0AAAAAABOC3R3SRUT6ITAWYT5PVNJMYPONQKA",
+            "cupcakes": 0,
+            "email": "atharv@gmail.com",
+            "gender": "Male",
+            "age": 21,
+            "bio": "Pr",
+            "interests": [],
+            "posts": [
+              "61f03ca89d0739a5188b628e",
+              "61f169c0c4ed18ad15695f04",
+              "61f16cebc4ed18ad15695f08",
+              "61f16d3dc4ed18ad15695f10",
+              "61f17183c4ed18ad15695f3c",
+              "61f171afc4ed18ad15695f4a",
+              "61f172d0c4ed18ad15695f5a",
+              "61f522c72e32867ccacaac10",
+              "61f523002e32867ccacaac13",
+              "61f523092e32867ccacaac16",
+              "61f52cca317a7ea31e3c3cf7",
+              "61f52f73dc99f6e7cffba05b",
+              "61f53556ed8605175d7e5051",
+              "61f53561ed8605175d7e5054",
+              "61f7ee12134fd4a4744c6a08",
+              "61f93b65aa432a273cdc231f",
+              "61fe235f1525022567080197",
+              "61fe2e3e78e3f0910454fc9a",
+              "61fe30ec496a7ddcae57f5f3",
+              "61fe3371496a7ddcae57f60a"
+            ],
+            "__v": 3,
+            "upvotes": {
+              "61fb8912b896a7ec47d5ff29": true
+            },
+            "votes": {
+              "61fb8912b896a7ec47d5ff29": false,
+              "61f93b65aa432a273cdc231f": false
+            }
+          },
+          "comments": []
+        }
+    ];
+
     setState(() {
       _isLoading = true;
     });
     if (!u.isLoaded) {
       // IF THE POSTS AREN'T LOADED PREVIOUSLY
-
       print("CALLING /getAllPosts");
       final data = await PostAPIS().getPosts();
       // FETCHING THE POSTS
 
-      if (data["errCode"] != null) {
+      if (data["result"]["error"] != null) {
         // ERROR WHILE FETCHING POSTS AFTER SUCCESSFUL INITIALIZATION
-        Fluttertoast.showToast(msg: data["message"]);
-        setState(() {
-          _wentWrong = true;
-        });
+
+        /// REMOVE AFTER TESTING
+        u.setPosts(testData);
+
+        /// UNCOMMENT THIS
+        // setState(() {
+        //   _wentWrong = true;
+        // });
+        Fluttertoast.showToast(msg: "Something went wrong!");
+
       } else {
         // POSTS WERE NOT LOADED PREVIOUSLY BUT NOW HAVE BEEN LOADED SUCCESSFULLY
+
         List<Map> fetched_posts = [];
-        data["result"].forEach((element) {
-          fetched_posts.add(element);
-        });
+
+        List receivedList = data["result"];
+        // List finalData = data["result"]==[]?testData:data["result"] as List;
+        // finalData.forEach((element) {
+        //   fetched_posts.add(element);
+        // });
         // CONVERSION OF List<Dynamic> to List<Map>
 
         u.setPosts(fetched_posts);
-        print(data);
         print("-------------");
       }
     } else {
@@ -77,15 +136,13 @@ class _FeedPageState extends State<FeedPage> {
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
     UserProvider up = Provider.of<UserProvider>(context, listen: false);
-    print("ran__");
-    print(up.loadedPosts);
 
     return SafeArea(
       child: Scaffold(
         body: _wentWrong
             ? const Center(child: Text("An error occurred!"))
             : _isLoading
-                ? const GlobalLoader()
+                ? GlobalLoader()
                 : Container(
                     margin: const EdgeInsets.symmetric(
                       horizontal: kLeftPadding,

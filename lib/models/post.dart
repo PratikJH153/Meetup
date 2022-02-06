@@ -2,7 +2,7 @@ class Post {
   final String? postID;
   final String? title;
   final String? desc;
-  final String? author;
+  var author;
   final int? votes;
   final List? comments;
 

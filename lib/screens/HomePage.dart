@@ -1,22 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/screens/post/AddPostPage.dart';
-import 'package:meetupapp/widgets/bottom_add_button.dart';
-import 'package:meetupapp/widgets/bottom_nav_button.dart';
 import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import '/helper/backend/apis.dart';
+import '/helper/utils/loader.dart';
+import '/screens/post/AddPostPage.dart';
+import '/widgets/bottom_add_button.dart';
+import '/widgets/bottom_nav_button.dart';
 import '/screens/FeedScreen.dart';
 import '/providers/UserProvider.dart';
 import '/screens/ProfilePage.dart';
 import '/models/post.dart';
 import '/models/user.dart';
-import '/helper/APIS.dart';
-import '/helper/loader.dart';
-import 'LoginPage.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = "/homepage";
+
   const HomePage({Key? key}) : super(key: key);
 
   @override
@@ -37,17 +38,9 @@ class _HomePageState extends State<HomePage> {
   List pages = [];
 
   final List<Widget> _widgetOptions = <Widget>[
-    FeedPage(),
-    ProfilePage(),
+    const FeedPage(),
+    const ProfilePage(),
   ];
-
-  void _onItemTapped(int index) {
-    if (_selectedIndex != index) {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-  }
 
   Future<void> _initialize(String id) async {
     UserProvider userProvider =
@@ -57,7 +50,6 @@ class _HomePageState extends State<HomePage> {
     });
 
     print("CALLING /getSingleUserData");
-    print(id);
     final data = await _users.getSingleUserData(id);
 
     if (data["errCode"] != null) {
@@ -127,11 +119,18 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const BottomNavButton(
-              icon: CupertinoIcons.bolt_horizontal_fill,
-              isSelected: true,
+            InkWell(
+              child: BottomNavButton(
+                icon: CupertinoIcons.bolt_horizontal_fill,
+                isSelected: _selectedIndex == 0,
+              ),
+              onTap: () {
+                setState(() {
+                  _selectedIndex = 0;
+                });
+              },
             ),
-            BottomAddButton(tapHandler: () {
+            BottomAddButton(tapHandler: ()async{
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
@@ -142,15 +141,22 @@ class _HomePageState extends State<HomePage> {
                 },
               );
             }),
-            const BottomNavButton(
-              icon: CupertinoIcons.person_alt,
-              isSelected: false,
+            InkWell(
+              onTap: () {
+                setState(() {
+                  _selectedIndex = 1;
+                });
+              },
+              child: BottomNavButton(
+                icon: CupertinoIcons.person_alt,
+                isSelected: _selectedIndex == 1,
+              ),
             ),
           ],
         ),
       ),
       body: _isLoading
-          ? const GlobalLoader()
+          ? GlobalLoader()
           : _wentWrong
               ? const Center(
                   child: Text("Something went wrong!"),

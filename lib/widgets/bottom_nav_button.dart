@@ -13,13 +13,10 @@ class BottomNavButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: IconButton(
-        onPressed: () {},
-        icon: Icon(
-          icon,
-          color: isSelected ? const Color(0xFF3d3d3d) : const Color(0xFFadadad),
-          size: 25,
-        ),
+      child: Icon(
+        icon,
+        color: isSelected ? const Color(0xFF3d3d3d) : const Color(0xFFadadad),
+        size: 25,
       ),
     );
   }
