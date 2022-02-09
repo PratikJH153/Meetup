@@ -4,6 +4,7 @@ import '/models/post.dart';
 class SearchFeedTile extends StatelessWidget {
   final bool isDes;
   final Post post;
+
   const SearchFeedTile({
     required this.post,
     this.isDes = false,
@@ -12,7 +13,6 @@ class SearchFeedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.all(22),
@@ -52,7 +52,7 @@ class SearchFeedTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    post.author??"Undefined",
+                    post.author!["username"],
                     maxLines: 2,
                     overflow: TextOverflow.fade,
                     style: const TextStyle(

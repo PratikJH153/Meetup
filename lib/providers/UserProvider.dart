@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '/models/user.dart';
 
@@ -32,8 +31,10 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setUser(Map userMap) {
-    _user = UserClass.fromJson(userMap);
+  void setUser(Map? userMap) {
+    if(userMap!=null){
+      _user = UserClass.fromJson(userMap);
+    }
     notifyListeners();
   }
 

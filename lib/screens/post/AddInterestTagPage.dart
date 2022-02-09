@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AddInterestTagPage extends StatefulWidget {
-  final String selectedTag;
+  final String? selectedTag;
   final Function tapHandler;
   const AddInterestTagPage({
     required this.selectedTag,
@@ -14,10 +14,18 @@ class AddInterestTagPage extends StatefulWidget {
 }
 
 class _AddInterestTagPageState extends State<AddInterestTagPage> {
+
+  String? highlightedTag;
+  @override
+  void initState() {
+    highlightedTag = widget.selectedTag;
+    super.initState();
+  }
+
   final List<String> _interests = [
     "Python",
     "Flutter",
-    "App Developement",
+    "App Development",
     "Django",
     "Java",
     "Web Development",
@@ -47,11 +55,16 @@ class _AddInterestTagPageState extends State<AddInterestTagPage> {
         itemCount: _interests.length,
         itemBuilder: (ctx, index) {
           return GestureDetector(
-            onTap: () => widget.tapHandler(_interests[index]),
+            onTap: () {
+              widget.tapHandler(_interests[index]);
+              setState(() {
+                highlightedTag = _interests[index];
+              });
+            },
             child: Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: widget.selectedTag == _interests[index]
+                color: highlightedTag == _interests[index]
                     ? Colors.white
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(15),
@@ -60,7 +73,7 @@ class _AddInterestTagPageState extends State<AddInterestTagPage> {
                 _interests[index],
                 style: TextStyle(
                   fontSize: 18,
-                  color: widget.selectedTag == _interests[index]
+                  color: highlightedTag == _interests[index]
                       ? Colors.black
                       : Colors.white,
                   fontWeight: FontWeight.bold,

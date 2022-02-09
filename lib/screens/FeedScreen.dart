@@ -13,6 +13,7 @@ import '/providers/UserProvider.dart';
 
 class FeedPage extends StatefulWidget {
   static const routeName = "/feedpage";
+
   const FeedPage({Key? key}) : super(key: key);
 
   @override
@@ -20,122 +21,97 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
+  final _post = PostAPIS();
   bool _isLoading = false;
   bool _wentWrong = false;
-  List posts = [];
 
   int currentPostIndex = 0;
 
-  Future<void> _loadAllPosts() async {
-    UserProvider u = Provider.of<UserProvider>(context, listen: false);
+  Future<Map> unPackLocally() async {
+    UserProvider _u = Provider.of<UserProvider>(context, listen: false);
 
-    List <Map>testData = [
-        {
-          "_id": "61fe3371496a7ddcae57f60a",
-          "title": "Hitler hmmmm",
-          "description": "Garam Ande",
-          "author": {
-            "_id": "dZQj6jM7y2Psu8FsWhSa9p3Fv8s1",
-            "username": "atharv",
-            "profileURL": "https://raw.githubusercontent.com/AKAMasterMind404/meetup-backend/main/assets/placeholder-no-man-1.png?token=GHSAT0AAAAAABOC3R3SRUT6ITAWYT5PVNJMYPONQKA",
-            "cupcakes": 0,
-            "email": "atharv@gmail.com",
-            "gender": "Male",
-            "age": 21,
-            "bio": "Pr",
-            "interests": [],
-            "posts": [
-              "61f03ca89d0739a5188b628e",
-              "61f169c0c4ed18ad15695f04",
-              "61f16cebc4ed18ad15695f08",
-              "61f16d3dc4ed18ad15695f10",
-              "61f17183c4ed18ad15695f3c",
-              "61f171afc4ed18ad15695f4a",
-              "61f172d0c4ed18ad15695f5a",
-              "61f522c72e32867ccacaac10",
-              "61f523002e32867ccacaac13",
-              "61f523092e32867ccacaac16",
-              "61f52cca317a7ea31e3c3cf7",
-              "61f52f73dc99f6e7cffba05b",
-              "61f53556ed8605175d7e5051",
-              "61f53561ed8605175d7e5054",
-              "61f7ee12134fd4a4744c6a08",
-              "61f93b65aa432a273cdc231f",
-              "61fe235f1525022567080197",
-              "61fe2e3e78e3f0910454fc9a",
-              "61fe30ec496a7ddcae57f5f3",
-              "61fe3371496a7ddcae57f60a"
-            ],
-            "__v": 3,
-            "upvotes": {
-              "61fb8912b896a7ec47d5ff29": true
-            },
-            "votes": {
-              "61fb8912b896a7ec47d5ff29": false,
-              "61f93b65aa432a273cdc231f": false
-            }
-          },
-          "comments": []
-        }
-    ];
+    print("CALLING /getAllPosts");
+    final data = await _post.getPosts({
+      "interests": ["Flutter"],//_u.getUser()!.interests,
+      // "interests": ["Flutter"],
+    });
+
+    bool receivedResponseFromServer = data["local_status"] == 200;
+    Map localData = data["local_result"];
+
+    if (receivedResponseFromServer) {
+      bool dataReceivedSuccessfully = localData["status"] == 200;
+      print("Server responded! Status:${localData["status"]}");
+
+      if (dataReceivedSuccessfully) {
+        Map requestedSuccessData = localData["data"].runtimeType == List
+            ? {"toMap": localData["data"]}
+            : localData["data"];
+        print("SUCCESS DATA:");
+        print(requestedSuccessData);
+        print("-----------------\n\n");
+
+        return {"success": 1, "unpacked": requestedSuccessData};
+      } else {
+        Map requestFailedData = localData["data"];
+        print("INCORRECT DATA:");
+        print(requestFailedData);
+        print("-----------------\n\n");
+        return {
+          "success": 0,
+          "unpacked": "Internal Server error!Wrong request sent!"
+        };
+      }
+    } else {
+      print(localData);
+      print("Server Down! Status:$localData");
+      print("-----------------\n\n");
+
+      return {"success": 0, "unpacked": "Couldn't reach the servers!"};
+    }
+  }
+
+  Future<void> _initialize() async {
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    bool didGoWrong = false;
 
     setState(() {
       _isLoading = true;
     });
-    if (!u.isLoaded) {
-      // IF THE POSTS AREN'T LOADED PREVIOUSLY
-      print("CALLING /getAllPosts");
-      final data = await PostAPIS().getPosts();
-      // FETCHING THE POSTS
 
-      if (data["result"]["error"] != null) {
-        // ERROR WHILE FETCHING POSTS AFTER SUCCESSFUL INITIALIZATION
+    final requestData = await unPackLocally();
 
-        /// REMOVE AFTER TESTING
-        u.setPosts(testData);
+    // CONVERSION OF List<Dynamic> to List<Map>
 
-        /// UNCOMMENT THIS
-        // setState(() {
-        //   _wentWrong = true;
-        // });
-        Fluttertoast.showToast(msg: "Something went wrong!");
-
-      } else {
-        // POSTS WERE NOT LOADED PREVIOUSLY BUT NOW HAVE BEEN LOADED SUCCESSFULLY
-
-        List<Map> fetched_posts = [];
-
-        List receivedList = data["result"];
-        // List finalData = data["result"]==[]?testData:data["result"] as List;
-        // finalData.forEach((element) {
-        //   fetched_posts.add(element);
-        // });
-        // CONVERSION OF List<Dynamic> to List<Map>
-
-        u.setPosts(fetched_posts);
-        print("-------------");
-      }
-    } else {
-      print("Loaded existing posts!");
-      setState(() {
-        posts = u.loadedPosts;
+    if (requestData["success"] == 1) {
+      List <Map> listOfPosts = [];
+      List postsList = requestData["unpacked"]["toMap"];
+      postsList.forEach((element) {
+        listOfPosts.add(element);
       });
+      userProvider.setPosts(listOfPosts);
+    } else {
+      didGoWrong = true;
+      Fluttertoast.showToast(msg: requestData["unpacked"]);
     }
+
     setState(() {
       _isLoading = false;
+      _wentWrong = didGoWrong;
     });
   }
 
   @override
   void initState() {
-    _loadAllPosts();
+    _initialize();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
-    UserProvider up = Provider.of<UserProvider>(context, listen: false);
+    UserProvider up = Provider.of<UserProvider>(context);
+    List _loadedPosts = up.loadedPosts;
 
     return SafeArea(
       child: Scaffold(
@@ -181,10 +157,10 @@ class _FeedPageState extends State<FeedPage> {
                                 top: 10,
                               ),
                               physics: const BouncingScrollPhysics(),
-                              itemCount: up.loadedPosts.length,
+                              itemCount: _loadedPosts.length,
                               itemBuilder: (ctx, index) {
                                 Post currPost =
-                                    Post.fromJson(up.loadedPosts[index]);
+                                    Post.fromJson(_loadedPosts[index]);
                                 return GestureDetector(
                                   onTap: () {
                                     showModalBottomSheet(

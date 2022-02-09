@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:meetupapp/helper/backend/apis.dart';
 import '/models/post.dart';
 import '/providers/UserProvider.dart';
 import '/screens/post/ViewPostPage.dart';
@@ -21,84 +22,79 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  bool _isOpened = false;
-  Map selectMap = {};
-  Map _interests = {
-    "Cluj-Napoca": true,
-    "Bucuresti": true,
-    "Timisoara": true,
-    "Brasov": true,
-    "Constanta": true,
-  };
 
-  List<DropdownMenuItem<String>> getDropDownMenuItems() {
-    List<DropdownMenuItem<String>> items = [];
-    setState(() {
-      for (String city in _interests.keys.toList()) {
-        items.add(DropdownMenuItem(value: city, child: Text(city)));
-      }
-    });
-    return items;
-  }
+  final _post = PostAPIS();
 
-  List<Widget> _nameTileList(List nameList) {
-    List<Widget> _list = [];
-    nameList.forEach((element) {
-      _list.add(_preferenceTile(element));
-    });
-    return _list;
-  }
+  bool _isLoading = false;
+  List postList = [];
 
-  Widget _preferenceTile(String text) {
-    return GestureDetector(
-        onTap: () {
-          setState(() {
-            _interests[text] = true;
-            selectMap.remove(text);
-          });
-        },
-        child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.amber[300]),
-            child: Text(text, style: TextStyle(color: Colors.grey[700])),
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5)));
-  }
-
-  Widget _filterBox() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(children: [
-          DropdownButton(
-            hint: const Text("Choose"),
-            items: getDropDownMenuItems(),
-            onChanged: (String? s) {
-              setState(() {
-                _interests.remove(s);
-                selectMap[s] = true;
-              });
-            },
-          ),
-          const Spacer(),
-          ButtonWidget(
-            icon: CupertinoIcons.search,
-            tapHandler: () {},
-          ),
-        ]),
-        const SizedBox(height: 10),
-        Wrap(
-          children: _nameTileList(selectMap.keys.toList()),
-        ),
-        const SizedBox(height: 10),
-      ],
-    );
-  }
-
-  /// IMPORTANT DEPENDENCIES
   final TextEditingController _searchController = TextEditingController();
 
+
+  Future<Map> unPackLocally() async {
+
+    print("CALLING /searchQuery");
+    final data = await _post.searchPost({
+      "searchQuery": _searchController.text
+    });
+
+    bool receivedResponseFromServer = data["local_status"] == 200;
+    Map localData = data["local_result"];
+
+    if (receivedResponseFromServer) {
+      bool dataReceivedSuccessfully = localData["status"] == 200;
+      print("Server responded! Status:${localData["status"]}");
+
+      if (dataReceivedSuccessfully) {
+        Map requestedSuccessData = localData["data"].runtimeType == List
+            ? {"toMap": localData["data"]}
+            : localData["data"];
+        print("SUCCESS DATA:");
+        print(requestedSuccessData);
+        print("-----------------\n\n");
+
+        return {"success": 1, "unpacked": requestedSuccessData};
+      } else {
+        Map requestFailedData = localData["data"];
+        print("INCORRECT DATA:");
+        print(requestFailedData);
+        print("-----------------\n\n");
+        return {
+          "success": 0,
+          "unpacked": "Internal Server error!Wrong request sent!"
+        };
+      }
+    } else {
+      print(localData);
+      print("Server Down! Status:$localData");
+      print("-----------------\n\n");
+
+      return {"success": 0, "unpacked": "Couldn't reach the servers!"};
+    }
+  }
+
+  Future<void> _searchApi() async {
+    bool didGoWrong = false;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final Map requestData = await unPackLocally();
+
+    if(requestData["success"]==1){
+      print("-------");
+      print(requestData);
+    }
+    else{
+      didGoWrong = true;
+    }
+
+    setState(() {
+      postList = requestData["unpacked"]["toMap"];
+      _isLoading = false;
+    });
+  }
   @override
   void dispose() {
     super.dispose();
@@ -106,11 +102,16 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    setState(() {});
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
     UserProvider userProvider = Provider.of(context);
-    List postList = userProvider.loadedPosts;
-    
+
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -137,18 +138,24 @@ class _SearchPageState extends State<SearchPage> {
                   const SizedBox(
                     width: 10,
                   ),
-                  ButtonWidget(
-                    icon: Icons.filter_alt_outlined,
-                    tapHandler: () {
-                      setState(() {
-                        _isOpened = !_isOpened;
-                      });
-                    },
-                  ),
+                  _isLoading
+                      ? const CircularProgressIndicator(color: Colors.black)
+                      : ButtonWidget(
+                          icon: CupertinoIcons.search,
+                          tapHandler: () async {
+                            if(_searchController.text.isEmpty){
+                              const snackBar = SnackBar(
+                                content: Text('Search query can\'t be empty!'),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              return;
+                            }
+                            _searchApi();
+                          },
+                        ),
                 ],
               ),
               const SizedBox(height: 5.0),
-              _isOpened ? const SizedBox() : _filterBox(),
               Divider(thickness: 1, color: Colors.grey[400]),
               Expanded(
                 child: MasonryGridView.count(
@@ -160,7 +167,7 @@ class _SearchPageState extends State<SearchPage> {
                   padding: const EdgeInsets.only(top: 15),
                   itemBuilder: (context, index) {
                     Post currPost = Post.fromJson(postList[index]);
-                    
+
                     return GestureDetector(
                       onTap: () {
                         showModalBottomSheet(

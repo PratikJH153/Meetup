@@ -9,3 +9,7 @@ class GlobalLoader extends StatelessWidget {
     return Center(child: CircularProgressIndicator(color: color??Colors.blue));
   }
 }
+
+DateInWords(){{
+
+}}

@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/models/comment.dart';
+import '/models/comment.dart';
 import '/widgets/comment_tile.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
 

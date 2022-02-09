@@ -7,11 +7,14 @@ class UserClass {
   final int? age;
   final String? bio;
   final List? interests;
-  final int? matched;
+
+  final String? joinedAt;
+  final List? posts;
+  final int? cupcakes;
+  final Map? votes;
 
   UserClass({
     this.userID,
-    this.matched,
     required this.username,
     required this.email,
     this.profileURL =
@@ -20,9 +23,14 @@ class UserClass {
     required this.age,
     required this.bio,
     required this.interests,
+    this.joinedAt,
+    this.cupcakes,
+    this.posts,
+    this.votes
   });
 
   factory UserClass.fromJson(Map<dynamic, dynamic> userData) {
+
     return UserClass(
       userID: userData["_id"],
       username: userData["username"]??"null",
@@ -32,20 +40,27 @@ class UserClass {
       age: userData["age"]??-1,
       bio: userData["bio"]??"This is my bio",
       interests: userData["interests"]??[],
-      matched: userData["matched"]
+      joinedAt: userData["joinedAt"],
+      cupcakes: userData["cupcakes"],
+      posts: userData["posts"],
+      votes: userData["votes"]
     );
   }
 
   static Map<String, dynamic> toJson(UserClass user) {
     return {
-      "id": user.userID,
+      "joinedAt": user.joinedAt,
+      "_id": user.userID,
       "username": user.username,
-      "email": user.email,
       "profileURL": user.profileURL,
+      "cupcakes": user.cupcakes,
+      "email": user.email,
       "gender": user.gender,
       "age": user.age,
       "bio": user.bio,
       "interests": user.interests,
+      "posts": user.posts,
+      "votes": user.votes,
     };
   }
 }

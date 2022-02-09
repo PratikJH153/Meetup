@@ -7,7 +7,7 @@ class UserAPIS {
   }
 
   Future<Map> getSingleUserData(String id) async {
-    String endpoint = "users/getSingleUser/$id";
+    String endpoint = "users/getUserInfoAdmin/$id";
     return GET(endpoint);
   }
 
@@ -33,9 +33,9 @@ class UserAPIS {
 }
 
 class PostAPIS {
-  Future<Map> getPosts() async {
+  Future<Map> getPosts(Map body) async {
     String endpoint = "posts/getAllPosts/";
-    return GET(endpoint);
+    return POST(endpoint, body);
   }
 
   Future<Map> addPost(Map body) async {
@@ -46,6 +46,11 @@ class PostAPIS {
   Future<Map> getSinglePost(String id) async {
     String endpoint = "posts/getSinglePost/$id";
     return GET(endpoint);
+  }
+
+  Future<Map> searchPost(Map body) async {
+    String endpoint = "posts/search/";
+    return POST(endpoint,body);
   }
 }
 

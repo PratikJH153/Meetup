@@ -7,27 +7,27 @@ import 'database.dart';
 
 Future<Map> GET(String url) async {
   final uri = Uri.parse(endpoint + url);
-  Map result = {"result": "", "status": ""};
+  Map result = {"local_result": "", "local_status": 0};
 
   try {
     final res = await http.get(uri);
     var decodedResult = jsonDecode(res.body);
 
-    result["result"] = decodedResult;
-    result["status"] = SUCCESS_CODE;
+    result["local_result"] = decodedResult;
+    result["local_status"] = SUCCESS_CODE;
   } on SocketException {
     print("This is socket exception");
-    result["result"] = socketErrorMessage;
-    result["status"] = SERVER_ERROR_CODE;
+    result["local_result"] = socketErrorMessage;
+    result["local_status"] = SERVER_ERROR_CODE;
   } on Exception catch (e) {
-    result["result"] = miscellaneousErrorMessage;
-    result["status"] = SERVER_ERROR_CODE;
+    result["local_result"] = miscellaneousErrorMessage;
+    result["local_status"] = SERVER_ERROR_CODE;
   }
   return result;
 }
 
 Future<Map> POST(String url, Map? body, {String? message}) async {
-  Map result = {"result": "", "status": 0};
+  Map result = {"local_result": "", "local_status": 0};
 
   try {
     final client = Dio();
@@ -39,21 +39,21 @@ Future<Map> POST(String url, Map? body, {String? message}) async {
 
     var decodedResult = Map.castFrom(res.data);
 
-    result["result"] = decodedResult;
-    result["status"] = SUCCESS_CODE;
+    result["local_result"] = decodedResult;
+    result["local_status"] = SUCCESS_CODE;
   } on SocketException {
     print("This is socket exception");
-    result["result"] = socketErrorMessage;
-    result["status"] = SERVER_ERROR_CODE;
+    result["local_result"] = socketErrorMessage;
+    result["local_status"] = SERVER_ERROR_CODE;
   } on Exception catch (e) {
-    result["result"] = miscellaneousErrorMessage;
-    result["status"] = SERVER_ERROR_CODE;
+    result["local_result"] = miscellaneousErrorMessage;
+    result["local_status"] = SERVER_ERROR_CODE;
   }
   return result;
 }
 
 Future<Map> POST_ALT(String url, Map? body) async {
-  Map result = {"result": "", "status": 0};
+  Map result = {"local_result": "", "local_status": 0};
 
   try {
     final res = await http.post(Uri.parse(endpoint + url),
@@ -62,21 +62,21 @@ Future<Map> POST_ALT(String url, Map? body) async {
 
     var decodedResult = jsonDecode(res.body);
 
-    result["result"] = decodedResult;
-    result["status"] = SUCCESS_CODE;
+    result["local_result"] = decodedResult;
+    result["local_status"] = SUCCESS_CODE;
   } on SocketException {
     print("This is socket exception");
-    result["result"] = socketErrorMessage;
-    result["status"] = SERVER_ERROR_CODE;
+    result["local_result"] = socketErrorMessage;
+    result["local_status"] = SERVER_ERROR_CODE;
   } on Exception catch (e) {
-    result["result"] = miscellaneousErrorMessage;
-    result["status"] = SERVER_ERROR_CODE;
+    result["local_result"] = miscellaneousErrorMessage;
+    result["local_status"] = SERVER_ERROR_CODE;
   }
   return result;
 }
 
 Future<Map> DELETE(String url) async {
-  Map result = {"result": "", "status": 0};
+  Map result = {"local_result": "", "local_status": 0};
 
   final uri = Uri.parse(endpoint + url);
   final request = http.Request("DELETE", uri);
@@ -90,23 +90,23 @@ Future<Map> DELETE(String url) async {
     final res = await response.stream.bytesToString();
 
     if (response.statusCode != SUCCESS_CODE) {
-      result["result"] = socketErrorMessage;
-      result["status"] = SERVER_ERROR_CODE;
+      result["local_result"] = socketErrorMessage;
+      result["local_status"] = SERVER_ERROR_CODE;
     } else {
       Map decodedResult = jsonDecode(res);
-      result["result"] = decodedResult;
-      result["status"] = SERVER_ERROR_CODE;
+      result["local_result"] = decodedResult;
+      result["local_status"] = SERVER_ERROR_CODE;
     }
   } on Exception catch (e) {
-    result["result"] = socketErrorMessage;
-    result["status"] = SERVER_ERROR_CODE;
+    result["local_result"] = socketErrorMessage;
+    result["local_status"] = SERVER_ERROR_CODE;
   }
 
   return result;
 }
 
 Future<Map> PATCH(String url, Map? body) async {
-  Map result = {"result": "", "status": 0};
+  Map result = {"local_result": "", "local_status": 0};
   final uri = Uri.parse(endpoint + url);
 
   try {
@@ -115,11 +115,11 @@ Future<Map> PATCH(String url, Map? body) async {
     });
 
     var decodedResult = jsonDecode(res.body);
-    result["result"] = decodedResult;
-    result["status"] = SUCCESS_CODE;
+    result["local_result"] = decodedResult;
+    result["local_status"] = SUCCESS_CODE;
   } on Exception catch (e) {
-    result["result"] = socketErrorMessage;
-    result["status"] = SERVER_ERROR_CODE;
+    result["local_result"] = socketErrorMessage;
+    result["local_status"] = SERVER_ERROR_CODE;
   }
 
   return result;

@@ -42,31 +42,66 @@ class _HomePageState extends State<HomePage> {
     const ProfilePage(),
   ];
 
+  Future<Map> unPackLocally(String id) async {
+
+    print("CALLING /getUserInfoAdmin");
+    final data = await _users.getSingleUserData(id);
+
+    bool receivedResponseFromServer = data["local_status"] == 200;
+    Map localData = data["local_result"];
+
+    if (receivedResponseFromServer) {
+      bool dataReceivedSuccessfully = localData["status"] == 200;
+      print("Server responded! Status:${localData["status"]}");
+
+      if (dataReceivedSuccessfully) {
+        Map requestedSuccessData = localData["data"];
+        print("SUCCESS DATA:");
+        print(requestedSuccessData);
+        print("-----------------\n\n");
+
+        return {"success": 1, "unpacked": requestedSuccessData};
+      } else {
+        Map requestFailedData = localData["data"];
+        print("INCORRECT DATA:");
+        print(requestFailedData);
+        print("-----------------\n\n");
+        return {
+          "success": 0,
+          "unpacked": "Internal Server error!Wrong request sent!"
+        };
+      }
+    } else {
+      print(localData);
+      print("Server Down! Status:$localData");
+      print("-----------------\n\n");
+
+      return {"success": 0, "unpacked": "Couldn't reach the servers!"};
+    }
+  }
+
   Future<void> _initialize(String id) async {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    bool didGoWrong = false;
+
     setState(() {
       _isLoading = true;
     });
 
-    print("CALLING /getSingleUserData");
-    final data = await _users.getSingleUserData(id);
+    final Map requestData = await unPackLocally(id);
 
-    if (data["errCode"] != null) {
-      // AN ERROR CAUSED WHILE CALLING API
-      Fluttertoast.showToast(msg: data["message"]);
-      setState(() {
-        _wentWrong = true;
-      });
-    } else {
-      // EVERY THING WENT WELL!
-      userProvider.setUser(data);
-      setState(() {
-        _isLoading = false;
-      });
-      print(data);
-      print("-------------");
+    if(requestData["success"]==1){
+      userProvider.setUser(requestData["unpacked"]);
     }
+    else{
+      didGoWrong = true;
+      Fluttertoast.showToast(msg: requestData["unpacked"]);
+    }
+
+    setState(() {
+      _isLoading = false;
+      _wentWrong = didGoWrong;
+    });
   }
 
   @override
@@ -74,21 +109,15 @@ class _HomePageState extends State<HomePage> {
     user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
+      // USER NOT LOADED
+      Fluttertoast.showToast(msg: "Something went wrong!");
       setState(() {
         _wentWrong = true;
       });
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
-    _initialize(user!.uid).then((value) {
-      setState(() {
-        _isLoading = false;
-      });
-    });
-
+    _initialize(user!.uid);
     super.initState();
   }
 
@@ -96,72 +125,73 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
 
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Container(
-        margin: const EdgeInsets.only(bottom: 6),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(40),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey[200]!,
-              blurRadius: 5,
-              spreadRadius: 0.5,
-              offset: const Offset(0, 3),
-            )
-          ],
-        ),
-        padding: const EdgeInsets.symmetric(
-          vertical: 10,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            InkWell(
-              child: BottomNavButton(
-                icon: CupertinoIcons.bolt_horizontal_fill,
-                isSelected: _selectedIndex == 0,
-              ),
-              onTap: () {
-                setState(() {
-                  _selectedIndex = 0;
-                });
-              },
-            ),
-            BottomAddButton(tapHandler: ()async{
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                barrierColor: const Color(0xFFf1e2d2),
-                builder: (ctx) {
-                  return const AddPost();
-                },
+    return _isLoading
+        ? Scaffold(body: GlobalLoader())
+        : _wentWrong
+            ? const Scaffold(
+                body: Center(child: Text("Something went wrong!")),
+              )
+            : Scaffold(
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
+                floatingActionButton: Container(
+                  margin: const EdgeInsets.only(bottom: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(40),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey[200]!,
+                        blurRadius: 5,
+                        spreadRadius: 0.5,
+                        offset: const Offset(0, 3),
+                      )
+                    ],
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InkWell(
+                        child: BottomNavButton(
+                          icon: CupertinoIcons.bolt_horizontal_fill,
+                          isSelected: _selectedIndex == 0,
+                        ),
+                        onTap: () {
+                          setState(() {
+                            _selectedIndex = 0;
+                          });
+                        },
+                      ),
+                      BottomAddButton(tapHandler: () async {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          barrierColor: const Color(0xFFf1e2d2),
+                          builder: (ctx) {
+                            return const AddPost();
+                          },
+                        );
+                      }),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            _selectedIndex = 1;
+                          });
+                        },
+                        child: BottomNavButton(
+                          icon: CupertinoIcons.person_alt,
+                          isSelected: _selectedIndex == 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                body: _widgetOptions[_selectedIndex],
               );
-            }),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  _selectedIndex = 1;
-                });
-              },
-              child: BottomNavButton(
-                icon: CupertinoIcons.person_alt,
-                isSelected: _selectedIndex == 1,
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: _isLoading
-          ? GlobalLoader()
-          : _wentWrong
-              ? const Center(
-                  child: Text("Something went wrong!"),
-                )
-              : _widgetOptions[_selectedIndex],
-    );
   }
 }
