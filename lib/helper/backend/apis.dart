@@ -43,6 +43,11 @@ class PostAPIS {
     return POST(endpoint, body);
   }
 
+  Future<Map> addComment(String pID,Map body) async {
+    String endpoint = "posts/addComment/$pID";
+    return POST_ALT(endpoint, body);
+  }
+
   Future<Map> getSinglePost(String id) async {
     String endpoint = "posts/getSinglePost/$id";
     return GET(endpoint);
@@ -50,7 +55,32 @@ class PostAPIS {
 
   Future<Map> searchPost(Map body) async {
     String endpoint = "posts/search/";
-    return POST(endpoint,body);
+    return POST(endpoint, body);
+  }
+
+  Future<Map> upVote(Map body) async {
+    String endpoint = "posts/upvote/";
+    return PATCH(endpoint, body);
+  }
+
+  Future<Map> downVote(Map body) async {
+    String endpoint = "posts/downvote/";
+    return PATCH(endpoint, body);
+  }
+
+  Future<Map> cancelVote(Map body) async {
+    String endpoint = "posts/upvote/";
+    return PATCH(endpoint, body);
+  }
+
+  Future<Map> cancelUpVote(Map body) async {
+    String endpoint = "posts/upvote/";
+    return PATCH(endpoint, body);
+  }
+
+  Future<Map> cancelDownVote(Map body) async {
+    String endpoint = "posts/upvote/";
+    return PATCH(endpoint, body);
   }
 }
 

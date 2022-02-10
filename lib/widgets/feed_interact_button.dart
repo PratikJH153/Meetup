@@ -5,10 +5,12 @@ class FeedInteractButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback tapHandler;
+  final Color color;
   const FeedInteractButton({
     required this.icon,
     required this.label,
     required this.tapHandler,
+    this.color = Colors.grey,
     Key? key,
   }) : super(key: key);
 
@@ -23,7 +25,7 @@ class FeedInteractButton extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: const Color(0xFFa1a1a1),
+              color: color,
               size: 22,
             ),
             const SizedBox(

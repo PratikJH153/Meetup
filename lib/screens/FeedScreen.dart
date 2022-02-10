@@ -159,8 +159,7 @@ class _FeedPageState extends State<FeedPage> {
                               physics: const BouncingScrollPhysics(),
                               itemCount: _loadedPosts.length,
                               itemBuilder: (ctx, index) {
-                                Post currPost =
-                                    Post.fromJson(_loadedPosts[index]);
+                                Post currPost = Post.fromJson(_loadedPosts[index]);
                                 return GestureDetector(
                                   onTap: () {
                                     showModalBottomSheet(

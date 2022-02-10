@@ -1,28 +1,35 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/models/user.dart';
+import '/helper/backend/apis.dart';
+import '/models/user.dart';
 import 'package:provider/provider.dart';
 import '/providers/UserProvider.dart';
 import '/models/post.dart';
 import '/screens/post/CommentPage.dart';
 import '/widgets/feed_interact_button.dart';
 
-class FeedTile extends StatelessWidget {
+class FeedTile extends StatefulWidget {
   Post thePost;
 
   FeedTile(this.thePost);
 
   @override
+  State<FeedTile> createState() => _FeedTileState();
+}
+
+class _FeedTileState extends State<FeedTile> {
+  @override
   Widget build(BuildContext context) {
     UserProvider u = Provider.of<UserProvider>(context, listen: false);
     UserClass currUser = u.getUser()!;
-    bool? hasVoted = currUser.votes![thePost.postID];
+    bool? hasVoted = currUser.votes![widget.thePost.postID];
 
     Color upvoteColor = Colors.grey;
     Color downvoteColor = Colors.grey;
 
-    if(hasVoted!=null){
-      hasVoted?upvoteColor = Colors.red:downvoteColor = Colors.blue;
+    if (hasVoted != null) {
+      hasVoted ? upvoteColor = Colors.red : downvoteColor = Colors.blue;
     }
 
     return Container(
@@ -52,7 +59,7 @@ class FeedTile extends StatelessWidget {
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: NetworkImage(
-                          thePost.author!["profileURL"],
+                          widget.thePost.author!["profileURL"],
                         ),
                         fit: BoxFit.cover,
                       )),
@@ -64,7 +71,7 @@ class FeedTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      thePost.author!["username"],
+                      widget.thePost.author!["username"],
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
@@ -89,7 +96,7 @@ class FeedTile extends StatelessWidget {
               height: 12,
             ),
             Text(
-              thePost.title ?? "No title",
+              widget.thePost.title ?? "No title",
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
@@ -105,7 +112,7 @@ class FeedTile extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                thePost.tag == null
+                widget.thePost.tag == null
                     ? const SizedBox()
                     : Container(
                         padding: const EdgeInsets.symmetric(
@@ -117,7 +124,7 @@ class FeedTile extends StatelessWidget {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Text(
-                          thePost.tag!,
+                          widget.thePost.tag!,
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
@@ -132,8 +139,20 @@ class FeedTile extends StatelessWidget {
                     FeedInteractButton(
                       icon: CupertinoIcons.arrowtriangle_up_circle,
                       label: "12",
-                      tapHandler: ()async{
-                        print("UPVOTE");
+                      tapHandler: () async {
+                        /// UPVOTE PRESSED
+
+                        if (hasVoted ?? true) {
+                          _vote();
+                        } else if (!hasVoted!) {
+                          // HAD DOWNVOTED BUT IS UPVOTING
+                          _cancelVote(isCancelUpvote: false);
+                          _vote(isUpvote: true);
+                        } else {
+                          // HAD CLICKED ON UPVOTE AGAIN CLICKING ON UPVOTE
+                          _cancelVote(isCancelUpvote: true);
+                          _vote(isUpvote: false);
+                        }
                       },
                     ),
                     const SizedBox(
@@ -142,8 +161,19 @@ class FeedTile extends StatelessWidget {
                     FeedInteractButton(
                       icon: CupertinoIcons.arrowtriangle_down_circle,
                       label: "10",
-                      tapHandler: () {
-                        print("DOWNVOTE");
+                      tapHandler: () async {
+                        /// DOWNVOTE PRESSED
+
+                        if (hasVoted ?? true) {
+                          _vote(isUpvote: false);
+                        } else if (hasVoted!) {
+                          // HAD UPVOTED BUT IS DOWNVOTING
+                          _cancelVote(isCancelUpvote: true);
+                          _vote(isUpvote: false);
+                        } else {
+                          _cancelVote(isCancelUpvote: false);
+                          _vote(isUpvote: true);
+                        }
                       },
                     ),
                     const SizedBox(
@@ -159,7 +189,7 @@ class FeedTile extends StatelessWidget {
                           backgroundColor: Colors.transparent,
                           barrierColor: const Color(0xFFf1e2d2),
                           builder: (ctx) {
-                            return CommentPage(thePost.comments ?? []);
+                            return CommentPage(widget.thePost.comments ?? [], widget.thePost);
                           },
                         );
                       },
@@ -170,5 +200,40 @@ class FeedTile extends StatelessWidget {
             ),
           ],
         ));
+  }
+
+  void _vote({bool isUpvote = true}) async {
+    PostAPIS _post = PostAPIS();
+    Function func = isUpvote ? _post.upVote : _post.downVote;
+    User? curruser = FirebaseAuth.instance.currentUser;
+    Map requestBody = {
+      "postID": widget.thePost.postID,
+      "userID": curruser!.uid
+    };
+    print(requestBody);
+
+    if (curruser == null) {
+      return;
+    }
+    final res = await func(requestBody);
+
+    print(res);
+  }
+
+  void _cancelVote({bool isCancelUpvote = true}) async {
+    PostAPIS _post = PostAPIS();
+    Function func = !isCancelUpvote ? _post.cancelDownVote : _post.cancelUpVote;
+    User? curruser = FirebaseAuth.instance.currentUser;
+    Map requestBody = {
+      "postID": widget.thePost.postID,
+      "userID": curruser!.uid
+    };
+
+    if (curruser == null) {
+      return;
+    }
+    final res = await func(requestBody);
+
+    print(res);
   }
 }

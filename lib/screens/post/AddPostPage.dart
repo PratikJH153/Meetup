@@ -69,6 +69,7 @@ class _AddPostState extends State<AddPost> {
   }
 
   Future<void> _addPostApi(Map body) async {
+    print(body);
     bool didGoWrong = false;
 
     setState(() {
@@ -76,6 +77,8 @@ class _AddPostState extends State<AddPost> {
     });
 
     final Map requestData = await unPackLocally(body);
+    print("requestData");
+    print(requestData);
 
     if (requestData["success"] == 1) {
     } else {

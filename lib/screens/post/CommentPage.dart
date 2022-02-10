@@ -1,12 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/helper/backend/apis.dart';
+import '/models/post.dart';
 import '/models/comment.dart';
 import '/widgets/comment_tile.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
 
 class CommentPage extends StatelessWidget {
   List comments;
+  Post post;
 
-  CommentPage(this.comments);
+  CommentPage(this.comments, this.post);
 
   @override
   Widget build(BuildContext context) {
@@ -85,15 +89,28 @@ class CommentPage extends StatelessWidget {
                             height: 20,
                           ),
                           comments.isEmpty
-                              ? const Center(child: Text("No comments yet!"))
+                              ?
+                              // const Center(child: Text("No comments yet!"))
+                              ElevatedButton(
+                                  child: const Text("add comment trial"),
+                                  onPressed: () async {
+                                    _addComment("New comment added");
+                                  },
+                                )
                               : Column(
                                   children: [
+                                    ElevatedButton(
+                                      child: const Text("add comment trial"),
+                                      onPressed: () async {
+                                        _addComment("New comment added");
+                                      },
+                                    ),
                                     ListView.builder(
                                       shrinkWrap: true,
                                       physics: const BouncingScrollPhysics(),
                                       itemBuilder: (ctx, index) {
-                                        return CommentTile(Comment.fromJson(
-                                            comments[index]));
+                                        return CommentTile(
+                                            Comment.fromJson(comments[index]));
                                       },
                                       itemCount: comments.length,
                                     ),
@@ -108,5 +125,16 @@ class CommentPage extends StatelessWidget {
             }),
       ),
     );
+  }
+
+  void _addComment(String comment) async {
+    PostAPIS _post = PostAPIS();
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    final message = await _post.addComment(post.postID!, {
+      "message": comment,
+      "userID": user.uid,
+    });
+    print("ADD COMMENT:$message");
   }
 }
