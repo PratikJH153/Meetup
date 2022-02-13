@@ -321,6 +321,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Container(
                                         padding: const EdgeInsets.symmetric(
@@ -382,33 +384,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                   _ReccomendedPostsSection()
                                 ],
                               ),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              _ProfileRow(),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              _TitleDescriptionSection(),
-                              const SizedBox(
-                                height: 25,
-                              ),
-                              _VoteSection(),
-                              _CommentsWidget(_comments),
-                              const Text(
-                                "Related Posts",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  height: 1.5,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Quicksand",
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              _ReccomendedPostsSection()
                             ],
                           ),
                         ),
