@@ -226,19 +226,17 @@ class _FeedPageState extends State<FeedPage>
                   snap: false,
                   forceElevated: innerBoxIsScrolled,
                   bottom: TabBar(
-                    unselectedLabelColor: Colors.black,
+                    unselectedLabelColor: Colors.grey,
                     labelColor: Colors.black,
                     indicatorWeight: 2,
                     isScrollable: true,
+                    indicatorColor: Colors.black,
                     indicatorSize: TabBarIndicatorSize.label,
-                    unselectedLabelStyle: const TextStyle(
-                      color: Colors.grey,
-                    ),
                     tabs: const <Tab>[
                       Tab(
                         text: "Following",
                       ),
-                      Tab(text: "Recommended"),
+                      Tab(text: "Trending"),
                     ],
                     controller: _tabController,
                   ),

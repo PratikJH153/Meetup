@@ -280,7 +280,10 @@ class _ViewPostPageState extends State<ViewPostPage> {
                 // });
                 // print(_p);
               },
-              child: const Icon(Icons.comment_outlined),
+              child: const Icon(
+                Icons.comment_outlined,
+                color: Colors.white,
+              ),
               backgroundColor: Colors.black,
             ),
             body: DraggableScrollableSheet(
@@ -291,8 +294,26 @@ class _ViewPostPageState extends State<ViewPostPage> {
                 return Column(
                   children: [
                     UpperWidgetOfBottomSheet(
-                      tapHandler: () {},
-                      icon: Icons.more_horiz_rounded,
+                      tapHandler: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          barrierColor: const Color(0xFF383838),
+                          builder: (ctx) {
+                            return AddPost(
+                              tag: widget.thePost.tag,
+                              title: widget.thePost.title,
+                              description: widget.thePost.desc,
+                            );
+                          },
+                        );
+                      },
+                      toShow: Provider.of<UserProvider>(context, listen: false)
+                              .getUser()!
+                              .userID ==
+                          widget.thePost.author!["_id"],
+                      icon: CupertinoIcons.pen,
                     ),
                     Expanded(
                       child: Container(
