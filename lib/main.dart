@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/providers/PostProvider.dart';
+import 'package:meetupapp/screens/AddCommentScreen.dart';
 import '/screens/FeedScreen.dart';
 import '/screens/HomePage.dart';
 import '/screens/LoginPage.dart';
@@ -25,7 +27,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (c) => UserProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (c) => UserProvider()),
+        ChangeNotifierProvider(create: (c) => PostProvider()),
+      ],
       child: MaterialApp(
         title: 'MeetUp',
         debugShowCheckedModeBanner: false,
@@ -63,6 +68,7 @@ class MyApp extends StatelessWidget {
           FeedPage.routeName: (ctx) => const FeedPage(),
           AddPost.routeName: (ctx) => const AddPost(),
           SearchPage.routeName: (ctx) => const SearchPage(),
+          AddCommentPage.routeName: (ctx) => AddCommentPage(),
         },
       ),
     );

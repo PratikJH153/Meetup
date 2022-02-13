@@ -35,7 +35,7 @@ Future<Map> POST(String url, Map? body, {String? message}) async {
     final res = await client.post(endpoint + url,
         data: jsonEncode(body),
         options:
-            Options(headers: {Headers.acceptHeader: Headers.jsonContentType}));
+        Options(headers: {Headers.acceptHeader: Headers.jsonContentType}));
 
     var decodedResult = Map.castFrom(res.data);
 
@@ -75,12 +75,15 @@ Future<Map> POST_ALT(String url, Map? body) async {
   return result;
 }
 
-Future<Map> DELETE(String url) async {
+Future<Map> DELETE(String url, {Map? body}) async {
   Map result = {"local_result": "", "local_status": 0};
 
   final uri = Uri.parse(endpoint + url);
   final request = http.Request("DELETE", uri);
 
+  if(body!=null){
+    request.body = jsonEncode(body);
+  }
   request.headers.addAll(<String, String>{
     HttpHeaders.acceptHeader: Headers.jsonContentType,
   });

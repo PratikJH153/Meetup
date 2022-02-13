@@ -43,13 +43,18 @@ class PostAPIS {
     return POST(endpoint, body);
   }
 
-  Future<Map> addComment(String pID,Map body) async {
+  Future<Map> addComment(String pID, Map body) async {
     String endpoint = "posts/addComment/$pID";
-    return POST_ALT(endpoint, body);
+    return POST(endpoint,body);
   }
 
-  Future<Map> getSinglePost(String id) async {
-    String endpoint = "posts/getSinglePost/$id";
+  Future<Map> deleteComment(Map body) async {
+    String endpoint = "posts/deleteComment/";
+    return DELETE(endpoint, body:body);
+  }
+
+  Future<Map> getComments(String id) async {
+    String endpoint = "posts/getComments/$id";
     return GET(endpoint);
   }
 

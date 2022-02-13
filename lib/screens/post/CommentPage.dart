@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/helper/backend/apis.dart';
+import '/helper/backend/apis.dart';
 import '/models/post.dart';
 import '/models/comment.dart';
 import '/widgets/comment_tile.dart';

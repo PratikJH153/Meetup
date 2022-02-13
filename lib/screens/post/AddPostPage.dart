@@ -2,8 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/providers/UserProvider.dart';
-import 'package:provider/provider.dart';
 
 import '/helper/utils/loader.dart';
 import '/helper/utils/validator.dart';

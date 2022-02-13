@@ -55,14 +55,14 @@ class _HomePageState extends State<HomePage> {
       print("Server responded! Status:${localData["status"]}");
 
       if (dataReceivedSuccessfully) {
-        Map requestedSuccessData = localData["data"];
+        Map? requestedSuccessData = localData["data"];
         print("SUCCESS DATA:");
         print(requestedSuccessData);
         print("-----------------\n\n");
 
         return {"success": 1, "unpacked": requestedSuccessData};
       } else {
-        Map requestFailedData = localData["data"];
+        Map? requestFailedData = localData["data"];
         print("INCORRECT DATA:");
         print(requestFailedData);
         print("-----------------\n\n");
