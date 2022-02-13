@@ -1,20 +1,15 @@
 class Comment {
   final String? commentID;
-  final String? userID;
-  final String? username;
-  final String? userProfile;
+  final Map? userData;
   final String? message;
   final String? timeStamp;
 
-  Comment(
-      {this.commentID, this.userID, this.username, this.userProfile, this.message, this.timeStamp});
+  Comment({this.commentID, this.userData, this.message, this.timeStamp});
 
-  factory Comment.fromJson(Map<dynamic, dynamic> data) {
+  factory Comment.fromJson(Map<String, dynamic> data) {
     return Comment(
       commentID: data["_id"],
-      username: data["userID"]["username"],
-      userID: data["userID"]["_id"],
-      userProfile: data["userID"]["profileURL"],
+      userData: data["userID"],
       timeStamp: data["timestamp"],
       message: data["message"],
     );
@@ -24,10 +19,8 @@ class Comment {
     return {
       "_id": comment.commentID,
       "message": comment.message,
-      "userID": comment.userID,
-      "username": comment.username,
+      "userData": comment.userData,
       "timestamp": comment.timeStamp,
-      "userProfile": comment.userProfile
     };
   }
 }

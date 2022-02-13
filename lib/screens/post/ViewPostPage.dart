@@ -5,6 +5,7 @@ import 'package:meetupapp/providers/PostProvider.dart';
 import 'package:meetupapp/providers/UserProvider.dart';
 import 'package:meetupapp/screens/AddCommentScreen.dart';
 import 'package:meetupapp/screens/post/AddPostPage.dart';
+import 'package:meetupapp/screens/post/CommentPage.dart';
 import 'package:provider/provider.dart';
 import '/helper/backend/apis.dart';
 import '/helper/utils/loader.dart';
@@ -132,38 +133,22 @@ class _ViewPostPageState extends State<ViewPostPage> {
             icon: CupertinoIcons.chat_bubble_2,
             label: "",
             tapHandler: () async {
-              // COMMENTS
-              setState(() {
-                _hasOpenedComments = !_hasOpenedComments;
-              });
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                barrierColor: const Color(0xFF383838),
+                builder: (ctx) {
+                  return CommentPage(
+                    post: widget.thePost,
+                  );
+                },
+              );
             },
           ),
         ],
       ),
     );
-  }
-
-  _CommentsWidget(List _comments) {
-    return !_hasOpenedComments
-        ? const SizedBox()
-        : _isLoading
-            ? GlobalLoader()
-            : _comments.isEmpty
-                ? const Text("No comments yet")
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _comments.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      Comment currComment = Comment.fromJson(_comments[index]);
-                      Duration duration = DateTime.now()
-                          .difference(DateTime.parse(currComment.timeStamp!));
-                      return ListTile(
-                        title: Text(currComment.message!),
-                        subtitle: Text("Posted ${duration.inDays} days ago"),
-                      );
-                    },
-                  );
   }
 
   _ReccomendedPostsSection() {
@@ -183,84 +168,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
     );
   }
 
-  Future<Map> unPackLocally() async {
-    print("CALLING /getComments");
-    final data = await _post.getComments(widget.thePost.postID!);
-
-    bool receivedResponseFromServer = data["local_status"] == 200;
-    Map localData = data["local_result"];
-
-    if (receivedResponseFromServer) {
-      bool dataReceivedSuccessfully = localData["status"] == 200;
-      print(localData);
-
-      if (dataReceivedSuccessfully) {
-        Map? requestedSuccessData = localData["data"];
-        print("SUCCESS DATA:");
-        print(requestedSuccessData);
-        print("-----------------\n\n");
-
-        return {"success": 1, "unpacked": requestedSuccessData};
-      } else {
-        Map? requestFailedData = localData["data"];
-        print("INCORRECT DATA:");
-        print(requestFailedData);
-        print("-----------------\n\n");
-        return {
-          "success": 0,
-          "unpacked": "Internal Server error!Wrong request sent!"
-        };
-      }
-    } else {
-      print(localData);
-      print("Server Down! Status:$localData");
-      print("-----------------\n\n");
-
-      return {"success": 0, "unpacked": "Couldn't reach the servers!"};
-    }
-  }
-
-  Future<void> _getComments() async {
-    final result = await unPackLocally();
-    PostProvider postProvider =
-        Provider.of<PostProvider>(context, listen: false);
-
-    if (result["success"] == 1) {
-      Map serverComments = result["unpacked"];
-      List _TheComments = serverComments["comments"];
-
-      print("The comments");
-      print(_TheComments);
-      postProvider.setComments(_TheComments);
-    } else {
-      Fluttertoast.showToast(msg: "Couldn't fetch comments!");
-    }
-  }
-
-  /// DEPENDENCIES
-  final PostAPIS _post = PostAPIS();
-  bool _isLoading = false;
-  bool _hasOpenedComments = false;
-  List _comments = [];
-
-  /// DEPENDENCIES
-
-  @override
-  void initState() {
-    setState(() {
-      _isLoading = true;
-    });
-    _getComments().then((value) {
-      _isLoading = false;
-    });
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    PostProvider postProvider = Provider.of<PostProvider>(context);
-    List comments = postProvider.getComments;
-
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => Navigator.of(context).pop(),
@@ -271,9 +180,13 @@ class _ViewPostPageState extends State<ViewPostPage> {
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => AddCommentPage(post: widget.thePost)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CommentPage(
+                      post: widget.thePost,
+                    ),
+                  ),
+                );
                 // final _p = await PostAPIS().addComment(widget.thePost.postID!, {
                 //   "message": "This is a message",
                 //   "userID": FirebaseAuth.instance.currentUser!.uid
@@ -387,8 +300,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                     height: 20,
                                   ),
                                   _VoteSection(),
-                                  const Divider(color: Colors.grey),
-                                  _CommentsWidget(comments),
                                   const Text(
                                     "Related Posts",
                                     style: TextStyle(

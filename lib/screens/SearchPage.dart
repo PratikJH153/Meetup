@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lottie/lottie.dart';
 import 'package:meetupapp/helper/backend/apis.dart';
 import '/models/post.dart';
 import '/providers/UserProvider.dart';
@@ -106,7 +107,6 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
-    UserProvider userProvider = Provider.of(context);
 
     return SafeArea(
       child: Scaffold(
@@ -153,37 +153,83 @@ class _SearchPageState extends State<SearchPage> {
                 ],
               ),
               const SizedBox(height: 5.0),
-              Expanded(
-                child: MasonryGridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  itemCount: postList.length,
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.only(top: 15),
-                  itemBuilder: (context, index) {
-                    Post currPost = Post.fromJson(postList[index]);
-
-                    return GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          barrierColor: const Color(0xFF383838),
-                          builder: (ctx) {
-                            return ViewPostPage(currPost);
-                          },
-                        );
-                      },
-                      child: SearchFeedTile(
-                        isDes: index % 2 == 0,
-                        post: currPost,
+              postList.isEmpty && _searchController.text.isEmpty
+                  ? Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/images/search.png",
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "Search what you like!\nDiscover some new feeds.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              height: 1.5,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                ),
-              ),
+                    )
+                  : postList.isEmpty
+                      ? Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/images/404.png",
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "No Results Found!",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  height: 1.5,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Expanded(
+                          child: MasonryGridView.count(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
+                            itemCount: postList.length,
+                            physics: const BouncingScrollPhysics(),
+                            padding: const EdgeInsets.only(top: 15),
+                            itemBuilder: (context, index) {
+                              Post currPost = Post.fromJson(postList[index]);
+
+                              return GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    barrierColor: const Color(0xFF383838),
+                                    builder: (ctx) {
+                                      return ViewPostPage(currPost);
+                                    },
+                                  );
+                                },
+                                child: SearchFeedTile(
+                                  isDes: index % 2 == 0,
+                                  post: currPost,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
             ],
           ),
         ),

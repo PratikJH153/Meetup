@@ -93,7 +93,6 @@ class MyApp extends StatelessWidget {
           FeedPage.routeName: (ctx) => const FeedPage(),
           AddPost.routeName: (ctx) => const AddPost(),
           SearchPage.routeName: (ctx) => const SearchPage(),
-          AddCommentPage.routeName: (ctx) => AddCommentPage(),
         },
       ),
     );

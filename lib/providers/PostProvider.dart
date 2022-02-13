@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:meetupapp/models/comment.dart';
 
 class PostProvider with ChangeNotifier {
   bool isLoaded = false;
 
   List<Map> _loadedPosts = [];
-  List _comments = [];
+  List<Comment> _comments = [];
 
   List<Map> get loadedPosts => [..._loadedPosts];
 
@@ -12,7 +13,7 @@ class PostProvider with ChangeNotifier {
 
   List<String> get selectedTags => [..._selectedTags];
 
-  List get getComments => [..._comments];
+  List<Comment> get getComments => [..._comments];
 
   void upateTags(List givenTags) {
     givenTags.forEach((element) {
@@ -28,12 +29,12 @@ class PostProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setComments(List the_comments) {
+  void setComments(List<Comment> the_comments) {
     _comments = the_comments;
     notifyListeners();
   }
 
-  void addSingleComment(Map comment) {
+  void addSingleComment(Comment comment) {
     _comments.add(comment);
     notifyListeners();
   }
