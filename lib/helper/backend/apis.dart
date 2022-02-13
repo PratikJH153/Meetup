@@ -43,8 +43,18 @@ class PostAPIS {
     return POST(endpoint, body);
   }
 
-  Future<Map> getSinglePost(String id) async {
-    String endpoint = "posts/getSinglePost/$id";
+  Future<Map> addComment(String pID, Map body) async {
+    String endpoint = "posts/addComment/$pID";
+    return POST(endpoint, body);
+  }
+
+  Future<Map> deleteComment(Map body) async {
+    String endpoint = "posts/deleteComment/";
+    return DELETE(endpoint, body: body);
+  }
+
+  Future<Map> getComments(String id) async {
+    String endpoint = "posts/getComments/$id";
     return GET(endpoint);
   }
 
@@ -52,26 +62,29 @@ class PostAPIS {
     String endpoint = "posts/search/";
     return POST(endpoint, body);
   }
-}
 
-class CommunityAPIS {
-  Future<Map> getCommunities() async {
-    String endpoint = "communities/getAllCommunities";
-    return GET(endpoint);
+  Future<Map> upVote(Map body) async {
+    String endpoint = "posts/upvote/";
+    return PATCH(endpoint, body);
   }
 
-  Future<Map> getSingleCommunity(String id) async {
-    String endpoint = "communities/getSingleCommunity/$id";
-    return GET(endpoint);
+  Future<Map> downVote(Map body) async {
+    String endpoint = "posts/downvote/";
+    return PATCH(endpoint, body);
   }
 
-  Future<Map> addCommunity(Map body) async {
-    String endpoint = "communities/addCommunity/";
-    return POST(endpoint, body);
+  Future<Map> cancelVote(Map body) async {
+    String endpoint = "posts/upvote/";
+    return PATCH(endpoint, body);
   }
 
-  Future<Map> deleteCommunity(String id) async {
-    String endpoint = "communities/deleteSingleCommunity/$id";
-    return DELETE(endpoint);
+  Future<Map> cancelUpVote(Map body) async {
+    String endpoint = "posts/upvote/";
+    return PATCH(endpoint, body);
+  }
+
+  Future<Map> cancelDownVote(Map body) async {
+    String endpoint = "posts/upvote/";
+    return PATCH(endpoint, body);
   }
 }

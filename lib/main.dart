@@ -1,9 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:meetupapp/helper/custom_route.dart';
-import 'package:meetupapp/models/post.dart';
 import 'package:meetupapp/providers/PostProvider.dart';
+import 'package:meetupapp/screens/AddCommentScreen.dart';
 import '/screens/FeedScreen.dart';
 import '/screens/HomePage.dart';
 import 'screens/authentication/LoginPage.dart';
@@ -15,6 +14,7 @@ import '/screens/post/AddPostPage.dart';
 import 'providers/UserProvider.dart';
 import 'package:provider/provider.dart';
 import 'wrapper.dart';
+import 'package:flutter/services.dart';
 
 Future<void> main() async {
   SystemChrome.setPreferredOrientations(
@@ -91,6 +91,7 @@ class MyApp extends StatelessWidget {
           FeedPage.routeName: (ctx) => const FeedPage(),
           AddPost.routeName: (ctx) => const AddPost(),
           SearchPage.routeName: (ctx) => const SearchPage(),
+          AddCommentPage.routeName: (ctx) => AddCommentPage(),
         },
       ),
     );

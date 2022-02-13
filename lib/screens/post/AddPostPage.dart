@@ -3,9 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meetupapp/providers/UserProvider.dart';
-import 'package:meetupapp/widgets/snackBar_widget.dart';
 import 'package:provider/provider.dart';
-
 import '/helper/utils/loader.dart';
 import '/helper/utils/validator.dart';
 import '/helper/backend/apis.dart';
@@ -79,6 +77,7 @@ class _AddPostState extends State<AddPost> {
   }
 
   Future<void> _addPostApi(Map body) async {
+    print(body);
     bool didGoWrong = false;
 
     setState(() {
@@ -86,6 +85,8 @@ class _AddPostState extends State<AddPost> {
     });
 
     final Map requestData = await unPackLocally(body);
+    print("requestData");
+    print(requestData);
 
     if (requestData["success"] == 1) {
       Navigator.of(context).pop();

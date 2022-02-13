@@ -48,7 +48,7 @@ class _FeedPageState extends State<FeedPage>
       print("Server responded! Status:${localData["status"]}");
 
       if (dataReceivedSuccessfully) {
-        Map requestedSuccessData = localData["data"].runtimeType == List
+        Map? requestedSuccessData = localData["data"].runtimeType == List
             ? {"toMap": localData["data"]}
             : localData["data"];
         print("SUCCESS DATA:");
@@ -57,7 +57,7 @@ class _FeedPageState extends State<FeedPage>
 
         return {"success": 1, "unpacked": requestedSuccessData};
       } else {
-        Map requestFailedData = localData["data"];
+        Map? requestFailedData = localData["data"];
         print("INCORRECT DATA:");
         print(requestFailedData);
         print("-----------------\n\n");

@@ -37,7 +37,7 @@ class Post {
       desc: data["description"],
       tag: data["tag"],
       author: data["author"],
-      comments: data["comments"],
+      comments: data["comments"] ?? [],
       upvotes: data["upvotes"],
       downvotes: data["downvotes"],
     );
