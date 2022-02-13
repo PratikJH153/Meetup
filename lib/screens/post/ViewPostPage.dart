@@ -19,9 +19,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ViewPostPage extends StatefulWidget {
-  Post thePost;
+  final Post thePost;
 
-  ViewPostPage(this.thePost, {Key? key}) : super(key: key);
+  const ViewPostPage(this.thePost, {Key? key}) : super(key: key);
 
   @override
   State<ViewPostPage> createState() => _ViewPostPageState();
@@ -177,28 +177,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
         onTap: () {},
         child: Scaffold(
             backgroundColor: Colors.transparent,
-            floatingActionButton: FloatingActionButton(
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CommentPage(
-                      post: widget.thePost,
-                    ),
-                  ),
-                );
-                // final _p = await PostAPIS().addComment(widget.thePost.postID!, {
-                //   "message": "This is a message",
-                //   "userID": FirebaseAuth.instance.currentUser!.uid
-                // });
-                // print(_p);
-              },
-              child: const Icon(
-                Icons.comment_outlined,
-                color: Colors.white,
-              ),
-              backgroundColor: Colors.black,
-            ),
             body: DraggableScrollableSheet(
               initialChildSize: 1,
               minChildSize: 0.7,

@@ -108,11 +108,97 @@ class _FeedPageState extends State<FeedPage>
     });
   }
 
+  bool _isOpened = false;
+  Map<String, bool> _selectMap = {};
+  Map<String, bool> _interests = {
+    "Flutter": true,
+    "Python": true,
+    "Django": true,
+  };
+
+  List<DropdownMenuItem<String>> items = [];
+
+  List<Widget> _nameTileList(List nameList) {
+    List<Widget> _list = [];
+    nameList.forEach((element) {
+      _list.add(_preferenceTile(element));
+    });
+    return _list;
+  }
+
+  Widget _preferenceTile(String text) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _interests[text] = true;
+          _selectMap.remove(text);
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100),
+          color: const Color(0xFF6b7fff),
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 10,
+        ),
+        margin: const EdgeInsets.only(
+          right: 5,
+          bottom: 10,
+        ),
+      ),
+    );
+  }
+
+  Widget _filterBox() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            DropdownButton(
+              underline: const SizedBox(),
+              borderRadius: BorderRadius.circular(15),
+              dropdownColor: Colors.white,
+              elevation: 1,
+              hint: const Text("Pick your Topic"),
+              items: items,
+              onChanged: (String? s) {
+                setState(() {
+                  _interests.remove(s);
+                  _selectMap[s!] = true;
+                });
+              },
+            ),
+          ]),
+          Wrap(
+            children: _nameTileList(
+              _selectMap.keys.toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   void initState() {
     _initialize();
     _scrollController = ScrollController();
     _tabController = TabController(vsync: this, length: 2);
+    for (String city in _interests.keys.toList()) {
+      items.add(DropdownMenuItem(value: city, child: Text(city)));
+    }
     super.initState();
   }
 
@@ -128,67 +214,78 @@ class _FeedPageState extends State<FeedPage>
         ? const Center(child: Text("An error occurred!"))
         : _isLoading
             ? GlobalLoader()
-            : Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: kLeftPadding,
-                ),
-                child: ShaderMask(
-                  shaderCallback: (Rect rect) {
-                    return const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.red,
-                        Colors.transparent,
-                        Colors.transparent,
-                        Colors.red
-                      ],
-                      stops: [
-                        0.0,
-                        0.02,
-                        0.8,
-                        1.0
-                      ], // 10% purple, 80% transparent, 10% purple
-                    ).createShader(rect);
-                  },
-                  blendMode: BlendMode.dstOut,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(
-                      bottom: 200,
-                      top: 30,
-                    ),
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: postProvider.length,
-                    itemBuilder: (ctx, index) {
-                      Post currPost = Post.fromJson(postProvider[index]);
-                      return GestureDetector(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            barrierColor: const Color(0xFF383838),
-                            builder: (ctx) {
-                              return ViewPostPage(currPost);
-                            },
-                          );
+            : Column(
+                children: [
+                  const SizedBox(height: 10),
+                  _isOpened ? const SizedBox() : _filterBox(),
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: kLeftPadding,
+                      ),
+                      child: ShaderMask(
+                        shaderCallback: (Rect rect) {
+                          return const LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.red,
+                              Colors.transparent,
+                              Colors.transparent,
+                              Colors.red
+                            ],
+                            stops: [
+                              0.0,
+                              0.02,
+                              0.8,
+                              1.0
+                            ], // 10% purple, 80% transparent, 10% purple
+                          ).createShader(rect);
                         },
-                        child: FeedTile(currPost),
-                      );
-                    },
+                        blendMode: BlendMode.dstOut,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.only(
+                            bottom: 200,
+                            top: 10,
+                          ),
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: postProvider.length,
+                          itemBuilder: (ctx, index) {
+                            Post currPost = Post.fromJson(postProvider[index]);
+                            return GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  barrierColor: const Color(0xFF383838),
+                                  builder: (ctx) {
+                                    return ViewPostPage(currPost);
+                                  },
+                                );
+                              },
+                              child: FeedTile(currPost),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               );
   }
 
   @override
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
-    List p = Provider.of<PostProvider>(context, listen: false).loadedPosts;
+    List p = _selectMap.keys.toList().isEmpty
+        ? Provider.of<PostProvider>(context, listen: false).loadedPosts
+        : Provider.of<PostProvider>(context, listen: false)
+            .taggedPosts(_selectMap.keys.toList());
     return SafeArea(
       child: Scaffold(
         body: Container(
-          margin: EdgeInsets.only(top: 15),
+          margin: const EdgeInsets.only(top: 15),
           child: NestedScrollView(
             controller: _scrollController,
             headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -198,10 +295,9 @@ class _FeedPageState extends State<FeedPage>
                     margin: const EdgeInsets.only(
                       left: 8,
                       right: 8,
-                      top: 15,
+                      top: 10,
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
                           "Discover 👋",
@@ -209,11 +305,23 @@ class _FeedPageState extends State<FeedPage>
                             color: Colors.black,
                           ),
                         ),
+                        Spacer(),
                         ButtonWidget(
                           icon: CupertinoIcons.search,
                           tapHandler: () {
                             Navigator.of(context)
                                 .pushNamed(SearchPage.routeName);
+                          },
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ButtonWidget(
+                          icon: CupertinoIcons.slider_horizontal_3,
+                          tapHandler: () {
+                            setState(() {
+                              _isOpened = !_isOpened;
+                            });
                           },
                         ),
                       ],

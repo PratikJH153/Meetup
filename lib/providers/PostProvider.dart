@@ -15,6 +15,16 @@ class PostProvider with ChangeNotifier {
 
   List<Comment> get getComments => [..._comments];
 
+  List<Map> taggedPosts(List<String> interests) {
+    List<Map> newPosts = [];
+    loadedPosts.forEach((post) {
+      if (interests.contains(post["tag"])) {
+        newPosts.add(post);
+      }
+    });
+    return newPosts;
+  }
+
   void upateTags(List givenTags) {
     givenTags.forEach((element) {
       _selectedTags.add(element);
