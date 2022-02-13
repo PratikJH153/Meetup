@@ -4,11 +4,11 @@ import 'package:meetupapp/widgets/constants.dart';
 class UpperWidgetOfBottomSheet extends StatelessWidget {
   final VoidCallback tapHandler;
   final IconData icon;
-  final bool isCommentPage;
+  final bool toShow;
   const UpperWidgetOfBottomSheet({
     required this.tapHandler,
     required this.icon,
-    this.isCommentPage = false,
+    this.toShow = true,
     Key? key,
   }) : super(key: key);
 
@@ -41,7 +41,7 @@ class UpperWidgetOfBottomSheet extends StatelessWidget {
                   ),
                 ),
               ),
-              if (!isCommentPage)
+              if (toShow)
                 GestureDetector(
                   onTap: tapHandler,
                   child: Container(

@@ -1,12 +1,16 @@
 const SERVER_ERROR_CODE = 500;
 const SUCCESS_CODE = 200;
-
+// 200 401 404 500
+// SUCESS: 200
+// BAD REQUEST: 401
+// NOT FOUND: 404
+// INTERNAL SEVER ERROR: 500
 // const endpoint = "http://192.168.0.212:9000/"; /// FOR REAL DEVICE :)
 const endpoint = "http://10.0.2.2:9000/";
 
-const ErrorCodesCustom  = {
-  100:"Couldn't connect to the server!",
-  999:"Miscellaneous error!"
+const ErrorCodesCustom = {
+  100: "Couldn't connect to the server!",
+  999: "Miscellaneous error!"
 };
 
 final miscellaneousErrorMessage = {

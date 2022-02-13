@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meetupapp/providers/UserProvider.dart';
+import 'package:meetupapp/widgets/snackBar_widget.dart';
 import 'package:provider/provider.dart';
 
 import '/helper/utils/loader.dart';
@@ -13,9 +14,16 @@ import '/widgets/constants.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
 
 class AddPost extends StatefulWidget {
+  final String? title;
+  final String? description;
+  final String? tag;
   static const routeName = "/addpost";
 
-  const AddPost();
+  const AddPost({
+    this.title,
+    this.description,
+    this.tag,
+  });
 
   @override
   State<AddPost> createState() => _AddPostState();
@@ -29,7 +37,9 @@ class _AddPostState extends State<AddPost> {
   final TextEditingController _descController = TextEditingController();
 
   bool _isLoading = false;
-  String? _selectedTag;
+  String _selectedTag = "Tag";
+
+  bool isEdit = false;
 
   Future<Map> unPackLocally(Map body) async {
     final data = await _post.addPost(body);
@@ -78,6 +88,29 @@ class _AddPostState extends State<AddPost> {
     final Map requestData = await unPackLocally(body);
 
     if (requestData["success"] == 1) {
+      Navigator.of(context).pop();
+    } else {
+      didGoWrong = true;
+      Fluttertoast.showToast(msg: requestData["unpacked"]);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  //! NOT DONE YET
+  Future<void> _updatePostAPI(Map body) async {
+    bool didGoWrong = false;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final Map requestData = await unPackLocally(body);
+
+    if (requestData["success"] == 1) {
+      Navigator.of(context).pop();
     } else {
       didGoWrong = true;
       Fluttertoast.showToast(msg: requestData["unpacked"]);
@@ -118,6 +151,17 @@ class _AddPostState extends State<AddPost> {
   // }
 
   @override
+  void initState() {
+    if (widget.title != null && widget.description != null) {
+      _titleController.text = widget.title!;
+      _descController.text = widget.description!;
+      _selectedTag = widget.tag!;
+      isEdit = true;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -135,20 +179,31 @@ class _AddPostState extends State<AddPost> {
                       children: [
                         UpperWidgetOfBottomSheet(
                           tapHandler: () async {
-                            if (_selectedTag == null) {
+                            if (_selectedTag == "Tag") {
                               Fluttertoast.showToast(
-                                  msg: "Select a tag before proceeding!");
+                                  msg: "Select a tag to procced");
                               return;
                             }
                             if (_addPostFormKey.currentState!.validate()) {
-                              Map data = {
-                                "title": _titleController.text.toString(),
-                                "description": "test_desc",
-                                "author":
-                                    FirebaseAuth.instance.currentUser!.uid,
-                                "tag": _selectedTag
-                              };
-                              _addPostApi(data);
+                              if (!isEdit) {
+                                Map data = {
+                                  "title": _titleController.text.trim(),
+                                  "description": _descController.text.trim(),
+                                  "author": Provider.of<UserProvider>(context,
+                                          listen: false)
+                                      .getUser()!
+                                      .userID,
+                                  "tag": _selectedTag
+                                };
+                                _addPostApi(data);
+                              } else {
+                                Map data = {
+                                  "title": _titleController.text.trim(),
+                                  "description": _descController.text.trim(),
+                                  "tag": _selectedTag
+                                };
+                                _updatePostAPI(data);
+                              }
                             }
                           },
                           icon: CupertinoIcons.checkmark_alt,
@@ -195,11 +250,13 @@ class _AddPostState extends State<AddPost> {
                                         vertical: 8,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Colors.grey,
+                                        color: _selectedTag != "Tag"
+                                            ? const Color(0xFF6b7fff)
+                                            : Colors.grey,
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                       child: Text(
-                                        _selectedTag ?? "Tag",
+                                        _selectedTag,
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.w900,
@@ -219,8 +276,9 @@ class _AddPostState extends State<AddPost> {
                                     style: const TextStyle(height: 1.3),
                                     validator: (value) =>
                                         Validator.validateTextField(
-                                            result: value,
-                                            message: "Enter a valid Title"),
+                                      result: value,
+                                      message: "Enter a valid Title",
+                                    ),
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       hintText: "Add an Title",

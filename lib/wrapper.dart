@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'screens/get_started_page.dart';
+import 'screens/authentication/get_started_page.dart';
 import 'screens/HomePage.dart';
 
 class Wrapper extends StatefulWidget {
@@ -17,10 +17,11 @@ class _WrapperState extends State<Wrapper> {
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const GetStartedPage();
-        } else {
+        if (snapshot.hasData) {
+          // FETCH USER
           return const HomePage();
+        } else {
+          return const GetStartedPage();
         }
       },
     );

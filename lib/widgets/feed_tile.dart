@@ -6,24 +6,25 @@ import '/providers/UserProvider.dart';
 import '/models/post.dart';
 import '/screens/post/CommentPage.dart';
 import '/widgets/feed_interact_button.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
-class FeedTile extends StatelessWidget {
-  Post thePost;
+class FeedTile extends StatefulWidget {
+  final Post thePost;
 
-  FeedTile(this.thePost);
+  const FeedTile(this.thePost, {Key? key}) : super(key: key);
 
+  @override
+  State<FeedTile> createState() => _FeedTileState();
+}
+
+class _FeedTileState extends State<FeedTile> {
   @override
   Widget build(BuildContext context) {
     UserProvider u = Provider.of<UserProvider>(context, listen: false);
     UserClass currUser = u.getUser()!;
-    bool? hasVoted = currUser.votes![thePost.postID];
-
-    Color upvoteColor = Colors.grey;
-    Color downvoteColor = Colors.grey;
-
-    if(hasVoted!=null){
-      hasVoted?upvoteColor = Colors.red:downvoteColor = Colors.blue;
-    }
+    bool? vote = currUser.votes!.containsKey(widget.thePost.postID)
+        ? currUser.votes![widget.thePost.postID]
+        : null;
 
     return Container(
         margin: const EdgeInsets.only(bottom: 20),
@@ -36,7 +37,7 @@ class FeedTile extends StatelessWidget {
               color: Color(0xFFf2f4f9),
               blurRadius: 5,
               spreadRadius: 0.5,
-              offset: Offset(0, 4),
+              offset: Offset(0, 2),
             )
           ],
         ),
@@ -52,7 +53,7 @@ class FeedTile extends StatelessWidget {
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: NetworkImage(
-                          thePost.author!["profileURL"],
+                          widget.thePost.author!["profileURL"],
                         ),
                         fit: BoxFit.cover,
                       )),
@@ -64,7 +65,7 @@ class FeedTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      thePost.author!["username"],
+                      widget.thePost.author!["username"],
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
@@ -74,9 +75,13 @@ class FeedTile extends StatelessWidget {
                     const SizedBox(
                       height: 3,
                     ),
-                    const Text(
-                      " hours ago . 5 min read",
-                      style: TextStyle(
+                    Text(
+                      "${timeago.format(
+                        DateTime.parse(
+                          widget.thePost.createdAt!,
+                        ),
+                      )} . ${widget.thePost.timeReadCalc()} mins read",
+                      style: const TextStyle(
                         fontSize: 11,
                         color: Colors.grey,
                       ),
@@ -89,23 +94,38 @@ class FeedTile extends StatelessWidget {
               height: 12,
             ),
             Text(
-              thePost.title ?? "No title",
+              widget.thePost.title ?? "No title",
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+                fontSize: 17,
+                fontWeight: FontWeight.w500,
                 height: 1.5,
-                fontFamily: "Quicksand",
+                fontFamily: "Ubuntu",
               ),
             ),
             const SizedBox(
-              height: 18,
+              height: 10,
+            ),
+            if (widget.thePost.desc != null)
+              Text(
+                widget.thePost.desc!,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 14,
+                  height: 1.4,
+                  fontFamily: "Raleway",
+                  color: Color(0xFF5c5c5c),
+                ),
+              ),
+            const SizedBox(
+              height: 24,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                thePost.tag == null
+                widget.thePost.tag == null
                     ? const SizedBox()
                     : Container(
                         padding: const EdgeInsets.symmetric(
@@ -117,7 +137,7 @@ class FeedTile extends StatelessWidget {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Text(
-                          thePost.tag!,
+                          widget.thePost.tag!,
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
@@ -131,9 +151,9 @@ class FeedTile extends StatelessWidget {
                   children: [
                     FeedInteractButton(
                       icon: CupertinoIcons.arrowtriangle_up_circle,
-                      label: "12",
-                      tapHandler: ()async{
-                        print("UPVOTE");
+                      label: widget.thePost.upvotes.toString(),
+                      tapHandler: () {
+                        print("upvote");
                       },
                     ),
                     const SizedBox(
@@ -141,9 +161,9 @@ class FeedTile extends StatelessWidget {
                     ),
                     FeedInteractButton(
                       icon: CupertinoIcons.arrowtriangle_down_circle,
-                      label: "10",
+                      label: widget.thePost.downvotes.toString(),
                       tapHandler: () {
-                        print("DOWNVOTE");
+                        print("downvote");
                       },
                     ),
                     const SizedBox(
@@ -157,15 +177,15 @@ class FeedTile extends StatelessWidget {
                           context: context,
                           isScrollControlled: true,
                           backgroundColor: Colors.transparent,
-                          barrierColor: const Color(0xFFf1e2d2),
+                          barrierColor: const Color(0xFF383838),
                           builder: (ctx) {
-                            return CommentPage(thePost.comments ?? []);
+                            return CommentPage(widget.thePost.comments ?? []);
                           },
                         );
                       },
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ],

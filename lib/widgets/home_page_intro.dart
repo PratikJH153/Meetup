@@ -15,27 +15,27 @@ class HomeIntro extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Hello Pratik 👋",
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey[500],
-                ),
-              ),
-              const SizedBox(
-                height: 6,
-              ),
-              Text(
-                "Explore the Top Feeds!",
-                style: TextStyle(
-                  color: Colors.grey[800],
-                  fontSize: 16,
-                  wordSpacing: 2,
-                  fontFamily: "Raleway",
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+              // Text(
+              //   "Hello Pratik 👋",
+              //   style: TextStyle(
+              //     fontSize: 15,
+              //     fontWeight: FontWeight.w500,
+              //     color: Colors.grey[500],
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 6,
+              // ),
+              // Text(
+              //   "Explore the Top Feeds!",
+              //   style: TextStyle(
+              //     color: Colors.grey[800],
+              //     fontSize: 16,
+              //     wordSpacing: 2,
+              //     fontFamily: "Raleway",
+              //     fontWeight: FontWeight.w700,
+              //   ),
+              // ),
             ],
           ),
           const Spacer(),

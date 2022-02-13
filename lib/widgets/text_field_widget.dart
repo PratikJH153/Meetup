@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class TextFieldWidget extends StatelessWidget {
   final TextEditingController editingController;
   final String label;
+  final bool isBio;
   final Function(String value) validatorHandler;
-  final FocusNode focus;
   const TextFieldWidget({
     required this.editingController,
     required this.label,
     required this.validatorHandler,
-    required this.focus,
+    this.isBio = false,
     Key? key,
   }) : super(key: key);
 
@@ -21,15 +21,17 @@ class TextFieldWidget extends StatelessWidget {
         bottom: 3,
       ),
       decoration: BoxDecoration(
-        color: const Color(0xFFf0f2f7),
+        color: const Color(0xFFf5f5fc),
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextFormField(
         controller: editingController,
         cursorColor: Colors.black,
         autofocus: false,
-        focusNode: focus,
-        validator: (value) => validatorHandler(value!),
+        maxLines: isBio ? null : 1,
+        validator: (value) => validatorHandler(
+          value!.trim(),
+        ),
         obscureText: label == "Password" ? true : false,
         decoration: InputDecoration(
           hintText: label,

@@ -50,7 +50,7 @@ class PostAPIS {
 
   Future<Map> searchPost(Map body) async {
     String endpoint = "posts/search/";
-    return POST(endpoint,body);
+    return POST(endpoint, body);
   }
 }
 

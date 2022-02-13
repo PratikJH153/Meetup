@@ -5,29 +5,42 @@ class Post {
   final String? createdAt;
   final String? tag;
   final Map? author;
-  final int? votes;
+  int upvotes;
+  int downvotes;
+  bool? isupvoted;
+  bool? isdownvoted;
   final List? comments;
 
-  Post(
-      {this.postID,
-      this.author,
-        this.tag,
-      this.desc,
-        this.createdAt,
-      this.title,
-      this.votes,
-      this.comments});
+  int timeReadCalc() {
+    return (((title! + " " + desc!).split(" ").length) / 180).round() + 1;
+  }
+
+  Post({
+    this.postID,
+    this.author,
+    this.tag,
+    this.desc,
+    this.createdAt,
+    this.title,
+    this.upvotes = 0,
+    this.downvotes = 0,
+    this.isdownvoted = false,
+    this.isupvoted = false,
+    this.comments,
+  });
 
   factory Post.fromJson(Map<dynamic, dynamic> data) {
     return Post(
-        postID: data["_id"],
-        createdAt: data["createdAt"],
-        title: data["title"],
-        desc: data["description"],
-        tag: data["tag"],
-        author: data["author"],
-        comments: data["comments"],
-        votes: data["votes"]);
+      postID: data["_id"],
+      createdAt: data["createdAt"],
+      title: data["title"],
+      desc: data["description"],
+      tag: data["tag"],
+      author: data["author"],
+      comments: data["comments"],
+      upvotes: data["upvotes"],
+      downvotes: data["downvotes"],
+    );
   }
 
   static Map<String, dynamic> toJson(Post post) {
@@ -38,7 +51,8 @@ class Post {
       "author": post.author,
       "tag": post.tag,
       "comments": post.comments,
-      "votes": post.votes,
+      "upvotes": post.upvotes,
+      "downvotes": post.downvotes,
       "createdAt": post.createdAt,
     };
   }

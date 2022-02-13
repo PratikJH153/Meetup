@@ -22,7 +22,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-
   final _post = PostAPIS();
 
   bool _isLoading = false;
@@ -30,13 +29,10 @@ class _SearchPageState extends State<SearchPage> {
 
   final TextEditingController _searchController = TextEditingController();
 
-
   Future<Map> unPackLocally() async {
-
     print("CALLING /searchQuery");
-    final data = await _post.searchPost({
-      "searchQuery": _searchController.text
-    });
+    final data =
+        await _post.searchPost({"searchQuery": _searchController.text});
 
     bool receivedResponseFromServer = data["local_status"] == 200;
     Map localData = data["local_result"];
@@ -82,11 +78,10 @@ class _SearchPageState extends State<SearchPage> {
 
     final Map requestData = await unPackLocally();
 
-    if(requestData["success"]==1){
+    if (requestData["success"] == 1) {
       print("-------");
       print(requestData);
-    }
-    else{
+    } else {
       didGoWrong = true;
     }
 
@@ -95,6 +90,7 @@ class _SearchPageState extends State<SearchPage> {
       _isLoading = false;
     });
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -143,11 +139,12 @@ class _SearchPageState extends State<SearchPage> {
                       : ButtonWidget(
                           icon: CupertinoIcons.search,
                           tapHandler: () async {
-                            if(_searchController.text.isEmpty){
+                            if (_searchController.text.isEmpty) {
                               const snackBar = SnackBar(
                                 content: Text('Search query can\'t be empty!'),
                               );
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
                               return;
                             }
                             _searchApi();
@@ -156,7 +153,6 @@ class _SearchPageState extends State<SearchPage> {
                 ],
               ),
               const SizedBox(height: 5.0),
-              Divider(thickness: 1, color: Colors.grey[400]),
               Expanded(
                 child: MasonryGridView.count(
                   crossAxisCount: 2,
@@ -174,7 +170,7 @@ class _SearchPageState extends State<SearchPage> {
                           context: context,
                           isScrollControlled: true,
                           backgroundColor: Colors.transparent,
-                          barrierColor: const Color(0xFFf1e2d2),
+                          barrierColor: const Color(0xFF383838),
                           builder: (ctx) {
                             return ViewPostPage(currPost);
                           },

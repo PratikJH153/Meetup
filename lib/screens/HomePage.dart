@@ -43,7 +43,6 @@ class _HomePageState extends State<HomePage> {
   ];
 
   Future<Map> unPackLocally(String id) async {
-
     print("CALLING /getUserInfoAdmin");
     final data = await _users.getSingleUserData(id);
 
@@ -81,7 +80,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _initialize(String id) async {
-    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
     bool didGoWrong = false;
 
     setState(() {
@@ -90,10 +90,9 @@ class _HomePageState extends State<HomePage> {
 
     final Map requestData = await unPackLocally(id);
 
-    if(requestData["success"]==1){
+    if (requestData["success"] == 1) {
       userProvider.setUser(requestData["unpacked"]);
-    }
-    else{
+    } else {
       didGoWrong = true;
       Fluttertoast.showToast(msg: requestData["unpacked"]);
     }
@@ -171,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                           context: context,
                           isScrollControlled: true,
                           backgroundColor: Colors.transparent,
-                          barrierColor: const Color(0xFFf1e2d2),
+                          barrierColor: const Color(0xFF383838),
                           builder: (ctx) {
                             return const AddPost();
                           },

@@ -1,5 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/models/user.dart';
+import 'package:meetupapp/providers/PostProvider.dart';
+import 'package:meetupapp/providers/UserProvider.dart';
+import 'package:meetupapp/screens/post/AddPostPage.dart';
+import 'package:provider/provider.dart';
 import '/helper/backend/apis.dart';
 import '/helper/utils/loader.dart';
 import '/models/comment.dart';
@@ -8,6 +13,7 @@ import '/widgets/constants.dart';
 import '/widgets/feed_interact_button.dart';
 import '/widgets/recommended_feed_tile.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class ViewPostPage extends StatefulWidget {
   Post thePost;
@@ -19,7 +25,6 @@ class ViewPostPage extends StatefulWidget {
 }
 
 class _ViewPostPageState extends State<ViewPostPage> {
-
   _ProfileRow() {
     return Row(
       children: [
@@ -38,23 +43,24 @@ class _ViewPostPageState extends State<ViewPostPage> {
           width: 15,
         ),
         Column(
-          crossAxisAlignment:
-          CrossAxisAlignment.start,
-          children: const [
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Text(
-              "Pratik JH",
-              style: TextStyle(
+              widget.thePost.author!["username"],
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
                 fontFamily: "Quicksand",
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 3,
             ),
             Text(
-              "20 minutes ago",
-              style: TextStyle(
+              timeago.format(
+                DateTime.parse(widget.thePost.createdAt!),
+              ),
+              style: const TextStyle(
                 fontSize: 13,
                 color: Colors.grey,
               ),
@@ -64,16 +70,18 @@ class _ViewPostPageState extends State<ViewPostPage> {
       ],
     );
   }
+
   _TitleDescriptionSection() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           widget.thePost.title!.toString(),
           style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
             height: 1.5,
-            fontFamily: "Raleway",
+            fontFamily: "Ubuntu",
           ),
         ),
         const SizedBox(
@@ -82,81 +90,89 @@ class _ViewPostPageState extends State<ViewPostPage> {
         Text(
           widget.thePost.desc!,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 16,
             height: 1.5,
-            color: Colors.grey[600],
-            fontFamily: "Quicksand",
+            color: Colors.grey[700],
+            fontFamily: "Raleway",
           ),
         ),
       ],
     );
   }
+
   _VoteSection() {
-    return Container(
-      margin: const EdgeInsets.only(right: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FeedInteractButton(
-            icon: CupertinoIcons
-                .arrowtriangle_up_circle,
-            label: "12",
-            tapHandler: () {
-              print("UPVOTE");
-            },
+    UserClass u = Provider.of<UserProvider>(context, listen: false).getUser()!;
+    bool? vote = u.votes!.containsKey(widget.thePost.postID)
+        ? u.votes![widget.thePost.postID]
+        : null;
+    return Consumer<PostProvider>(
+      builder: (ctx, post, _) {
+        return Container(
+          margin: const EdgeInsets.only(right: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FeedInteractButton(
+                icon: CupertinoIcons.arrowtriangle_up_circle,
+                label: "12",
+                tapHandler: () {
+                  print("UPVOTE");
+                },
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              FeedInteractButton(
+                icon: CupertinoIcons.arrowtriangle_down_circle,
+                label: "10",
+                tapHandler: () {
+                  print("DOWNVOTE");
+                },
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              FeedInteractButton(
+                icon: CupertinoIcons.chat_bubble_2,
+                label: "",
+                tapHandler: () async {
+                  // COMMENTS
+                  _getComments();
+                  setState(() {
+                    _hasOpenedComments = !_hasOpenedComments;
+                  });
+                },
+              ),
+            ],
           ),
-          const SizedBox(
-            width: 5,
-          ),
-          FeedInteractButton(
-            icon: CupertinoIcons
-                .arrowtriangle_down_circle,
-            label: "10",
-            tapHandler: () {
-              print("DOWNVOTE");
-            },
-          ),
-          const SizedBox(
-            width: 5,
-          ),
-          FeedInteractButton(
-            icon: CupertinoIcons.chat_bubble_2,
-            label: "",
-            tapHandler: () async {
-              // COMMENTS
-              _getComments();
-              setState(() {
-                _hasOpenedComments =
-                !_hasOpenedComments;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-  _CommentsWidget() {
-    return !_hasOpenedComments
-        ? const SizedBox()
-        : _isLoading
-        ? GlobalLoader()
-        : _comments.isEmpty
-        ? const Text("No comments yet")
-        : ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: _comments.length,
-      itemBuilder: (BuildContext context, int index) {
-        Comment currComment = _comments[index];
-        Duration duration = DateTime.now()
-            .difference(DateTime.parse(currComment.timeStamp!));
-        return ListTile(
-          title: Text(currComment.message!),
-          subtitle: Text("Posted ${duration.inDays} days ago"),
         );
       },
     );
   }
+
+  _CommentsWidget() {
+    return !_hasOpenedComments
+        ? const SizedBox()
+        : _isLoading
+            ? GlobalLoader()
+            : _comments.isEmpty
+                ? const Text("No comments yet")
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _comments.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      Comment currComment = _comments[index];
+                      Duration duration = DateTime.now()
+                          .difference(DateTime.parse(currComment.timeStamp!));
+                      return ListTile(
+                        title: Text(currComment.message!),
+                        subtitle: Text("Posted ${duration.inDays} days ago"),
+                      );
+                    },
+                  );
+  }
+
   _ReccomendedPostsSection() {
     return SizedBox(
       height: 230,
@@ -203,6 +219,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
   bool _loadedComments = false;
   bool _hasOpenedComments = false;
   List<Comment> _comments = [];
+
   /// DEPENDENCIES
 
   @override
@@ -221,8 +238,26 @@ class _ViewPostPageState extends State<ViewPostPage> {
             return Column(
               children: [
                 UpperWidgetOfBottomSheet(
-                  tapHandler: () {},
-                  icon: Icons.more_horiz_rounded,
+                  tapHandler: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      barrierColor: const Color(0xFF383838),
+                      builder: (ctx) {
+                        return AddPost(
+                          title: widget.thePost.title,
+                          description: widget.thePost.desc,
+                          tag: widget.thePost.tag,
+                        );
+                      },
+                    );
+                  },
+                  icon: CupertinoIcons.pen,
+                  toShow: widget.thePost.author!["_id"] ==
+                      Provider.of<UserProvider>(context, listen: false)
+                          .getUser()!
+                          .userID,
                 ),
                 Expanded(
                   child: Container(
@@ -263,9 +298,9 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                       color: const Color(0xFF6b7fff),
                                       borderRadius: BorderRadius.circular(15),
                                     ),
-                                    child: const Text(
-                                      "Business",
-                                      style: TextStyle(
+                                    child: Text(
+                                      widget.thePost.tag!,
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w900,
                                         fontFamily: "Raleway",
@@ -284,15 +319,15 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                 ],
                               ),
                               const SizedBox(
-                                height: 15,
+                                height: 16,
                               ),
                               _ProfileRow(),
                               const SizedBox(
-                                height: 15,
+                                height: 20,
                               ),
                               _TitleDescriptionSection(),
                               const SizedBox(
-                                height: 20,
+                                height: 25,
                               ),
                               _VoteSection(),
                               _CommentsWidget(),

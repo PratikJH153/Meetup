@@ -13,7 +13,7 @@ class SearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFf0f2f7),
+        color: const Color(0xFFf5f5fc),
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextField(

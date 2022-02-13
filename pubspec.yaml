@@ -15,13 +15,19 @@ dependencies:
   firebase_auth: ^3.3.5
   google_sign_in: ^5.2.2
   firebase_core: ^1.11.0
-  image_picker: ^0.8.4+4
+  image_picker: ^0.8.4+7
+  firebase_storage: ^10.2.7
   http: ^0.13.4
   provider: ^6.0.2
   font_awesome_flutter: ^9.2.0
   carousel_slider: ^4.0.0
   flutter_staggered_grid_view: ^0.6.1
+  lottie: ^1.2.1
+  numberpicker: ^2.1.1
+  timeago: ^3.2.2
   cupertino_icons: ^1.0.2
+  vertical_card_pager: ^1.0.0
+  percent_indicator: ^4.0.0
 
 dev_dependencies:
   flutter_test:

@@ -10,14 +10,14 @@ class Validator {
     if (email.isEmpty) {
       return 'Email can\'t be empty';
     } else if (!emailRegExp.hasMatch(email)) {
-      return 'Enter a correct email';
+      return 'Please enter a valid Email';
     }
 
     return null;
   }
 
   static String? validateTextField(
-      {required String? result, String? message = "Check entered value!"}) {
+      {required String? result, String? message = "Field can't be empty!"}) {
     if (result == null) {
       return null;
     }
@@ -28,7 +28,7 @@ class Validator {
   }
 
   static String? validatePassword(
-      {required String? result, String? message = "Check entered value!"}) {
+      {required String? result, String? message = "Password can't be empty"}) {
     if (result == null) {
       return null;
     }

@@ -4,9 +4,10 @@ import '/widgets/comment_tile.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
 
 class CommentPage extends StatelessWidget {
-  List comments;
+  static const routeName = "/commentpage";
+  final List comments;
 
-  CommentPage(this.comments);
+  const CommentPage(this.comments, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class CommentPage extends StatelessWidget {
                   UpperWidgetOfBottomSheet(
                     tapHandler: () {},
                     icon: Icons.stop,
-                    isCommentPage: true,
+                    toShow: false,
                   ),
                   Expanded(
                     child: Container(
@@ -92,8 +93,8 @@ class CommentPage extends StatelessWidget {
                                       shrinkWrap: true,
                                       physics: const BouncingScrollPhysics(),
                                       itemBuilder: (ctx, index) {
-                                        return CommentTile(Comment.fromJson(
-                                            comments[index]));
+                                        return CommentTile(
+                                            Comment.fromJson(comments[index]));
                                       },
                                       itemCount: comments.length,
                                     ),

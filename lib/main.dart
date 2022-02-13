@@ -1,18 +1,31 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:meetupapp/helper/custom_route.dart';
+import 'package:meetupapp/models/post.dart';
+import 'package:meetupapp/providers/PostProvider.dart';
 import '/screens/FeedScreen.dart';
 import '/screens/HomePage.dart';
-import '/screens/LoginPage.dart';
+import 'screens/authentication/LoginPage.dart';
 import '/screens/ProfilePage.dart';
-import '/screens/RegisterPage.dart';
+import 'screens/authentication/RegisterPage.dart';
 import '/screens/SearchPage.dart';
-import '/screens/get_started_page.dart';
+import 'screens/authentication/get_started_page.dart';
 import '/screens/post/AddPostPage.dart';
 import 'providers/UserProvider.dart';
 import 'package:provider/provider.dart';
 import 'wrapper.dart';
 
 Future<void> main() async {
+  SystemChrome.setPreferredOrientations(
+    [
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ],
+  );
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.black,
+  ));
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -25,14 +38,29 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (c) => UserProvider())],
+      providers: [
+        ChangeNotifierProvider(
+          create: (c) => UserProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (c) => PostProvider(),
+        ),
+      ],
       child: MaterialApp(
         title: 'MeetUp',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           scaffoldBackgroundColor: const Color(0xFFfafbff),
           brightness: Brightness.light,
-          primarySwatch: Colors.blue,
+          primaryColor: const Color(0xFFee0979),
+          colorScheme: const ColorScheme.light(
+            primary: Color(0xFFee0979),
+          ),
+          pageTransitionsTheme: PageTransitionsTheme(
+            builders: {
+              TargetPlatform.android: CustomPageTransitionBuilder(),
+            },
+          ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               textStyle: const TextStyle(

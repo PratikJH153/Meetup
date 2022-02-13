@@ -5,6 +5,7 @@ class FeedInteractButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback tapHandler;
+
   const FeedInteractButton({
     required this.icon,
     required this.label,
@@ -12,13 +13,34 @@ class FeedInteractButton extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  // Color get getColor {
+  //   if (isComment) {
+  //     return Colors.white;
+  //   } else if (isTap != null) {
+  //     if (isTap!) {
+  //       if (isUpvote) {
+  //         return Colors.green;
+  //       }
+  //     } else {
+  //       if (isDownvote) {
+  //         return Colors.red;
+  //       }
+  //     }
+  //   }
+  //   return Colors.white;
+  // }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: tapHandler,
       child: Container(
         padding: const EdgeInsets.all(5),
-        color: Colors.white,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          //isTap true ⬆️ / false ⬇️ / null
+          color: Colors.white,
+        ),
         child: Row(
           children: [
             Icon(
