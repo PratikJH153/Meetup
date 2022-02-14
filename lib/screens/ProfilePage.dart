@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meetupapp/helper/utils/fire_auth.dart';
+import 'package:meetupapp/screens/EditProfilePage.dart';
 import 'package:meetupapp/widgets/profile_buttons.dart';
+import 'package:meetupapp/widgets/profile_number_widget.dart';
 import 'package:provider/provider.dart';
 
 import '/helper/utils/loader.dart';
@@ -113,50 +115,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                       MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Column(
-                                      children: [
-                                        Text(
-                                          user.age.toString(),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 25,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 4,
-                                        ),
-                                        Text(
-                                          "Age",
-                                          style: TextStyle(
-                                            letterSpacing: 1.2,
-                                            fontSize: 15,
-                                            color: Colors.grey[600],
-                                          ),
-                                        )
-                                      ],
+                                    profileNumberWidget(
+                                      "Gender",
+                                      user.gender.toString(),
                                     ),
-                                    Column(
-                                      children: [
-                                        Text(
-                                          user.posts!.length.toString(),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 25,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 4,
-                                        ),
-                                        Text(
-                                          "Posts",
-                                          style: TextStyle(
-                                            letterSpacing: 1.2,
-                                            fontSize: 15,
-                                            color: Colors.grey[600],
-                                          ),
-                                        )
-                                      ],
-                                    )
+                                    profileNumberWidget(
+                                      "Posts",
+                                      user.posts!.length.toString(),
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(
@@ -239,7 +205,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ProfileButton(
                                   label: "Edit Profile",
                                   icon: CupertinoIcons.person_alt,
-                                  tapHandler: () {},
+                                  tapHandler: () {
+                                    Navigator.of(context).pushNamed(
+                                      EditProfilePage.routeName,
+                                    );
+                                  },
                                 ),
                                 ProfileButton(
                                   label: "Settings",

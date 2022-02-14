@@ -217,7 +217,7 @@ class _FeedPageState extends State<FeedPage>
             : Column(
                 children: [
                   const SizedBox(height: 10),
-                  _isOpened ? const SizedBox() : _filterBox(),
+                  !_isOpened ? const SizedBox() : _filterBox(),
                   Expanded(
                     child: Container(
                       margin: const EdgeInsets.symmetric(
@@ -309,8 +309,15 @@ class _FeedPageState extends State<FeedPage>
                         ButtonWidget(
                           icon: CupertinoIcons.search,
                           tapHandler: () {
-                            Navigator.of(context)
-                                .pushNamed(SearchPage.routeName);
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              barrierColor: const Color(0xFF383838),
+                              builder: (ctx) {
+                                return const SearchPage();
+                              },
+                            );
                           },
                         ),
                         const SizedBox(
