@@ -1,21 +1,22 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/helper/custom_route.dart';
-import 'package:meetupapp/providers/PostProvider.dart';
-import 'package:meetupapp/screens/AddCommentScreen.dart';
+import 'package:flutter/services.dart';
+import 'package:meetupapp/providers/CurrentPostProvider.dart';
 import 'package:meetupapp/screens/EditProfilePage.dart';
-import '/screens/FeedScreen.dart';
-import '/screens/HomePage.dart';
-import 'screens/authentication/LoginPage.dart';
-import '/screens/ProfilePage.dart';
-import 'screens/authentication/RegisterPage.dart';
-import '/screens/SearchPage.dart';
-import 'screens/authentication/get_started_page.dart';
-import '/screens/post/AddPostPage.dart';
+import 'helper/custom_route.dart';
+import 'providers/PostProvider.dart';
 import 'providers/UserProvider.dart';
+import 'screens/AddCommentScreen.dart';
+import 'screens/FeedScreen.dart';
+import 'screens/HomePage.dart';
+import 'screens/authentication/LoginPage.dart';
+import 'screens/ProfilePage.dart';
+import 'screens/authentication/RegisterPage.dart';
+import 'screens/SearchPage.dart';
+import 'screens/authentication/get_started_page.dart';
+import 'screens/post/AddPostPage.dart';
 import 'package:provider/provider.dart';
 import 'wrapper.dart';
-import 'package:flutter/services.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +48,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (c) => PostProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (c) => CurrentPostProvider(),
         ),
       ],
       child: MaterialApp(

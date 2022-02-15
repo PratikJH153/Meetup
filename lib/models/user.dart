@@ -33,6 +33,7 @@ class UserClass {
   });
 
   factory UserClass.fromJson(Map<dynamic, dynamic> userData) {
+
     return UserClass(
         userID: userData["_id"],
         firstname: userData["firstname"],

@@ -1,16 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FeedInteractButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback tapHandler;
-  final Color color;
+  final Color? color;
   const FeedInteractButton({
     required this.icon,
     required this.label,
     required this.tapHandler,
-    this.color = Colors.grey,
+    this.color,
     Key? key,
   }) : super(key: key);
 
@@ -46,7 +45,7 @@ class FeedInteractButton extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: color,
+              color: color??Colors.grey,
               size: 22,
             ),
             const SizedBox(

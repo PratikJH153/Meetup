@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/widgets/feed_interact_button.dart';
+import '/models/post.dart';
 
 class RecommededFeedTile extends StatelessWidget {
-  const RecommededFeedTile({Key? key}) : super(key: key);
+  Post post;
+  RecommededFeedTile(this.post);
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +31,12 @@ class RecommededFeedTile extends StatelessWidget {
               Container(
                 height: 30,
                 width: 30,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     image: NetworkImage(
-                        "https://media.istockphoto.com/photos/millennial-male-team-leader-organize-virtual-workshop-with-employees-picture-id1300972574?b=1&k=20&m=1300972574&s=170667a&w=0&h=2nBGC7tr0kWIU8zRQ3dMg-C5JLo9H2sNUuDjQ5mlYfo="),
+                      post.author!["profileURL"]
+                    ),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -45,19 +46,19 @@ class RecommededFeedTile extends StatelessWidget {
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    "Pratik JH",
-                    style: TextStyle(
+                    post.author!["username"],
+                    style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                       fontFamily: "Quicksand",
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 3,
                   ),
-                  Text(
+                  const Text(
                     "5 min read",
                     style: TextStyle(
                       fontSize: 11,
@@ -71,11 +72,11 @@ class RecommededFeedTile extends StatelessWidget {
           const SizedBox(
             height: 12,
           ),
-          const Text(
-            "Let's go Put ourselves out of Business!",
+         Text(
+            post.title??"",
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
               height: 1.5,
@@ -97,9 +98,9 @@ class RecommededFeedTile extends StatelessWidget {
                   color: const Color(0xFF6b7fff),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: const Text(
-                  "Business",
-                  style: TextStyle(
+                child: Text(
+                  post.tag??"",
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
                     fontFamily: "Raleway",

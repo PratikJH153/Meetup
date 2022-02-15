@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/models/user.dart';
-import 'package:meetupapp/providers/PostProvider.dart';
-import 'package:meetupapp/providers/UserProvider.dart';
-import 'package:meetupapp/screens/AddCommentScreen.dart';
-import 'package:meetupapp/screens/post/AddPostPage.dart';
-import 'package:meetupapp/screens/post/CommentPage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+
+import '/helper/backend/database.dart';
 import '/helper/backend/apis.dart';
+import '/providers/CurrentPostProvider.dart';
+import '/providers/UserProvider.dart';
+import '/screens/AddCommentScreen.dart';
+import '/screens/post/AddPostPage.dart';
 import '/helper/utils/loader.dart';
 import '/models/comment.dart';
 import '/models/post.dart';
@@ -15,7 +16,6 @@ import '/widgets/constants.dart';
 import '/widgets/feed_interact_button.dart';
 import '/widgets/recommended_feed_tile.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ViewPostPage extends StatefulWidget {
@@ -104,6 +104,18 @@ class _ViewPostPageState extends State<ViewPostPage> {
   }
 
   _VoteSection() {
+    bool? vote = widget.thePost.vote;
+    Color upvoteColor = Colors.grey;
+    Color downvoteColor = Colors.grey;
+
+    if (vote == true) {
+      upvoteColor = Colors.red;
+      downvoteColor = Colors.grey;
+    } else if (vote == false) {
+      upvoteColor = Colors.grey;
+      downvoteColor = Colors.blue;
+    }
+
     return Container(
       margin: const EdgeInsets.only(right: 20),
       child: Row(
@@ -111,9 +123,23 @@ class _ViewPostPageState extends State<ViewPostPage> {
         children: [
           FeedInteractButton(
             icon: CupertinoIcons.arrowtriangle_up_circle,
-            label: "12",
+            label: widget.thePost.upvotes.toString(),
+            color: upvoteColor,
             tapHandler: () {
-              print("UPVOTE");
+              if (widget.thePost.vote == true) {
+                // CANCEL UPVOTE
+
+                // _cancelVote(isCancelUpvote: true);
+              } else if (widget.thePost.vote == false) {
+                // FIRST DOWNVOTED NOW UPVOTED
+
+                // _cancelVote(isCancelUpvote: false);
+                // _vote(isUpvote: true);
+              } else if (widget.thePost.vote == null) {
+                // HAD NOT VOTED NOW UPVOTING
+
+                // _vote(isUpvote: true);
+              }
             },
           ),
           const SizedBox(
@@ -121,9 +147,23 @@ class _ViewPostPageState extends State<ViewPostPage> {
           ),
           FeedInteractButton(
             icon: CupertinoIcons.arrowtriangle_down_circle,
-            label: "10",
+            label: widget.thePost.downvotes.toString(),
+            color: downvoteColor,
             tapHandler: () {
-              print("DOWNVOTE");
+              if (widget.thePost.vote == false) {
+                // CANCEL DOWNVOTE
+
+                // _cancelVote(isCancelUpvote: false);
+              } else if (widget.thePost.vote == null) {
+                // NOT VOTED NOW DOWNVOTING
+
+                // _vote(isUpvote: false);
+              } else if (widget.thePost.vote == true) {
+                // HAD PREVIOUSLY UPVOTED DOWN DOWNVOTING
+
+                // _cancelVote(isCancelUpvote: true);
+                // _vote(isUpvote: false);
+              }
             },
           ),
           const SizedBox(
@@ -133,17 +173,17 @@ class _ViewPostPageState extends State<ViewPostPage> {
             icon: CupertinoIcons.chat_bubble_2,
             label: "",
             tapHandler: () async {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                barrierColor: const Color(0xFF383838),
-                builder: (ctx) {
-                  return CommentPage(
-                    post: widget.thePost,
-                  );
-                },
-              );
+              // showModalBottomSheet(
+              //   context: context,
+              //   isScrollControlled: true,
+              //   backgroundColor: Colors.transparent,
+              //   barrierColor: const Color(0xFF383838),
+              //   builder: (ctx) {
+              //     return CommentPage(
+              //       post: widget.thePost,
+              //     );
+              //   },
+              // );
             },
           ),
         ],
@@ -151,25 +191,173 @@ class _ViewPostPageState extends State<ViewPostPage> {
     );
   }
 
-  _ReccomendedPostsSection() {
+  _CommentsWidget(
+      {required List comments,
+      required bool wentWrong,
+      required bool isLoading}) {
+    return !_hasOpenedComments
+        ? const SizedBox()
+        : wentWrong
+            ? const Text("Couldn't fetch comments")
+            : isLoading
+                ? GlobalLoader()
+                : comments.isEmpty
+                    ? const Text("No comments yet")
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: comments.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          Comment currComment =
+                              Comment.fromJson(comments[index]);
+
+                          Duration duration = DateTime.now().difference(
+                              DateTime.parse(currComment.timeStamp!));
+                          UserProvider userProvider =
+                              Provider.of<UserProvider>(context, listen: false);
+                          bool isTheSamePerson = currComment.userData!["_id"] ==
+                              userProvider.getUser()!.userID;
+
+                          PopupMenuItem commentMenuOption(
+                              {required bool isCopy}) {
+                            return PopupMenuItem(
+                              child: Row(
+                                children: [
+                                  Icon(isCopy ? Icons.copy : Icons.delete),
+                                  Text(isCopy ? "Copy Text" : "Delete"),
+                                ],
+                              ),
+                              onTap: () {
+                                if (!isCopy) {
+                                  _deleteComment(comments[index]);
+                                }
+                              },
+                            );
+                          }
+
+                          return ListTile(
+                            title: Text(currComment.message!),
+                            subtitle:
+                                Text("Posted ${duration.inDays} days ago"),
+                            contentPadding: EdgeInsets.zero,
+                            trailing: PopupMenuButton(
+                              itemBuilder: (BuildContext context) => [
+                                commentMenuOption(isCopy: true),
+                                if (isTheSamePerson)
+                                  commentMenuOption(isCopy: false)
+                              ],
+                            ),
+                          );
+                        },
+                      );
+  }
+
+  _ReccomendedPostsSection(
+      {required List posts, required bool wentWrong, required bool isLoading}) {
     return SizedBox(
       height: 230,
-      child: ListView.builder(
-        padding: const EdgeInsets.only(
-          bottom: 30,
-        ),
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        itemCount: 5,
-        itemBuilder: (ctx, index) {
-          return const RecommededFeedTile();
-        },
-      ),
+      child: wentWrong
+          ? const Text("Couldn't fetch Posts")
+          : isLoading
+              ? GlobalLoader()
+              : posts.isEmpty
+                  ? const Text("No Recommendations yet")
+                  : ListView.builder(
+                      padding: const EdgeInsets.only(
+                        bottom: 30,
+                      ),
+                      physics: const BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: posts.length,
+                      itemBuilder: (ctx, index) {
+                        Post post = Post.fromJson(posts[index]);
+                        bool isTheSamePostAsCurrent =
+                            post.postID == widget.thePost.postID;
+
+                        return isTheSamePostAsCurrent
+                            ? const SizedBox()
+                            : RecommededFeedTile(post);
+                      },
+                    ),
     );
+  }
+
+  /// DEPENDENCIES
+  final PostAPIS _postAPI = PostAPIS();
+  bool _hasOpenedComments = false;
+
+  Future<void> _initialize() async {
+    CurrentPostProvider currentPost =
+        Provider.of<CurrentPostProvider>(context, listen: false);
+
+    final commentData =
+        await _postAPI.getComments(widget.thePost.postID.toString());
+    Map unpackedCommentData = unPackLocally(commentData);
+
+    if (unpackedCommentData["success"] == 1) {
+      currentPost.setComments(unpackedCommentData["unpacked"]["comments"]);
+    } else {
+      currentPost.toggleWentWrongComments(true);
+    }
+
+    final relatedPostsData =
+        await _postAPI.getRelatedPosts(widget.thePost.tag!);
+    Map unpackedRelatedPostsData = unPackLocally(relatedPostsData);
+
+    if (unpackedRelatedPostsData["success"] == 1) {
+      currentPost.setTrendingPosts(unpackedRelatedPostsData["unpacked"]);
+    } else {
+      currentPost.toggleWentWrongTrending(true);
+    }
+  }
+
+  Future<void> _deleteComment(Map<String, dynamic> commentMap) async {
+    CurrentPostProvider currentPost =
+        Provider.of<CurrentPostProvider>(context, listen: false);
+
+    Comment comment = Comment.fromJson(commentMap);
+
+    Map deleteBody = {
+      "commentID": comment.commentID,
+      "postID": widget.thePost.postID
+    };
+
+    final deleteCommentResult = await _postAPI.deleteComment(deleteBody);
+    Map deleteData = unPackLocally(deleteCommentResult);
+
+    if (deleteData["success"] == 1) {
+      currentPost.removeSingleComment(commentMap);
+    } else {
+      Fluttertoast.showToast(msg: "Couldn't delete comment!");
+    }
+  }
+
+  void copyText(String text) {}
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    _initialize();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context);
+
+    List commentList = currentPost.comments;
+    List trendingList = currentPost.trendingPost;
+
+    bool isLoadedTrending = currentPost.isTrendingLoaded;
+    bool wentWrongTrending = currentPost.wentWrongTrending;
+
+    bool isLoadedComments = currentPost.isCommentsLoaded;
+    bool wentWrongComments = currentPost.wentWrongComments;
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => Navigator.of(context).pop(),
@@ -177,6 +365,19 @@ class _ViewPostPageState extends State<ViewPostPage> {
         onTap: () {},
         child: Scaffold(
             backgroundColor: Colors.transparent,
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => AddCommentPage(post: widget.thePost)));
+              },
+              child: const Icon(
+                Icons.comment_outlined,
+                color: Colors.white,
+              ),
+              backgroundColor: Colors.black,
+            ),
             body: DraggableScrollableSheet(
               initialChildSize: 1,
               minChildSize: 0.7,
@@ -278,12 +479,17 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                     height: 20,
                                   ),
                                   _VoteSection(),
+                                  const Divider(color: Colors.grey),
+                                  _CommentsWidget(
+                                      comments: commentList,
+                                      wentWrong: wentWrongComments,
+                                      isLoading: !isLoadedComments),
                                   const Text(
                                     "Related Posts",
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 15,
                                       height: 1.5,
-                                      color: Colors.grey,
+                                      color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: "Quicksand",
                                     ),
@@ -291,7 +497,10 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  _ReccomendedPostsSection()
+                                  _ReccomendedPostsSection(
+                                      posts: trendingList,
+                                      wentWrong: wentWrongTrending,
+                                      isLoading: !isLoadedTrending)
                                 ],
                               ),
                             ],
