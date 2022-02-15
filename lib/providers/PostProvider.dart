@@ -1,40 +1,47 @@
 import 'package:flutter/cupertino.dart';
 
 class PostProvider with ChangeNotifier {
-  bool isLoaded = false;
+  bool isLoadedPosts = false;
+  bool wentWrongAllPosts = false;
 
-  List<Map> _loadedPosts = [];
+  bool isLoadedTrendingPosts = false;
+  bool wentWrongTrendingPosts = false;
+
+  List _loadedPosts = [];
+  List _trendingPosts = [];
+
   List _comments = [];
 
   List<Map> get loadedPosts => [..._loadedPosts];
 
-  List<String> _selectedTags = [];
-
-  List<String> get selectedTags => [..._selectedTags];
+  List<Map> get trendingPosts => [..._trendingPosts];
 
   List get getComments => [..._comments];
-
-  void upateTags(List givenTags) {
-    givenTags.forEach((element) {
-      _selectedTags.add(element);
-    });
-    notifyListeners();
-  }
-
-  void setPosts(List<Map> list) {
-    _loadedPosts = list;
-    isLoaded = true;
-    print(isLoaded);
-    notifyListeners();
-  }
 
   void setComments(List the_comments) {
     _comments = the_comments;
     notifyListeners();
   }
 
-  void addSingleComment(Map comment) {
-    _comments.add(comment);
+  void setPosts(List thePosts) {
+    _loadedPosts = thePosts;
+    isLoadedPosts = true;
+    notifyListeners();
+  }
+
+  void setTrendingPosts(List thePosts) {
+    _trendingPosts = thePosts;
+    isLoadedTrendingPosts = true;
+    notifyListeners();
+  }
+
+  void togglePostsWentWrong({required bool didGoWrong}) {
+    wentWrongAllPosts = didGoWrong;
+    notifyListeners();
+  }
+
+  void toggleTrendingWentWrong({required bool didGoWrong}) {
+    wentWrongTrendingPosts = didGoWrong;
     notifyListeners();
   }
 }

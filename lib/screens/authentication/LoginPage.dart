@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/widgets/authentication_button.dart';
+import '/widgets/authentication_button.dart';
 
 import '/helper/utils/fire_auth.dart';
 import '/helper/utils/validator.dart';

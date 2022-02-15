@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '/providers/PostProvider.dart';
-import '/helper/utils/validator.dart';
-import '/models/post.dart';
+import '/helper/backend/database.dart';
+import '/providers/CurrentPostProvider.dart';
 import '/providers/UserProvider.dart';
 import 'package:provider/provider.dart';
+import '/helper/utils/validator.dart';
+import '/models/post.dart';
 import '/helper/backend/apis.dart';
 
 class AddCommentPage extends StatefulWidget {
@@ -22,95 +23,53 @@ class _AddCommentPageState extends State<AddCommentPage> {
   final _post = PostAPIS();
   final _addPostFormKey = GlobalKey<FormState>();
 
+  bool _isAdding = false;
+  bool _wentWrong = false;
+
   final TextEditingController _titleController = TextEditingController();
 
-  bool _isLoading = false;
-
-  Future<Map> unPackLocally() async {
-    print("CALLING /addComment");
+  Future<void> _addComment() async {
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    CurrentPostProvider currentPostProvider = Provider.of<CurrentPostProvider>(context, listen: false);
 
     Map addCommentBody = {
       "message": _titleController.text,
       "userID": FirebaseAuth.instance.currentUser!.uid
     };
 
-    final data = await _post.addComment(widget.post!.postID.toString(), addCommentBody);
+    final addCommentData =
+        await _post.addComment(widget.post!.postID!, addCommentBody);
+    Map unpackedAddCommentData = unPackLocally(addCommentData);
 
-    bool receivedResponseFromServer = data["local_status"] == 200;
-    Map localData = data["local_result"];
+    if (unpackedAddCommentData["success"] == 1) {
+      Map receivedData = unpackedAddCommentData["unpacked"];
+      Fluttertoast.showToast(msg: "Added Comment Successfully!");
 
-    if (receivedResponseFromServer) {
-      bool dataReceivedSuccessfully = localData["status"] == 200;
-      print(localData);
-
-      if (dataReceivedSuccessfully) {
-        Map? requestedSuccessData = localData["data"];
-        print("SUCCESS DATA:");
-        print(requestedSuccessData);
-        print("-----------------\n\n");
-
-        return {"success": 1, "unpacked": requestedSuccessData};
-      } else {
-        Map? requestFailedData = localData["data"];
-        print("INCORRECT DATA:");
-        print(requestFailedData);
-        print("-----------------\n\n");
-        return {
-          "success": 0,
-          "unpacked": "Internal Server error!Wrong request sent!"
-        };
-      }
-    } else {
-      print(localData);
-      print("Server Down! Status:$localData");
-      print("-----------------\n\n");
-
-      return {"success": 0, "unpacked": "Couldn't reach the servers!"};
-    }
-  }
-
-  Future<void> _addComment() async {
-    setState(() {
-      _isLoading = true;
-    });
-    final res = await unPackLocally();
-    setState(() {
-      _isLoading = false;
-    });
-    if (res["success"] == 1) {
-      print("ADD COMMENT RESULT");
-      Map _data = res["unpacked"];
-      Fluttertoast.showToast(msg: "Comment added successfully!");
-      PostProvider postProvider =
-          Provider.of<PostProvider>(context, listen: false);
-      UserProvider userProvider =
-          Provider.of<UserProvider>(context, listen: false);
-
-      Map readableCommentJSON = {
-        "_id": _data["_id"],
-        "message": _data["message"],
+      Map comment = {
+        "_id": receivedData["_id"],
+        "message": receivedData["message"],
         "userID": {
-          // THE USER FORMAT AS RETURNED FROM THE BACKEND
+          "_id": receivedData["userID"],
           "username": userProvider.getUser()!.username,
-          "_id": userProvider.getUser()!.userID,
-          "profileURL": userProvider.getUser()!.profileURL
+          "profileURL": userProvider.getUser()!.profileURL,
         },
-        "username": userProvider.getUser()!.username,
-        "timestamp": _data["timestamp"],
-        "userProfile": userProvider.getUser()!.profileURL
+        "timestamp": receivedData["timestamp"],
+        "__v": 0
       };
 
-      postProvider.addSingleComment(readableCommentJSON);
+      currentPostProvider.addSingleComment(comment);
       Navigator.pop(context);
+    } else {
+      Fluttertoast.showToast(msg: "Something went wrong!");
     }
-    else{
-      Fluttertoast.showToast(msg: "Failed to add comment!");
-    }
+
+    setState(() {
+      _isAdding = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -127,18 +86,21 @@ class _AddCommentPageState extends State<AddCommentPage> {
             },
           ),
           actions: [
-            _isLoading
-                ? const Icon(Icons.more_horiz, color: Colors.black)
-                : IconButton(
-                    icon: const Icon(Icons.check, color: Colors.black),
-                    onPressed: () async {
-                      bool isValidCommentEntered =
-                          _addPostFormKey.currentState!.validate();
-                      if (isValidCommentEntered) {
-                        _addComment();
-                      }
-                    },
-                  )
+            Container(
+              margin: const EdgeInsets.all(15),
+              child: _isAdding
+                  ? const SizedBox(child: CircularProgressIndicator())
+                  : IconButton(
+                      icon: const Icon(Icons.check, color: Colors.black),
+                      onPressed: () async {
+                        bool isValidCommentEntered =
+                            _addPostFormKey.currentState!.validate();
+                        if (isValidCommentEntered) {
+                          _addComment();
+                        }
+                      },
+                    ),
+            )
           ],
         ),
         body: Container(

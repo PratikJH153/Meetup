@@ -35,7 +35,7 @@ Future<Map> POST(String url, Map? body, {String? message}) async {
     final res = await client.post(endpoint + url,
         data: jsonEncode(body),
         options:
-        Options(headers: {Headers.acceptHeader: Headers.jsonContentType}));
+            Options(headers: {Headers.acceptHeader: Headers.jsonContentType}));
 
     var decodedResult = Map.castFrom(res.data);
 
@@ -79,29 +79,21 @@ Future<Map> DELETE(String url, {Map? body}) async {
   Map result = {"local_result": "", "local_status": 0};
 
   final uri = Uri.parse(endpoint + url);
-  final request = http.Request("DELETE", uri);
-
-  if(body!=null){
-    request.body = jsonEncode(body);
-  }
-  request.headers.addAll(<String, String>{
-    HttpHeaders.acceptHeader: Headers.jsonContentType,
-  });
 
   try {
-    final response = await request.send();
-    final res = await response.stream.bytesToString();
+    final res = await http.delete(uri,
+        body: body == null ? null : jsonEncode(body),
+        headers: {Headers.acceptHeader: Headers.jsonContentType});
 
-    if (response.statusCode != SUCCESS_CODE) {
-      result["local_result"] = socketErrorMessage;
-      result["local_status"] = SERVER_ERROR_CODE;
-    } else {
-      Map decodedResult = jsonDecode(res);
-      result["local_result"] = decodedResult;
-      result["local_status"] = SERVER_ERROR_CODE;
-    }
-  } on Exception catch (e) {
+    var decodedResult = jsonDecode(res.body);
+    result["local_result"] = decodedResult;
+    result["local_status"] = SUCCESS_CODE;
+  } on SocketException {
+    print("This is socket exception");
     result["local_result"] = socketErrorMessage;
+    result["local_status"] = SERVER_ERROR_CODE;
+  } on Exception catch (e) {
+    result["local_result"] = miscellaneousErrorMessage;
     result["local_status"] = SERVER_ERROR_CODE;
   }
 

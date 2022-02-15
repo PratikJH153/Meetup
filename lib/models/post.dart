@@ -7,8 +7,7 @@ class Post {
   final Map? author;
   int upvotes;
   int downvotes;
-  bool? isupvoted;
-  bool? isdownvoted;
+  bool? vote;
   final List? comments;
 
   int timeReadCalc() {
@@ -24,8 +23,6 @@ class Post {
     this.title,
     this.upvotes = 0,
     this.downvotes = 0,
-    this.isdownvoted = false,
-    this.isupvoted = false,
     this.comments,
   });
 

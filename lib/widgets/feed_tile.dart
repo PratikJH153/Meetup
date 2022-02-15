@@ -1,14 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '/helper/backend/apis.dart';
 import '/models/user.dart';
-import 'package:provider/provider.dart';
 import '/providers/UserProvider.dart';
-import '/models/post.dart';
 import '/screens/post/CommentPage.dart';
-import '/widgets/feed_interact_button.dart';
+import 'package:provider/provider.dart';
+import '/helper/backend/apis.dart';
+import '/models/post.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+import 'feed_interact_button.dart';
 
 class FeedTile extends StatefulWidget {
   final Post thePost;
@@ -20,17 +21,81 @@ class FeedTile extends StatefulWidget {
 }
 
 class _FeedTileState extends State<FeedTile> {
+
+  Map<bool?, Color> colorMap = {
+    null: Colors.grey,
+    true: Colors.red,
+    false: Colors.blue,
+  };
+
+  final _post = PostAPIS();
+
+  @override
+  void initState() {
+
+    UserClass? currUser =
+        Provider.of<UserProvider>(context, listen: false).getUser();
+
+    if (currUser != null) {
+      // vote = currUser.votes![widget.thePost.postID];
+      widget.thePost.vote = currUser.votes![widget.thePost.postID];
+    }
+    super.initState();
+  }
+
+  void _vote({bool isUpvote = true}) async {
+    Function func = isUpvote ? _post.upVote : _post.downVote;
+
+    User? curruser = FirebaseAuth.instance.currentUser;
+    Map requestBody = {
+      "postID": widget.thePost.postID,
+      "userID": curruser!.uid
+    };
+
+    print(requestBody);
+
+    if (curruser == null) {
+      return;
+    }
+    final res = await func(requestBody);
+
+    print(res);
+  }
+
+  void _cancelVote({bool isCancelUpvote = true}) async {
+    Function func = !isCancelUpvote ? _post.cancelDownVote : _post.cancelUpVote;
+    User? curruser = FirebaseAuth.instance.currentUser;
+    Map requestBody = {
+      "postID": widget.thePost.postID,
+      "userID": curruser!.uid
+    };
+
+    if (curruser == null) {
+      return;
+    }
+    final res = await func(requestBody);
+
+    print(res);
+  }
+
   @override
   Widget build(BuildContext context) {
-    UserProvider u = Provider.of<UserProvider>(context, listen: false);
-    UserClass currUser = u.getUser()!;
-    bool? hasVoted = currUser.votes![widget.thePost.postID];
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    String postID = widget.thePost.postID!;
+    Map voteMap = userProvider.voteMap;
 
     Color upvoteColor = Colors.grey;
     Color downvoteColor = Colors.grey;
 
-    if (hasVoted != null) {
-      hasVoted ? upvoteColor = Colors.red : downvoteColor = Colors.blue;
+    int upvotes = voteMap[postID]["upvotes"];
+    int downvotes = voteMap[postID]["downvotes"];
+
+    if (voteMap[postID]["vote"] == true) {
+      upvoteColor = Colors.red;
+      downvoteColor = Colors.grey;
+    } else if (voteMap[postID]["vote"] == false) {
+      upvoteColor = Colors.grey;
+      downvoteColor = Colors.blue;
     }
 
     return Container(
@@ -130,7 +195,7 @@ class _FeedTileState extends State<FeedTile> {
               height: 24,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 widget.thePost.tag == null
                     ? const SizedBox()
@@ -154,107 +219,75 @@ class _FeedTileState extends State<FeedTile> {
                           ),
                         ),
                       ),
-                Row(
-                  children: [
-                    FeedInteractButton(
-                      icon: CupertinoIcons.arrowtriangle_up_circle,
-                      label: "12",
-                      tapHandler: () async {
-                        /// UPVOTE PRESSED
+                const Spacer(),
+                FeedInteractButton(
+                  icon: CupertinoIcons.arrowtriangle_up_circle,
+                  label: upvotes.toString(),
+                  color: upvoteColor,
+                  tapHandler: () async {
+                    /// UPVOTE PRESSED
+                    userProvider.ratePost(postID: widget.thePost.postID!, upvoteClick: true);
 
-                        if (hasVoted ?? true) {
-                          _vote();
-                        } else if (!hasVoted!) {
-                          // HAD DOWNVOTED BUT IS UPVOTING
-                          _cancelVote(isCancelUpvote: false);
-                          _vote(isUpvote: true);
-                        } else {
-                          // HAD CLICKED ON UPVOTE AGAIN CLICKING ON UPVOTE
-                          _cancelVote(isCancelUpvote: true);
-                          _vote(isUpvote: false);
-                        }
-                      },
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    FeedInteractButton(
-                      icon: CupertinoIcons.arrowtriangle_down_circle,
-                      label: "10",
-                      tapHandler: () async {
-                        /// DOWNVOTE PRESSED
+                    if (widget.thePost.vote == true) {
+                      // CANCEL UPVOTE
+                      _cancelVote(isCancelUpvote: true);
+                    } else if (widget.thePost.vote == false) {
+                      // FIRST DOWNVOTED NOW UPVOTED
+                      _cancelVote(isCancelUpvote: false);
+                      _vote(isUpvote: true);
+                    } else if (widget.thePost.vote == null) {
+                      // HAD NOT VOTED NOW UPVOTING
+                      _vote(isUpvote: true);
+                    }
+                  },
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                FeedInteractButton(
+                  icon: CupertinoIcons.arrowtriangle_down_circle,
+                  label: downvotes.toString(),
+                  color: downvoteColor,
+                  tapHandler: () async {
+                    /// DOWNVOTE PRESSED
+                    userProvider.ratePost(
+                        postID: widget.thePost.postID!, upvoteClick: false);
 
-                        if (hasVoted ?? true) {
-                          _vote(isUpvote: false);
-                        } else if (hasVoted!) {
-                          // HAD UPVOTED BUT IS DOWNVOTING
-                          _cancelVote(isCancelUpvote: true);
-                          _vote(isUpvote: false);
-                        } else {
-                          _cancelVote(isCancelUpvote: false);
-                          _vote(isUpvote: true);
-                        }
+                    if (widget.thePost.vote == false) {
+                      // CANCEL DOWNVOTE
+                      _cancelVote(isCancelUpvote: false);
+                    } else if (widget.thePost.vote == null) {
+                      // NOT VOTED NOW DOWNVOTING
+                      _vote(isUpvote: false);
+                    } else if (widget.thePost.vote == true) {
+                      // HAD PREVIOUSLY UPVOTED DOWN DOWNVOTING
+                      _cancelVote(isCancelUpvote: true);
+                      _vote(isUpvote: false);
+                    }
+                  },
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                FeedInteractButton(
+                  icon: CupertinoIcons.chat_bubble_2,
+                  label: '',
+                  tapHandler: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      barrierColor: const Color(0xFF383838),
+                      builder: (ctx) {
+                        return CommentPage(
+                            widget.thePost.comments ?? [], widget.thePost);
                       },
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    FeedInteractButton(
-                      icon: CupertinoIcons.chat_bubble_2,
-                      label: '',
-                      tapHandler: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          barrierColor: const Color(0xFF383838),
-                          builder: (ctx) {
-                            return CommentPage(
-                                widget.thePost.comments ?? [], widget.thePost);
-                          },
-                        );
-                      },
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ],
-            ),
+            )
           ],
         ));
-  }
-
-  void _vote({bool isUpvote = true}) async {
-    PostAPIS _post = PostAPIS();
-    Function func = isUpvote ? _post.upVote : _post.downVote;
-    User? curruser = FirebaseAuth.instance.currentUser;
-    Map requestBody = {
-      "postID": widget.thePost.postID,
-      "userID": curruser!.uid
-    };
-    print(requestBody);
-
-    if (curruser == null) {
-      return;
-    }
-    final res = await func(requestBody);
-
-    print(res);
-  }
-
-  void _cancelVote({bool isCancelUpvote = true}) async {
-    PostAPIS _post = PostAPIS();
-    Function func = !isCancelUpvote ? _post.cancelDownVote : _post.cancelUpVote;
-    User? curruser = FirebaseAuth.instance.currentUser;
-    Map requestBody = {
-      "postID": widget.thePost.postID,
-      "userID": curruser!.uid
-    };
-
-    if (curruser == null) {
-      return;
-    }
-    final res = await func(requestBody);
-
-    print(res);
   }
 }

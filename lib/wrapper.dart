@@ -5,6 +5,7 @@ import 'screens/HomePage.dart';
 
 class Wrapper extends StatefulWidget {
   static const routeName = "/wrapper";
+
   const Wrapper({Key? key}) : super(key: key);
 
   @override
@@ -12,11 +13,15 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
+  late User? user;
+
   @override
   Widget build(BuildContext context) {
+
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
+
         if (snapshot.hasData) {
           // FETCH USER
           return const HomePage();
