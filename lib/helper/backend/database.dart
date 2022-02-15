@@ -25,35 +25,46 @@ final socketErrorMessage = {
   "errCode": 100 // Server connection error
 };
 
-Map unPackLocally(Map data) {
+Map unPackLocally(Map data, {bool toPrint=true}) {
   bool receivedResponseFromServer = data["local_status"] == 200;
   Map localData = data["local_result"];
 
   if (receivedResponseFromServer) {
     bool dataReceivedSuccessfully = localData["status"] == 200;
-    print("Server responded! Status:${localData["status"]}");
+
+    if(toPrint) print("Server responded! Status:${localData["status"]}");
 
     if (dataReceivedSuccessfully) {
       var requestedSuccessData = localData["data"];
-      print("SUCCESS DATA:");
-      print(requestedSuccessData);
-      print("-----------------\n\n");
+
+      if(toPrint)
+        {
+          print("SUCCESS DATA:");
+          print(requestedSuccessData);
+          print("-----------------\n\n");
+        }
 
       return {"success": 1, "unpacked": requestedSuccessData};
     } else {
       Map? requestFailedData = localData["data"];
-      print("INCORRECT DATA:");
-      print(requestFailedData);
-      print("-----------------\n\n");
+      if(toPrint)
+      {
+        print("INCORRECT DATA:");
+        print(requestFailedData);
+        print("-----------------\n\n");
+      }
       return {
         "success": 0,
         "unpacked": "Internal Server error!Wrong request sent!"
       };
     }
   } else {
-    print(localData);
-    print("Server Down! Status:$localData");
-    print("-----------------\n\n");
+    if(toPrint)
+    {
+      print(localData);
+      print("Server Down! Status:$localData");
+      print("-----------------\n\n");
+    }
 
     return {"success": 0, "unpacked": "Couldn't reach the servers!"};
   }

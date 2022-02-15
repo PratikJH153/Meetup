@@ -12,6 +12,8 @@ class UserProvider with ChangeNotifier {
   void ratePost({required String postID, required bool upvoteClick}) {
     if (_voteMap[postID]["vote"] == null) {
       // THE USER HAS NEVER RATED THIS POST
+      print("1");
+
       int currentUpvotes = _voteMap[postID]["upvotes"];
       int currentDownvotes = _voteMap[postID]["downvotes"];
 
@@ -23,7 +25,8 @@ class UserProvider with ChangeNotifier {
     } else {
       // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
 
-      if (_voteMap[postID] == upvoteClick) {
+      if (_voteMap[postID]["vote"] == upvoteClick) {
+
         // RATING AGAIN WHAT WAS PREVIOUSLY RATED, HENCE CANCELLATION
         int currentUpvotes = _voteMap[postID]["upvotes"];
         int currentDownvotes = _voteMap[postID]["downvotes"];
@@ -38,14 +41,24 @@ class UserProvider with ChangeNotifier {
         int currentUpvotes = _voteMap[postID]["upvotes"];
         int currentDownvotes = _voteMap[postID]["downvotes"];
 
-        _voteMap[postID] = {
-          "upvotes": upvoteClick ? currentUpvotes + 1 : currentUpvotes - 1,
-          "downvotes": !upvoteClick ? currentDownvotes + 1 : currentDownvotes - 1,
+        Map newMap = {
           "vote": upvoteClick
         };
+
+        if (!upvoteClick) {
+          newMap["upvotes"] = currentUpvotes-1;
+          newMap["downvotes"] = currentDownvotes+1;
+        }
+        else{
+          newMap["upvotes"] = currentUpvotes+1;
+          newMap["downvotes"] = currentDownvotes-1;
+        }
+
+        _voteMap[postID] = newMap;
       }
     }
     notifyListeners();
+    print(_voteMap[postID]);
   }
 
   void initializeRatingMap(Map votesMap) {

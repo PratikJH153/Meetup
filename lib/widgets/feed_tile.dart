@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import '/helper/backend/database.dart';
 import '/models/user.dart';
 import '/providers/UserProvider.dart';
 import '/screens/post/CommentPage.dart';
@@ -21,7 +23,6 @@ class FeedTile extends StatefulWidget {
 }
 
 class _FeedTileState extends State<FeedTile> {
-
   Map<bool?, Color> colorMap = {
     null: Colors.grey,
     true: Colors.red,
@@ -32,14 +33,6 @@ class _FeedTileState extends State<FeedTile> {
 
   @override
   void initState() {
-
-    UserClass? currUser =
-        Provider.of<UserProvider>(context, listen: false).getUser();
-
-    if (currUser != null) {
-      // vote = currUser.votes![widget.thePost.postID];
-      widget.thePost.vote = currUser.votes![widget.thePost.postID];
-    }
     super.initState();
   }
 
@@ -52,14 +45,17 @@ class _FeedTileState extends State<FeedTile> {
       "userID": curruser!.uid
     };
 
-    print(requestBody);
-
     if (curruser == null) {
       return;
     }
     final res = await func(requestBody);
+    Map unpackedVote = unPackLocally(res, toPrint: false);
 
-    print(res);
+    if (unpackedVote["success"] == 1) {
+      print("${isUpvote?"UPVOTE":"DOWNVOTE"} SUCCESSFUL!");
+    } else {
+      Fluttertoast.showToast(msg: "Couldn't vote!");
+    }
   }
 
   void _cancelVote({bool isCancelUpvote = true}) async {
@@ -74,8 +70,13 @@ class _FeedTileState extends State<FeedTile> {
       return;
     }
     final res = await func(requestBody);
+    Map unpackedVote = unPackLocally(res, toPrint: false);
 
-    print(res);
+    if (unpackedVote["success"] == 1) {
+      print("CANCEL ${isCancelUpvote?"UPVOTE":"DOWNVOTE"} SUCCESSFUL!");
+    } else {
+      Fluttertoast.showToast(msg: "Couldn't vote!");
+    }
   }
 
   @override
@@ -226,18 +227,17 @@ class _FeedTileState extends State<FeedTile> {
                   color: upvoteColor,
                   tapHandler: () async {
                     /// UPVOTE PRESSED
-                    userProvider.ratePost(postID: widget.thePost.postID!, upvoteClick: true);
-
-                    if (widget.thePost.vote == true) {
-                      // CANCEL UPVOTE
-                      _cancelVote(isCancelUpvote: true);
-                    } else if (widget.thePost.vote == false) {
-                      // FIRST DOWNVOTED NOW UPVOTED
-                      _cancelVote(isCancelUpvote: false);
+                    userProvider.ratePost(
+                        postID: widget.thePost.postID!, upvoteClick: true);
+                    if (voteMap[postID]["vote"] == null) {
                       _vote(isUpvote: true);
-                    } else if (widget.thePost.vote == null) {
-                      // HAD NOT VOTED NOW UPVOTING
-                      _vote(isUpvote: true);
+                    } else {
+                      if (voteMap[postID]["vote"] == true) {
+                        _cancelVote(isCancelUpvote: true); // CANCEL UPVOTE
+                      } else {
+                        _cancelVote(isCancelUpvote: false); // CANCEL DOWNVOTE
+                        _vote(isUpvote: true); // UPVOTE
+                      }
                     }
                   },
                 ),
@@ -252,17 +252,15 @@ class _FeedTileState extends State<FeedTile> {
                     /// DOWNVOTE PRESSED
                     userProvider.ratePost(
                         postID: widget.thePost.postID!, upvoteClick: false);
-
-                    if (widget.thePost.vote == false) {
-                      // CANCEL DOWNVOTE
-                      _cancelVote(isCancelUpvote: false);
-                    } else if (widget.thePost.vote == null) {
-                      // NOT VOTED NOW DOWNVOTING
-                      _vote(isUpvote: false);
-                    } else if (widget.thePost.vote == true) {
-                      // HAD PREVIOUSLY UPVOTED DOWN DOWNVOTING
-                      _cancelVote(isCancelUpvote: true);
-                      _vote(isUpvote: false);
+                    if (voteMap[postID]["vote"] == null) {
+                      _vote(isUpvote: false); // DOWNVOTE
+                    } else {
+                      if (voteMap[postID]["vote"] == false) {
+                        _cancelVote(isCancelUpvote: false); // CANCEL DOWNVOTE
+                      } else {
+                        _cancelVote(isCancelUpvote: true); // CANCEL UPVOTE
+                        _vote(isUpvote: false); // DOWNVOTE
+                      }
                     }
                   },
                 ),
