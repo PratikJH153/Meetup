@@ -11,13 +11,9 @@ class PostProvider with ChangeNotifier {
   List _loadedPosts = [];
   List _trendingPosts = [];
 
-  List _comments = [];
-
   List<Map> get loadedPosts => [..._loadedPosts];
 
   List<Map> get trendingPosts => [..._trendingPosts];
-
-  List<Comment> get getComments => [..._comments];
 
   List<Map> taggedPosts(List<String> interests) {
     List<Map> newPosts = [];
@@ -27,11 +23,6 @@ class PostProvider with ChangeNotifier {
       }
     });
     return newPosts;
-  }
-
-  void setComments(List the_comments) {
-    _comments = the_comments;
-    notifyListeners();
   }
 
   void setPosts(List thePosts) {
@@ -44,10 +35,6 @@ class PostProvider with ChangeNotifier {
     _trendingPosts = thePosts;
     isLoadedTrendingPosts = true;
     notifyListeners();
-  }
-
-  void addSingleComment(Comment comment) {
-    _comments.add(comment);
   }
 
   void togglePostsWentWrong({required bool didGoWrong}) {

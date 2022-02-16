@@ -72,8 +72,9 @@ class _CommentPageState extends State<CommentPage> {
           "__v": 0
         };
 
+        //! TIME ISSUE SOLVE IT!!!!
+
         currentPostProvider.addSingleComment(comment);
-        Navigator.pop(context);
       } else {
         Fluttertoast.showToast(msg: "Something went wrong!");
       }
@@ -95,15 +96,6 @@ class _CommentPageState extends State<CommentPage> {
       currentPost.setComments(unpackedCommentData["unpacked"]["comments"]);
     } else {
       currentPost.toggleWentWrongComments(true);
-    }
-
-    final relatedPostsData = await _postAPI.getRelatedPosts(widget.post.tag!);
-    Map unpackedRelatedPostsData = unPackLocally(relatedPostsData);
-
-    if (unpackedRelatedPostsData["success"] == 1) {
-      currentPost.setTrendingPosts(unpackedRelatedPostsData["unpacked"]);
-    } else {
-      currentPost.toggleWentWrongTrending(true);
     }
   }
 
@@ -170,7 +162,7 @@ class _CommentPageState extends State<CommentPage> {
                       ? const Text("Couldn't fetch comments")
                       : !isLoadedComments
                           ? GlobalLoader()
-                          : commentList.isEmpty
+                          : !commentList.isEmpty
                               ? Expanded(
                                   child: Container(
                                     padding: const EdgeInsets.only(
@@ -230,84 +222,104 @@ class _CommentPageState extends State<CommentPage> {
                                           height: 20,
                                         ),
                                         Expanded(
-                                          child: ListView.builder(
-                                            itemCount: commentList.length,
-                                            physics:
-                                                const BouncingScrollPhysics(),
-                                            itemBuilder: (ctx, index) {
-                                              return Container(
-                                                margin: const EdgeInsets.only(
-                                                    bottom: 25),
-                                                child: Row(
-                                                  children: [
-                                                    Container(
-                                                      height: 40,
-                                                      width: 40,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        image: DecorationImage(
-                                                          image: NetworkImage(
-                                                            commentList[index]
-                                                                    .userData![
-                                                                "profileURL"],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 190,
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            commentList[index]
-                                                                .userData![
-                                                                    "username"]
-                                                                .toString()
-                                                                .capitalize(),
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 14,
-                                                              color:
-                                                                  Colors.grey,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            commentList[index]
-                                                                .message!,
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 16,
-                                                              color:
-                                                                  Colors.black,
-                                                              height: 1.3,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    const Spacer(),
-                                                    Text(
-                                                      timeago.format(
-                                                        DateTime.parse(
-                                                          commentList[index]
-                                                              .timeStamp!,
-                                                        ),
-                                                      ),
-                                                      style: const TextStyle(
-                                                        fontSize: 11,
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                          child: RefreshIndicator(
+                                            onRefresh: () {
+                                              return Future.delayed(
+                                                const Duration(seconds: 1),
+                                                () {
+                                                  setState(() {
+                                                    _initialize();
+                                                  });
+                                                },
                                               );
                                             },
+                                            child: ListView.builder(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 100),
+                                              itemCount: commentList.length,
+                                              physics:
+                                                  const BouncingScrollPhysics(),
+                                              itemBuilder: (ctx, index) {
+                                                return Container(
+                                                  margin: const EdgeInsets.only(
+                                                      bottom: 25),
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                        height: 40,
+                                                        width: 40,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          image:
+                                                              DecorationImage(
+                                                            image: NetworkImage(
+                                                              commentList[index]
+                                                                      ["userID"]
+                                                                  [
+                                                                  "profileURL"],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 190,
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              commentList[index]
+                                                                          [
+                                                                          "userID"]
+                                                                      [
+                                                                      "username"]
+                                                                  .toString()
+                                                                  .capitalize(),
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 14,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              commentList[index]
+                                                                  ["message"],
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .black,
+                                                                height: 1.3,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      const Spacer(),
+                                                      Text(
+                                                        timeago.format(
+                                                          DateTime.parse(
+                                                            commentList[index]
+                                                                ["timestamp"],
+                                                          ),
+                                                        ),
+                                                        style: const TextStyle(
+                                                          fontSize: 11,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            ),
                                           ),
                                         ),
                                         Container(

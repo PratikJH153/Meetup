@@ -177,7 +177,24 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                body: _widgetOptions[_selectedIndex],
+                body: RefreshIndicator(
+                  child: _widgetOptions[_selectedIndex],
+                  backgroundColor: Colors.red,
+                  color: Colors.white,
+                  onRefresh: () {
+                    return Future.delayed(
+                      const Duration(seconds: 1),
+                      () {
+                        setState(() {
+                          _initialize(Provider.of<UserProvider>(
+                            context,
+                            listen: false,
+                          ).getUser()!.userID);
+                        });
+                      },
+                    );
+                  },
+                ),
               );
   }
 }

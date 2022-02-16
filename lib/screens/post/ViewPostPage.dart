@@ -191,66 +191,66 @@ class _ViewPostPageState extends State<ViewPostPage> {
     );
   }
 
-  _CommentsWidget(
-      {required List comments,
-      required bool wentWrong,
-      required bool isLoading}) {
-    return !_hasOpenedComments
-        ? const SizedBox()
-        : wentWrong
-            ? const Text("Couldn't fetch comments")
-            : isLoading
-                ? GlobalLoader()
-                : comments.isEmpty
-                    ? const Text("No comments yet")
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: comments.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          Comment currComment =
-                              Comment.fromJson(comments[index]);
+  // _CommentsWidget(
+  //     {required List comments,
+  //     required bool wentWrong,
+  //     required bool isLoading}) {
+  //   return !_hasOpenedComments
+  //       ? const SizedBox()
+  //       : wentWrong
+  //           ? const Text("Couldn't fetch comments")
+  //           : isLoading
+  //               ? GlobalLoader()
+  //               : comments.isEmpty
+  //                   ? const Text("No comments yet")
+  //                   : ListView.builder(
+  //                       shrinkWrap: true,
+  //                       physics: const NeverScrollableScrollPhysics(),
+  //                       itemCount: comments.length,
+  //                       itemBuilder: (BuildContext context, int index) {
+  //                         Comment currComment =
+  //                             Comment.fromJson(comments[index]);
 
-                          Duration duration = DateTime.now().difference(
-                              DateTime.parse(currComment.timeStamp!));
-                          UserProvider userProvider =
-                              Provider.of<UserProvider>(context, listen: false);
-                          bool isTheSamePerson = currComment.userData!["_id"] ==
-                              userProvider.getUser()!.userID;
+  //                         Duration duration = DateTime.now().difference(
+  //                             DateTime.parse(currComment.timeStamp!));
+  //                         UserProvider userProvider =
+  //                             Provider.of<UserProvider>(context, listen: false);
+  //                         bool isTheSamePerson = currComment.userID ==
+  //                             userProvider.getUser()!.userID;
 
-                          PopupMenuItem commentMenuOption(
-                              {required bool isCopy}) {
-                            return PopupMenuItem(
-                              child: Row(
-                                children: [
-                                  Icon(isCopy ? Icons.copy : Icons.delete),
-                                  Text(isCopy ? "Copy Text" : "Delete"),
-                                ],
-                              ),
-                              onTap: () {
-                                if (!isCopy) {
-                                  _deleteComment(comments[index]);
-                                }
-                              },
-                            );
-                          }
+  //                         PopupMenuItem commentMenuOption(
+  //                             {required bool isCopy}) {
+  //                           return PopupMenuItem(
+  //                             child: Row(
+  //                               children: [
+  //                                 Icon(isCopy ? Icons.copy : Icons.delete),
+  //                                 Text(isCopy ? "Copy Text" : "Delete"),
+  //                               ],
+  //                             ),
+  //                             onTap: () {
+  //                               if (!isCopy) {
+  //                                 _deleteComment(comments[index]);
+  //                               }
+  //                             },
+  //                           );
+  //                         }
 
-                          return ListTile(
-                            title: Text(currComment.message!),
-                            subtitle:
-                                Text("Posted ${duration.inDays} days ago"),
-                            contentPadding: EdgeInsets.zero,
-                            trailing: PopupMenuButton(
-                              itemBuilder: (BuildContext context) => [
-                                commentMenuOption(isCopy: true),
-                                if (isTheSamePerson)
-                                  commentMenuOption(isCopy: false)
-                              ],
-                            ),
-                          );
-                        },
-                      );
-  }
+  //                         return ListTile(
+  //                           title: Text(currComment.message!),
+  //                           subtitle:
+  //                               Text("Posted ${duration.inDays} days ago"),
+  //                           contentPadding: EdgeInsets.zero,
+  //                           trailing: PopupMenuButton(
+  //                             itemBuilder: (BuildContext context) => [
+  //                               commentMenuOption(isCopy: true),
+  //                               if (isTheSamePerson)
+  //                                 commentMenuOption(isCopy: false)
+  //                             ],
+  //                           ),
+  //                         );
+  //                       },
+  //                     );
+  // }
 
   _ReccomendedPostsSection(
       {required List posts, required bool wentWrong, required bool isLoading}) {
@@ -290,24 +290,14 @@ class _ViewPostPageState extends State<ViewPostPage> {
     CurrentPostProvider currentPost =
         Provider.of<CurrentPostProvider>(context, listen: false);
 
-    final commentData =
-        await _postAPI.getComments(widget.thePost.postID.toString());
-    Map unpackedCommentData = unPackLocally(commentData);
-
-    if (unpackedCommentData["success"] == 1) {
-      currentPost.setComments(unpackedCommentData["unpacked"]["comments"]);
-    } else {
-      currentPost.toggleWentWrongComments(true);
-    }
-
     final relatedPostsData =
         await _postAPI.getRelatedPosts(widget.thePost.tag!);
     Map unpackedRelatedPostsData = unPackLocally(relatedPostsData);
 
     if (unpackedRelatedPostsData["success"] == 1) {
-      currentPost.setTrendingPosts(unpackedRelatedPostsData["unpacked"]);
+      currentPost.setRelatedPosts(unpackedRelatedPostsData["unpacked"]);
     } else {
-      currentPost.toggleWentWrongTrending(true);
+      currentPost.toggleWentWrongRelated(true);
     }
   }
 
@@ -349,10 +339,10 @@ class _ViewPostPageState extends State<ViewPostPage> {
   Widget build(BuildContext context) {
     CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context);
 
-    List trendingList = currentPost.trendingPost;
+    List trendingList = currentPost.relatedPost;
 
-    bool isLoadedTrending = currentPost.isTrendingLoaded;
-    bool wentWrongTrending = currentPost.wentWrongTrending;
+    bool isLoadedTrending = currentPost.isRelatedLoaded;
+    bool wentWrongTrending = currentPost.wentWrongRelated;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,

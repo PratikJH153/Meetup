@@ -7,11 +7,11 @@ class CurrentPostProvider extends ChangeNotifier {
   bool isCommentsLoaded = false;
   bool wentWrongComments = false;
 
-  List _getTrending = [];
-  List get trendingPost => [..._getTrending];
+  List _getRelated = [];
+  List get relatedPost => [..._getRelated];
 
-  bool isTrendingLoaded = false;
-  bool wentWrongTrending = false;
+  bool isRelatedLoaded = false;
+  bool wentWrongRelated = false;
 
   void setComments(List comments) {
     _postComments = comments;
@@ -43,14 +43,14 @@ class CurrentPostProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setTrendingPosts(List trendingPosts) {
-    _getTrending = trendingPosts;
-    isTrendingLoaded = true;
+  void setRelatedPosts(List relatedPosts) {
+    _getRelated = relatedPosts;
+    isRelatedLoaded = true;
     notifyListeners();
   }
 
-  void toggleWentWrongTrending(bool wentWrong) {
-    wentWrongTrending = wentWrong;
+  void toggleWentWrongRelated(bool wentWrong) {
+    wentWrongRelated = wentWrong;
     notifyListeners();
   }
 }
