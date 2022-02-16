@@ -307,8 +307,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
   Future<void> _deleteComment(Map commentMap) async {
     CurrentPostProvider currentPost =
         Provider.of<CurrentPostProvider>(context, listen: false);
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
 
     Comment comment = Comment.fromJson(commentMap);
 

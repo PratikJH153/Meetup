@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/providers/UserProvider.dart';
 import 'package:provider/provider.dart';
+import '/helper/backend/database.dart';
+import '/providers/UserProvider.dart';
 import '/helper/utils/loader.dart';
 import '/helper/utils/validator.dart';
 import '/helper/backend/apis.dart';
@@ -39,59 +39,19 @@ class _AddPostState extends State<AddPost> {
 
   bool isEdit = false;
 
-  Future<Map> unPackLocally(Map body) async {
-    final data = await _post.addPost(body);
-    print("CALLING /addPost");
-
-    bool receivedResponseFromServer = data["local_status"] == 200;
-    Map localData = data["local_result"];
-
-    if (receivedResponseFromServer) {
-      bool dataReceivedSuccessfully = localData["status"] == 200;
-      print("Server responded! Status:${localData["status"]}");
-
-      if (dataReceivedSuccessfully) {
-        Map requestedSuccessData = localData["data"];
-        print("SUCCESS DATA:");
-        print(requestedSuccessData);
-        print("-----------------\n\n");
-
-        return {"success": 1, "unpacked": requestedSuccessData};
-      } else {
-        Map requestFailedData = localData["data"];
-        print("INCORRECT DATA:");
-        print(requestFailedData);
-        print("-----------------\n\n");
-        return {
-          "success": 0,
-          "unpacked": "Internal Server error!Wrong request sent!"
-        };
-      }
-    } else {
-      print(localData);
-      print("Server Down! Status:$localData");
-      print("-----------------\n\n");
-
-      return {"success": 0, "unpacked": "Couldn't reach the servers!"};
-    }
-  }
-
   Future<void> _addPostApi(Map body) async {
-    print(body);
-    bool didGoWrong = false;
 
     setState(() {
       _isLoading = true;
     });
 
-    final Map requestData = await unPackLocally(body);
-    print("requestData");
-    print(requestData);
+    final addPost = await _post.addPost(body);
+    Map requestData = unPackLocally(addPost, toPrint: true);
 
     if (requestData["success"] == 1) {
+      Fluttertoast.showToast(msg: "Added Post successfully!");
       Navigator.of(context).pop();
     } else {
-      didGoWrong = true;
       Fluttertoast.showToast(msg: requestData["unpacked"]);
     }
 
@@ -102,7 +62,6 @@ class _AddPostState extends State<AddPost> {
 
   //! NOT DONE YET
   Future<void> _updatePostAPI(Map body) async {
-    bool didGoWrong = false;
 
     setState(() {
       _isLoading = true;
@@ -113,7 +72,6 @@ class _AddPostState extends State<AddPost> {
     if (requestData["success"] == 1) {
       Navigator.of(context).pop();
     } else {
-      didGoWrong = true;
       Fluttertoast.showToast(msg: requestData["unpacked"]);
     }
 
@@ -121,35 +79,6 @@ class _AddPostState extends State<AddPost> {
       _isLoading = false;
     });
   }
-
-  // Future<Map> _addPostAPI(Map postData) async {
-  //   setState(() {
-  //     _isProcessing = true;
-  //   });
-  //
-  //   print("CALLING ADD POST//");
-  //   final m1 = await PostAPIS().addPost({
-  //     "title": _titleController.text,
-  //     "desc": _descController.text,
-  //     "author": FirebaseAuth.instance.currentUser!.uid,
-  //   });
-  //   print("ADD POST RESULT:");
-  //   print(m1);
-  //   print("----------------");
-  //
-  //   setState(() {
-  //     _isProcessing = false;
-  //   });
-  //
-  //   if (m1["errCode"] != null) {
-  //     Fluttertoast.showToast(msg: "Couldn't add the Post!Try again later.");
-  //   }
-  //   else{
-  //     Fluttertoast.showToast(msg: "Added Post Successfully!");
-  //     Navigator.pop(context);
-  //   }
-  //   return m1;
-  // }
 
   @override
   void initState() {

@@ -27,7 +27,7 @@ class Comment {
       "userID": comment.userID,
       "username": comment.username,
       "timestamp": comment.timeStamp,
-      "userProfile": comment.userProfile
+      "userProfile": comment.userProfile,
     };
   }
 }

@@ -114,8 +114,7 @@ class _HomePageState extends State<HomePage> {
         : !isLoadingComplete
             ? Scaffold(body: GlobalLoader())
             : Scaffold(
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.centerFloat,
+                floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
                 floatingActionButton: Container(
                   margin: const EdgeInsets.only(bottom: 6),
                   decoration: BoxDecoration(
