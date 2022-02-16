@@ -39,10 +39,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _initialize(String? id) async {
     User? user = FirebaseAuth.instance.currentUser;
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
-    PostProvider postProvider =
-        Provider.of<PostProvider>(context, listen: false);
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    PostProvider postProvider = Provider.of<PostProvider>(context, listen: false);
 
     if (user != null) {
       Map userData = await _userAPI.getSingleUserData(user.uid);

@@ -78,14 +78,13 @@ Future<Map> POST_ALT(String url, Map? body) async {
 Future<Map> DELETE(String url, {Map? body}) async {
   Map result = {"local_result": "", "local_status": 0};
 
-  final uri = Uri.parse(endpoint + url);
-
   try {
-    final res = await http.delete(uri,
-        body: body == null ? null : jsonEncode(body),
-        headers: {Headers.acceptHeader: Headers.jsonContentType});
+    final res = await Dio().delete(endpoint + url,
+        data: body==null?null:jsonEncode(body),
+        options: Options(headers: {Headers.acceptHeader: Headers.jsonContentType})
+    );
 
-    var decodedResult = jsonDecode(res.body);
+    var decodedResult = Map.castFrom(res.data);
     result["local_result"] = decodedResult;
     result["local_status"] = SUCCESS_CODE;
   } on SocketException {

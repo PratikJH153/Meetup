@@ -1,16 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/widgets/FollwingList.dart';
-import 'package:meetupapp/widgets/TrendingList.dart';
-import '/providers/PostProvider.dart';
+import '/widgets/FollwingList.dart';
+import '/widgets/TrendingList.dart';
 import '/screens/SearchPage.dart';
 import '/widgets/button_widget.dart';
-import 'package:provider/provider.dart';
-
-import '/screens/post/ViewPostPage.dart';
-import '/models/post.dart';
-import '/widgets/constants.dart';
-import '/widgets/feed_tile.dart';
 
 class FeedPage extends StatefulWidget {
   static const routeName = "/feedpage";

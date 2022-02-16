@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:meetupapp/helper/utils/fire_auth.dart';
-import 'package:meetupapp/screens/EditProfilePage.dart';
-import 'package:meetupapp/widgets/profile_buttons.dart';
-import 'package:meetupapp/widgets/profile_number_widget.dart';
+import '/helper/utils/fire_auth.dart';
+import '/screens/EditProfilePage.dart';
+import '/widgets/profile_buttons.dart';
+import '/widgets/profile_number_widget.dart';
 import 'package:provider/provider.dart';
 
 import '/helper/utils/loader.dart';
@@ -31,8 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userFromProvider =
-        Provider.of<UserProvider>(context, listen: false);
+    UserProvider userFromProvider = Provider.of<UserProvider>(context);
     UserClass? user = userFromProvider.getUser();
 
     bool userLoaded = user == null;
@@ -227,7 +225,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           InkWell(
                             onTap: () async {
-                              await FireAuth.signOut();
+                              await FireAuth.signOut(context);
                             },
                             child: Container(
                               color: Colors.blue,

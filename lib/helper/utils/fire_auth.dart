@@ -2,7 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:meetupapp/providers/UserProvider.dart';
+import 'package:meetupapp/screens/authentication/LoginPage.dart';
+import 'package:meetupapp/screens/authentication/get_started_page.dart';
 import 'package:meetupapp/widgets/snackBar_widget.dart';
+import 'package:provider/provider.dart';
 
 String getMessageFromErrorCode(errorCode) {
   switch (errorCode) {
@@ -173,11 +177,14 @@ class FireAuth {
     return refreshedUser;
   }
 
-  static Future<void> signOut() async {
+  static Future<void> signOut(BuildContext context) async {
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
     FirebaseAuth auth = FirebaseAuth.instance;
 
     try {
+      userProvider.deleteUserLocalData();
       await auth.signOut();
+      Navigator.of(context).pushReplacementNamed(GetStartedPage.routeName);
     } catch (err) {
       print(err.toString());
     }

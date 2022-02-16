@@ -7,6 +7,7 @@ const SUCCESS_CODE = 200;
 // INTERNAL SEVER ERROR: 500
 // const endpoint = "http://192.168.0.212:9000/"; /// FOR REAL DEVICE :)
 const endpoint = "http://10.0.2.2:9000/";
+const bool kDebugMode = true;
 
 const ErrorCodesCustom = {
   100: "Couldn't connect to the server!",

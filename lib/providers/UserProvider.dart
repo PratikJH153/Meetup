@@ -9,6 +9,10 @@ class UserProvider with ChangeNotifier {
 
   Map get voteMap => {..._voteMap};
 
+  UserClass? _user;
+
+  UserClass? getUser() => _user;
+
   void ratePost({required String postID, required bool upvoteClick}) {
     if (_voteMap[postID]["vote"] == null) {
       // THE USER HAS NEVER RATED THIS POST
@@ -102,10 +106,6 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  UserClass? _user;
-
-  UserClass? getUser() => _user;
-
   void setUser(Map? userMap) {
     if (userMap != null) {
       _user = UserClass.fromJson(userMap);
@@ -114,8 +114,17 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteUserLocalData(){
+    isUserDataLoaded = false;
+    wentWrongUser = false;
+    _voteMap = {};
+    _user = null;
+    notifyListeners();
+  }
+
   void setWentWrong() {
     wentWrongUser = true;
     notifyListeners();
   }
+
 }
