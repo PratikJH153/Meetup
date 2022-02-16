@@ -15,7 +15,7 @@ class Comment {
     this.timeStamp,
   });
 
-  factory Comment.fromJson(Map<String, dynamic> data) {
+  factory Comment.fromJson(Map data) {
     return Comment(
       commentID: data["_id"],
       userID: data["userID"]["_id"],

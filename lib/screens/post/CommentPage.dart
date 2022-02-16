@@ -2,16 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/helper/backend/database.dart';
-import 'package:meetupapp/helper/utils/loader.dart';
-import 'package:meetupapp/providers/CurrentPostProvider.dart';
-import 'package:meetupapp/providers/PostProvider.dart';
-import 'package:meetupapp/providers/UserProvider.dart';
+import '/helper/backend/database.dart';
+import '/helper/utils/loader.dart';
+import '/providers/CurrentPostProvider.dart';
+import '/providers/UserProvider.dart';
 import 'package:provider/provider.dart';
 import '/helper/backend/apis.dart';
 import '/models/post.dart';
 import '/models/comment.dart';
-import '/widgets/comment_tile.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
 import '../../helper/utils/string_extension.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -74,6 +72,7 @@ class _CommentPageState extends State<CommentPage> {
 
         //! TIME ISSUE SOLVE IT!!!!
 
+        _commentController.text='';
         currentPostProvider.addSingleComment(comment);
       } else {
         Fluttertoast.showToast(msg: "Something went wrong!");
@@ -99,7 +98,7 @@ class _CommentPageState extends State<CommentPage> {
     }
   }
 
-  Future<void> _deleteComment(Map<String, dynamic> commentMap) async {
+  Future<void> _deleteComment(Map commentMap) async {
     CurrentPostProvider currentPost =
         Provider.of<CurrentPostProvider>(context, listen: false);
 
@@ -134,6 +133,22 @@ class _CommentPageState extends State<CommentPage> {
     super.dispose();
   }
 
+  PopupMenuItem commentMenuOption({required bool isCopy, Map? comment}) {
+    return PopupMenuItem(
+      child: Row(
+        children: [
+          Icon(isCopy ? Icons.copy : Icons.delete),
+          Text(isCopy ? "Copy Text" : "Delete"),
+        ],
+      ),
+      onTap: () {
+        if (!isCopy) {
+          _deleteComment(comment!);
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context);
@@ -162,7 +177,7 @@ class _CommentPageState extends State<CommentPage> {
                       ? const Text("Couldn't fetch comments")
                       : !isLoadedComments
                           ? GlobalLoader()
-                          : !commentList.isEmpty
+                          : commentList.isNotEmpty
                               ? Expanded(
                                   child: Container(
                                     padding: const EdgeInsets.only(
@@ -233,93 +248,7 @@ class _CommentPageState extends State<CommentPage> {
                                                 },
                                               );
                                             },
-                                            child: ListView.builder(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 100),
-                                              itemCount: commentList.length,
-                                              physics:
-                                                  const BouncingScrollPhysics(),
-                                              itemBuilder: (ctx, index) {
-                                                return Container(
-                                                  margin: const EdgeInsets.only(
-                                                      bottom: 25),
-                                                  child: Row(
-                                                    children: [
-                                                      Container(
-                                                        height: 40,
-                                                        width: 40,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          shape:
-                                                              BoxShape.circle,
-                                                          image:
-                                                              DecorationImage(
-                                                            image: NetworkImage(
-                                                              commentList[index]
-                                                                      ["userID"]
-                                                                  [
-                                                                  "profileURL"],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      SizedBox(
-                                                        width: 190,
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              commentList[index]
-                                                                          [
-                                                                          "userID"]
-                                                                      [
-                                                                      "username"]
-                                                                  .toString()
-                                                                  .capitalize(),
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 14,
-                                                                color:
-                                                                    Colors.grey,
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              commentList[index]
-                                                                  ["message"],
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 16,
-                                                                color: Colors
-                                                                    .black,
-                                                                height: 1.3,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      const Spacer(),
-                                                      Text(
-                                                        timeago.format(
-                                                          DateTime.parse(
-                                                            commentList[index]
-                                                                ["timestamp"],
-                                                          ),
-                                                        ),
-                                                        style: const TextStyle(
-                                                          fontSize: 11,
-                                                          color: Colors.grey,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            ),
+                                            child: _CommentList(commentList),
                                           ),
                                         ),
                                         Container(
@@ -444,14 +373,98 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 
-  // void _addComment(String comment) async {
-  //   PostAPIS _post = PostAPIS();
-  //   User? user = FirebaseAuth.instance.currentUser;
-  //   if (user == null) return;
-  //   final message = await _post.addComment(widget.post.postID!, {
-  //     "message": comment,
-  //     "userID": user.uid,
-  //   });
-  //   print("ADD COMMENT:$message");
-  // }
+  ListView _CommentList(List commentList) {
+    return ListView.builder(
+      padding: const EdgeInsets.only(bottom: 100),
+      itemCount: commentList.length,
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (ctx, index) {
+        UserProvider userProvider =
+            Provider.of<UserProvider>(context, listen: false);
+        bool isTheSamePerson = Comment.fromJson(commentList[index]).userID ==
+            userProvider.getUser()!.userID;
+        return Container(
+          margin: const EdgeInsets.only(bottom: 25),
+          child: Row(
+            children: [
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: NetworkImage(
+                      commentList[index]["userID"]["profileURL"],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              SizedBox(
+                width: 190,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      commentList[index]["userID"]["username"]
+                          .toString()
+                          .capitalize(),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Text(
+                      commentList[index]["message"],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  PopupMenuButton(
+                    itemBuilder: (BuildContext context) => [
+                      commentMenuOption(isCopy: true),
+                      if (isTheSamePerson)
+                        commentMenuOption(
+                            isCopy: false, comment: commentList[index])
+                    ],
+                  ),
+                  Text(
+                    timeago.format(
+                      DateTime.parse(commentList[index]["timestamp"]),
+                    ),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+// void _addComment(String comment) async {
+//   PostAPIS _post = PostAPIS();
+//   User? user = FirebaseAuth.instance.currentUser;
+//   if (user == null) return;
+//   final message = await _post.addComment(widget.post.postID!, {
+//     "message": comment,
+//     "userID": user.uid,
+//   });
+//   print("ADD COMMENT:$message");
+// }
 }

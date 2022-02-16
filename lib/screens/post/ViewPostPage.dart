@@ -29,7 +29,6 @@ class ViewPostPage extends StatefulWidget {
 }
 
 class _ViewPostPageState extends State<ViewPostPage> {
-
   final _post = PostAPIS();
 
   _ProfileRow() {
@@ -199,66 +198,66 @@ class _ViewPostPageState extends State<ViewPostPage> {
     );
   }
 
-  // _CommentsWidget(
-  //     {required List comments,
-  //     required bool wentWrong,
-  //     required bool isLoading}) {
-  //   return !_hasOpenedComments
-  //       ? const SizedBox()
-  //       : wentWrong
-  //           ? const Text("Couldn't fetch comments")
-  //           : isLoading
-  //               ? GlobalLoader()
-  //               : comments.isEmpty
-  //                   ? const Text("No comments yet")
-  //                   : ListView.builder(
-  //                       shrinkWrap: true,
-  //                       physics: const NeverScrollableScrollPhysics(),
-  //                       itemCount: comments.length,
-  //                       itemBuilder: (BuildContext context, int index) {
-  //                         Comment currComment =
-  //                             Comment.fromJson(comments[index]);
+  _CommentsWidget(
+      {required List comments,
+      required bool wentWrong,
+      required bool isLoading}) {
+    return !_hasOpenedComments
+        ? const SizedBox()
+        : wentWrong
+            ? const Text("Couldn't fetch comments")
+            : isLoading
+                ? GlobalLoader()
+                : comments.isEmpty
+                    ? const Text("No comments yet")
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: comments.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          Comment currComment =
+                              Comment.fromJson(comments[index]);
 
-  //                         Duration duration = DateTime.now().difference(
-  //                             DateTime.parse(currComment.timeStamp!));
-  //                         UserProvider userProvider =
-  //                             Provider.of<UserProvider>(context, listen: false);
-  //                         bool isTheSamePerson = currComment.userID ==
-  //                             userProvider.getUser()!.userID;
+                          Duration duration = DateTime.now().difference(
+                              DateTime.parse(currComment.timeStamp!));
+                          UserProvider userProvider =
+                              Provider.of<UserProvider>(context, listen: false);
+                          bool isTheSamePerson = currComment.userID ==
+                              userProvider.getUser()!.userID;
 
-  //                         PopupMenuItem commentMenuOption(
-  //                             {required bool isCopy}) {
-  //                           return PopupMenuItem(
-  //                             child: Row(
-  //                               children: [
-  //                                 Icon(isCopy ? Icons.copy : Icons.delete),
-  //                                 Text(isCopy ? "Copy Text" : "Delete"),
-  //                               ],
-  //                             ),
-  //                             onTap: () {
-  //                               if (!isCopy) {
-  //                                 _deleteComment(comments[index]);
-  //                               }
-  //                             },
-  //                           );
-  //                         }
+                          PopupMenuItem commentMenuOption(
+                              {required bool isCopy}) {
+                            return PopupMenuItem(
+                              child: Row(
+                                children: [
+                                  Icon(isCopy ? Icons.copy : Icons.delete),
+                                  Text(isCopy ? "Copy Text" : "Delete"),
+                                ],
+                              ),
+                              onTap: () {
+                                if (!isCopy) {
+                                  _deleteComment(comments[index]);
+                                }
+                              },
+                            );
+                          }
 
-  //                         return ListTile(
-  //                           title: Text(currComment.message!),
-  //                           subtitle:
-  //                               Text("Posted ${duration.inDays} days ago"),
-  //                           contentPadding: EdgeInsets.zero,
-  //                           trailing: PopupMenuButton(
-  //                             itemBuilder: (BuildContext context) => [
-  //                               commentMenuOption(isCopy: true),
-  //                               if (isTheSamePerson)
-  //                                 commentMenuOption(isCopy: false)
-  //                             ],
-  //                           ),
-  //                         );
-  //                       },
-  //                     );
-  // }
+                          return ListTile(
+                            title: Text(currComment.message!),
+                            subtitle:
+                                Text("Posted ${duration.inDays} days ago"),
+                            contentPadding: EdgeInsets.zero,
+                            trailing: PopupMenuButton(
+                              itemBuilder: (BuildContext context) => [
+                                commentMenuOption(isCopy: true),
+                                if (isTheSamePerson)
+                                  commentMenuOption(isCopy: false)
+                              ],
+                            ),
+                          );
+                        },
+                      );
+  }
 
   _ReccomendedPostsSection(
       {required List posts, required bool wentWrong, required bool isLoading}) {
@@ -284,7 +283,19 @@ class _ViewPostPageState extends State<ViewPostPage> {
 
                         return isTheSamePostAsCurrent
                             ? const SizedBox()
-                            : RecommededFeedTile(post);
+                            : GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    barrierColor: const Color(0xFF383838),
+                                    builder: (ctx) {
+                                      return ViewPostPage(post);
+                                    },
+                                  );
+                                },
+                                child: RecommededFeedTile(post));
                       },
                     ),
     );
@@ -346,7 +357,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
     Map unpackedVote = unPackLocally(res, toPrint: false);
 
     if (unpackedVote["success"] == 1) {
-      print("${isUpvote?"UPVOTE":"DOWNVOTE"} SUCCESSFUL!");
+      print("${isUpvote ? "UPVOTE" : "DOWNVOTE"} SUCCESSFUL!");
     } else {
       Fluttertoast.showToast(msg: "Couldn't vote!");
     }
@@ -367,11 +378,12 @@ class _ViewPostPageState extends State<ViewPostPage> {
     Map unpackedVote = unPackLocally(res, toPrint: false);
 
     if (unpackedVote["success"] == 1) {
-      print("CANCEL ${isCancelUpvote?"UPVOTE":"DOWNVOTE"} SUCCESSFUL!");
+      print("CANCEL ${isCancelUpvote ? "UPVOTE" : "DOWNVOTE"} SUCCESSFUL!");
     } else {
       Fluttertoast.showToast(msg: "Couldn't vote!");
     }
   }
+
   void copyText(String text) {}
 
   @override

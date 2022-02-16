@@ -3,14 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '/helper/backend/database.dart';
-import '/models/user.dart';
 import '/providers/UserProvider.dart';
 import '/screens/post/CommentPage.dart';
 import 'package:provider/provider.dart';
 import '/helper/backend/apis.dart';
 import '/models/post.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
 import 'feed_interact_button.dart';
 
 class FeedTile extends StatefulWidget {
