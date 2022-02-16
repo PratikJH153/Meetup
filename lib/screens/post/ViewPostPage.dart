@@ -349,14 +349,10 @@ class _ViewPostPageState extends State<ViewPostPage> {
   Widget build(BuildContext context) {
     CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context);
 
-    List commentList = currentPost.comments;
     List trendingList = currentPost.trendingPost;
 
     bool isLoadedTrending = currentPost.isTrendingLoaded;
     bool wentWrongTrending = currentPost.wentWrongTrending;
-
-    bool isLoadedComments = currentPost.isCommentsLoaded;
-    bool wentWrongComments = currentPost.wentWrongComments;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -479,11 +475,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                     height: 20,
                                   ),
                                   _VoteSection(),
-                                  const Divider(color: Colors.grey),
-                                  _CommentsWidget(
-                                      comments: commentList,
-                                      wentWrong: wentWrongComments,
-                                      isLoading: !isLoadedComments),
                                   const Text(
                                     "Related Posts",
                                     style: TextStyle(

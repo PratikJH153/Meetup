@@ -279,7 +279,6 @@ class _FeedTileState extends State<FeedTile> {
                       barrierColor: const Color(0xFF383838),
                       builder: (ctx) {
                         return CommentPage(
-                          comments: widget.thePost.comments ?? [],
                           post: widget.thePost,
                         );
                       },

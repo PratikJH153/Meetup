@@ -18,6 +18,7 @@ class CurrentPostProvider extends ChangeNotifier {
     isCommentsLoaded = true;
     notifyListeners();
   }
+
   void deleteComments(String pid) {
     _postComments = [];
 
@@ -26,27 +27,30 @@ class CurrentPostProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
   void toggleWentWrongComments(bool wentWrong) {
     wentWrongComments = wentWrong;
     notifyListeners();
   }
+
   void addSingleComment(Map comment) {
     _postComments.add(comment);
     notifyListeners();
   }
+
   void removeSingleComment(Map comment) {
     _postComments.remove(comment);
     notifyListeners();
   }
 
-  void setTrendingPosts(List trendingPosts){
+  void setTrendingPosts(List trendingPosts) {
     _getTrending = trendingPosts;
     isTrendingLoaded = true;
     notifyListeners();
   }
+
   void toggleWentWrongTrending(bool wentWrong) {
     wentWrongTrending = wentWrong;
     notifyListeners();
   }
-
 }

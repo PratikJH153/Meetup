@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '/models/post.dart';
 
 class RecommededFeedTile extends StatelessWidget {
-  Post post;
-  RecommededFeedTile(this.post);
+  final Post post;
+  const RecommededFeedTile(this.post, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +34,7 @@ class RecommededFeedTile extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                    image: NetworkImage(
-                      post.author!["profileURL"]
-                    ),
+                    image: NetworkImage(post.author!["profileURL"]),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -72,8 +70,8 @@ class RecommededFeedTile extends StatelessWidget {
           const SizedBox(
             height: 12,
           ),
-         Text(
-            post.title??"",
+          Text(
+            post.title ?? "",
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             style: const TextStyle(
@@ -99,7 +97,7 @@ class RecommededFeedTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Text(
-                  post.tag??"",
+                  post.tag ?? "",
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,

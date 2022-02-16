@@ -143,39 +143,50 @@ class _FeedPageState extends State<FeedPage>
                       right: 8,
                       top: 10,
                     ),
-                    child: Row(
+                    child: Column(
                       children: [
-                        const Text(
-                          "Discover 👋",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                        const Spacer(),
-                        ButtonWidget(
-                          icon: CupertinoIcons.search,
-                          tapHandler: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              barrierColor: const Color(0xFF383838),
-                              builder: (ctx) {
-                                return const SearchPage();
+                        Row(
+                          children: [
+                            const Text(
+                              "Discover 👋",
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                            const Spacer(),
+                            ButtonWidget(
+                              icon: CupertinoIcons.search,
+                              tapHandler: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  barrierColor: const Color(0xFF383838),
+                                  builder: (ctx) {
+                                    return const SearchPage();
+                                  },
+                                );
                               },
-                            );
-                          },
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        ButtonWidget(
-                          icon: CupertinoIcons.slider_horizontal_3,
-                          tapHandler: () {
-                            setState(() {
-                              _isOpened = !_isOpened;
-                            });
-                          },
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            ButtonWidget(
+                              icon: CupertinoIcons.slider_horizontal_3,
+                              tapHandler: () {
+                                setState(() {
+                                  // _isOpened = !_isOpened;
+                                  // showModalBottomSheet(
+                                  //   context: context,
+                                  //   builder: (ctx) {
+                                  //     return _filterBox();
+                                  //   },
+                                  // );
+                                  print("FILTER IS DONE JUST UI REMAINING!");
+                                });
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -197,7 +208,9 @@ class _FeedPageState extends State<FeedPage>
                       Tab(
                         text: "Following",
                       ),
-                      Tab(text: "Trending"),
+                      Tab(
+                        text: "Trending",
+                      ),
                     ],
                     controller: _tabController,
                   ),

@@ -8,6 +8,8 @@ import 'constants.dart';
 import 'feed_tile.dart';
 
 class FollowingList extends StatelessWidget {
+  const FollowingList({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     PostProvider postProvider = Provider.of<PostProvider>(context);
