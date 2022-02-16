@@ -20,6 +20,7 @@ class ProfileButton extends StatelessWidget {
       onTap: tapHandler,
       child: Container(
         margin: const EdgeInsets.only(bottom: 25),
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Row(
           children: [
             Container(

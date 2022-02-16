@@ -10,10 +10,10 @@ import '/models/post.dart';
 import '/helper/backend/apis.dart';
 
 class AddCommentPage extends StatefulWidget {
-  Post? post;
+  final Post? post;
   static const routeName = "/addComment";
 
-  AddCommentPage({this.post});
+  const AddCommentPage({this.post});
 
   @override
   State<AddCommentPage> createState() => _AddCommentPageState();
@@ -29,8 +29,10 @@ class _AddCommentPageState extends State<AddCommentPage> {
   final TextEditingController _titleController = TextEditingController();
 
   Future<void> _addComment() async {
-    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
-    CurrentPostProvider currentPostProvider = Provider.of<CurrentPostProvider>(context, listen: false);
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
+    CurrentPostProvider currentPostProvider =
+        Provider.of<CurrentPostProvider>(context, listen: false);
 
     Map addCommentBody = {
       "message": _titleController.text,

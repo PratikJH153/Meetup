@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meetupapp/providers/CurrentPostProvider.dart';
+import 'package:meetupapp/screens/EditProfilePage.dart';
 import 'helper/custom_route.dart';
 import 'providers/PostProvider.dart';
 import 'providers/UserProvider.dart';
@@ -97,7 +98,7 @@ class MyApp extends StatelessWidget {
           FeedPage.routeName: (ctx) => const FeedPage(),
           AddPost.routeName: (ctx) => const AddPost(),
           SearchPage.routeName: (ctx) => const SearchPage(),
-          AddCommentPage.routeName: (ctx) => AddCommentPage(),
+          EditProfilePage.routeName: (ctx) => const EditProfilePage(),
         },
       ),
     );

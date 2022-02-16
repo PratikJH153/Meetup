@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '/models/comment.dart';
 
 class CommentTile extends StatelessWidget {
-  Comment comment;
-  CommentTile(this.comment);
+  final Comment comment;
+  const CommentTile(this.comment, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class CommentTile extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 width: 280,
                 child: Text(
                   "Wow! this is a good one and today we are very interested in this thought and we are happy about it!",

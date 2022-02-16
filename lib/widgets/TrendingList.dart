@@ -8,7 +8,7 @@ import 'constants.dart';
 import 'feed_tile.dart';
 
 class TrendingList extends StatelessWidget {
-  TrendingList();
+  const TrendingList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

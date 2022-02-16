@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
         return;
       }
 
-      List userInterests = unpackedUserData["unpacked"]["interests"]??[];
+      List userInterests = unpackedUserData["unpacked"]["interests"] ?? [];
 
       Map getPostsData = await _postAPI.getPosts({
         "interests": userInterests.isEmpty ? ["Flutter"] : userInterests
@@ -110,7 +110,11 @@ class _HomePageState extends State<HomePage> {
     bool wentWrong = userProvider.wentWrongUser;
 
     return wentWrong
-        ? const Center(child: Text("Something went wrong!"))
+        ? const Scaffold(
+            body: Center(
+              child: Text("Something went wrong!"),
+            ),
+          )
         : !isLoadingComplete
             ? Scaffold(body: GlobalLoader())
             : Scaffold(
@@ -172,7 +176,24 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                body: _widgetOptions[_selectedIndex],
+                body: RefreshIndicator(
+                  child: _widgetOptions[_selectedIndex],
+                  backgroundColor: Colors.red,
+                  color: Colors.white,
+                  onRefresh: () {
+                    return Future.delayed(
+                      const Duration(seconds: 1),
+                      () {
+                        setState(() {
+                          _initialize(Provider.of<UserProvider>(
+                            context,
+                            listen: false,
+                          ).getUser()!.userID);
+                        });
+                      },
+                    );
+                  },
+                ),
               );
   }
 }

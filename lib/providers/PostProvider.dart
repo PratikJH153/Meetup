@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:meetupapp/models/comment.dart';
 
 class PostProvider with ChangeNotifier {
   bool isLoadedPosts = false;
@@ -10,17 +11,18 @@ class PostProvider with ChangeNotifier {
   List _loadedPosts = [];
   List _trendingPosts = [];
 
-  List _comments = [];
-
   List<Map> get loadedPosts => [..._loadedPosts];
 
   List<Map> get trendingPosts => [..._trendingPosts];
 
-  List get getComments => [..._comments];
-
-  void setComments(List the_comments) {
-    _comments = the_comments;
-    notifyListeners();
+  List<Map> taggedPosts(List<String> interests) {
+    List<Map> newPosts = [];
+    loadedPosts.forEach((post) {
+      if (interests.contains(post["tag"])) {
+        newPosts.add(post);
+      }
+    });
+    return newPosts;
   }
 
   void setPosts(List thePosts) {

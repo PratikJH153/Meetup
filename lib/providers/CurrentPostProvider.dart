@@ -7,17 +7,18 @@ class CurrentPostProvider extends ChangeNotifier {
   bool isCommentsLoaded = false;
   bool wentWrongComments = false;
 
-  List _getTrending = [];
-  List get trendingPost => [..._getTrending];
+  List _getRelated = [];
+  List get relatedPost => [..._getRelated];
 
-  bool isTrendingLoaded = false;
-  bool wentWrongTrending = false;
+  bool isRelatedLoaded = false;
+  bool wentWrongRelated = false;
 
   void setComments(List comments) {
     _postComments = comments;
     isCommentsLoaded = true;
     notifyListeners();
   }
+
   void deleteComments(String pid) {
     _postComments = [];
 
@@ -26,27 +27,30 @@ class CurrentPostProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
   void toggleWentWrongComments(bool wentWrong) {
     wentWrongComments = wentWrong;
     notifyListeners();
   }
+
   void addSingleComment(Map comment) {
     _postComments.add(comment);
     notifyListeners();
   }
+
   void removeSingleComment(Map comment) {
     _postComments.remove(comment);
     notifyListeners();
   }
 
-  void setTrendingPosts(List trendingPosts){
-    _getTrending = trendingPosts;
-    isTrendingLoaded = true;
-    notifyListeners();
-  }
-  void toggleWentWrongTrending(bool wentWrong) {
-    wentWrongTrending = wentWrong;
+  void setRelatedPosts(List relatedPosts) {
+    _getRelated = relatedPosts;
+    isRelatedLoaded = true;
     notifyListeners();
   }
 
+  void toggleWentWrongRelated(bool wentWrong) {
+    wentWrongRelated = wentWrong;
+    notifyListeners();
+  }
 }

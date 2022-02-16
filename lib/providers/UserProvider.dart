@@ -41,8 +41,11 @@ class UserProvider with ChangeNotifier {
         int currentUpvotes = _voteMap[postID]["upvotes"];
         int currentDownvotes = _voteMap[postID]["downvotes"];
 
-        Map newMap = {
-          "vote": upvoteClick
+        Map newMap = {};
+        _voteMap[postID] = {
+          "upvotes": upvoteClick ? currentUpvotes + 1 : currentUpvotes - 1,
+          "downvotes":
+              !upvoteClick ? currentDownvotes + 1 : currentDownvotes - 1,
         };
 
         if (!upvoteClick) {
