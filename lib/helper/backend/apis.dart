@@ -46,7 +46,7 @@ class UserAPIS {
     if(kDebugMode){
       print("CALLING patchUser(String id, Map body)");
     }
-    String endpoint = "users/updateSingleUser/$id";
+    String endpoint = "users/updateUserInfo/$id";
     return PATCH(endpoint, body);
   }
 }

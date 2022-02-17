@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '/widgets/authentication_button.dart';
 
+import '/helper/GlobalFunctions.dart';
 import '/helper/utils/fire_auth.dart';
 import '/helper/utils/validator.dart';
 import '/widgets/ask_account_widget.dart';
@@ -13,6 +14,7 @@ import 'RegisterPage.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = "/loginpage";
+
   const LoginPage({Key? key}) : super(key: key);
 
   @override
@@ -45,11 +47,13 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (user != null) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          HomePage.routeName,
-          (route) => false,
-        );
+        await initialize(context).then((v) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            HomePage.routeName,
+            (route) => false,
+          );
+        });
       }
       setState(() {
         _isProcessing = false;

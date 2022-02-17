@@ -20,8 +20,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool _isError = false;
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -114,10 +112,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     profileNumberWidget(
+                                      context,
                                       "Gender",
                                       user.gender.toString(),
                                     ),
                                     profileNumberWidget(
+                                      context,
                                       "Posts",
                                       user.posts!.length.toString(),
                                     ),

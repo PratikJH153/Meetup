@@ -1,15 +1,16 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import '/helper/backend/database.dart';
+import 'package:provider/provider.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import '/helper/GlobalFunctions.dart';
 import '/providers/UserProvider.dart';
 import '/screens/post/CommentPage.dart';
-import 'package:provider/provider.dart';
-import '/helper/backend/apis.dart';
 import '/models/post.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import '/models/user.dart';
 import 'feed_interact_button.dart';
+
+const placeholder =
+    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
 
 class FeedTile extends StatefulWidget {
   final Post thePost;
@@ -27,67 +28,31 @@ class _FeedTileState extends State<FeedTile> {
     false: Colors.blue,
   };
 
-  final _post = PostAPIS();
-
   @override
   void initState() {
     super.initState();
   }
 
-  void _vote({bool isUpvote = true}) async {
-    Function func = isUpvote ? _post.upVote : _post.downVote;
-
-    User? curruser = FirebaseAuth.instance.currentUser;
-    Map requestBody = {
-      "postID": widget.thePost.postID,
-      "userID": curruser!.uid
-    };
-
-    if (curruser == null) {
-      return;
-    }
-    final res = await func(requestBody);
-    Map unpackedVote = unPackLocally(res, toPrint: false);
-
-    if (unpackedVote["success"] == 1) {
-      print("${isUpvote?"UPVOTE":"DOWNVOTE"} SUCCESSFUL!");
-    } else {
-      Fluttertoast.showToast(msg: "Couldn't vote!");
-    }
-  }
-
-  void _cancelVote({bool isCancelUpvote = true}) async {
-    Function func = !isCancelUpvote ? _post.cancelDownVote : _post.cancelUpVote;
-    User? curruser = FirebaseAuth.instance.currentUser;
-    Map requestBody = {
-      "postID": widget.thePost.postID,
-      "userID": curruser!.uid
-    };
-
-    if (curruser == null) {
-      return;
-    }
-    final res = await func(requestBody);
-    Map unpackedVote = unPackLocally(res, toPrint: false);
-
-    if (unpackedVote["success"] == 1) {
-      print("CANCEL ${isCancelUpvote?"UPVOTE":"DOWNVOTE"} SUCCESSFUL!");
-    } else {
-      Fluttertoast.showToast(msg: "Couldn't vote!");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
+    UserClass user = userProvider.getUser()!;
     String postID = widget.thePost.postID!;
     Map voteMap = userProvider.voteMap;
 
     Color upvoteColor = Colors.grey;
     Color downvoteColor = Colors.grey;
 
-    int upvotes = voteMap[postID]["upvotes"];
-    int downvotes = voteMap[postID]["downvotes"];
+    int? upvotes = voteMap[postID]["upvotes"];
+    int? downvotes = voteMap[postID]["downvotes"];
+
+    Map authorMap = {};
+    if (widget.thePost.author.toString() == user.userID) {
+      authorMap = {"photoURL": user.profileURL, "username": user.username};
+    }
+
+    String profileUrl = authorMap["profileURL"] ?? placeholder;
+    String username = authorMap["username"] ?? "Unnamed";
 
     if (voteMap[postID]["vote"] == true) {
       upvoteColor = Colors.red;
@@ -97,194 +62,214 @@ class _FeedTileState extends State<FeedTile> {
       downvoteColor = Colors.blue;
     }
 
-    return Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        padding: const EdgeInsets.all(22),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white,
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0xFFf2f4f9),
-              blurRadius: 5,
-              spreadRadius: 0.5,
-              offset: Offset(0, 2),
-            )
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    return
+        // Text(widget.thePost.title!);
+        Container(
+            margin: const EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.all(22),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0xFFf2f4f9),
+                  blurRadius: 5,
+                  spreadRadius: 0.5,
+                  offset: Offset(0, 2),
+                )
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: 30,
-                  width: 30,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          widget.thePost.author!["profileURL"],
-                        ),
-                        fit: BoxFit.cover,
-                      )),
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    Text(
-                      widget.thePost.author!["username"],
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: "Quicksand",
-                      ),
+                    Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              profileUrl,
+                            ),
+                            fit: BoxFit.cover,
+                          )),
                     ),
                     const SizedBox(
-                      height: 3,
+                      width: 15,
                     ),
-                    Text(
-                      "${timeago.format(
-                        DateTime.parse(
-                          widget.thePost.createdAt!,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          username,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: "Quicksand",
+                          ),
                         ),
-                      )} . ${widget.thePost.timeReadCalc()} mins read",
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey,
-                      ),
+                        const SizedBox(
+                          height: 3,
+                        ),
+                        Text(
+                          "${timeago.format(
+                            DateTime.parse(
+                              widget.thePost.createdAt!,
+                            ),
+                          )} . ${widget.thePost.timeReadCalc()} mins read",
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            Text(
-              widget.thePost.title ?? "No title",
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w500,
-                height: 1.5,
-                fontFamily: "Ubuntu",
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            if (widget.thePost.desc != null)
-              Text(
-                widget.thePost.desc!,
-                maxLines: 4,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 14,
-                  height: 1.4,
-                  fontFamily: "Raleway",
-                  color: Color(0xFF5c5c5c),
+                const SizedBox(
+                  height: 12,
                 ),
-              ),
-            const SizedBox(
-              height: 24,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                widget.thePost.tag == null
-                    ? const SizedBox()
-                    : Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF6b7fff),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Text(
-                          widget.thePost.tag!,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                            fontFamily: "Raleway",
-                            letterSpacing: 0.8,
-                            fontSize: 11,
+                Text(
+                  widget.thePost.title ?? "No title",
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    height: 1.5,
+                    fontFamily: "Ubuntu",
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                if (widget.thePost.desc != null)
+                  Text(
+                    widget.thePost.desc!,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      height: 1.4,
+                      fontFamily: "Raleway",
+                      color: Color(0xFF5c5c5c),
+                    ),
+                  ),
+                const SizedBox(
+                  height: 24,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    widget.thePost.tag == null
+                        ? const SizedBox()
+                        : Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF6b7fff),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Text(
+                              widget.thePost.tag!,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                fontFamily: "Raleway",
+                                letterSpacing: 0.8,
+                                fontSize: 11,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                const Spacer(),
-                FeedInteractButton(
-                  icon: CupertinoIcons.arrowtriangle_up_circle,
-                  label: upvotes.toString(),
-                  color: upvoteColor,
-                  tapHandler: () async {
-                    /// UPVOTE PRESSED
-                    userProvider.ratePost(
-                        postID: widget.thePost.postID!, upvoteClick: true);
-                    if (voteMap[postID]["vote"] == null) {
-                      _vote(isUpvote: true);
-                    } else {
-                      if (voteMap[postID]["vote"] == true) {
-                        _cancelVote(isCancelUpvote: true); // CANCEL UPVOTE
-                      } else {
-                        _cancelVote(isCancelUpvote: false); // CANCEL DOWNVOTE
-                        _vote(isUpvote: true); // UPVOTE
-                      }
-                    }
-                  },
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                FeedInteractButton(
-                  icon: CupertinoIcons.arrowtriangle_down_circle,
-                  label: downvotes.toString(),
-                  color: downvoteColor,
-                  tapHandler: () async {
-                    /// DOWNVOTE PRESSED
-                    userProvider.ratePost(
-                        postID: widget.thePost.postID!, upvoteClick: false);
-                    if (voteMap[postID]["vote"] == null) {
-                      _vote(isUpvote: false); // DOWNVOTE
-                    } else {
-                      if (voteMap[postID]["vote"] == false) {
-                        _cancelVote(isCancelUpvote: false); // CANCEL DOWNVOTE
-                      } else {
-                        _cancelVote(isCancelUpvote: true); // CANCEL UPVOTE
-                        _vote(isUpvote: false); // DOWNVOTE
-                      }
-                    }
-                  },
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                FeedInteractButton(
-                  icon: CupertinoIcons.chat_bubble_2,
-                  label: '',
-                  tapHandler: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      barrierColor: const Color(0xFF383838),
-                      builder: (ctx) {
-                        return CommentPage(
-                          post: widget.thePost,
+                    const Spacer(),
+                    FeedInteractButton(
+                      icon: CupertinoIcons.arrowtriangle_up_circle,
+                      label: upvotes.toString(),
+                      color: upvoteColor,
+                      tapHandler: () async {
+                        /// UPVOTE PRESSED
+                        userProvider.ratePost(
+                            post: widget.thePost, upvoteClick: true);
+                        if (voteMap[postID]["vote"] == null) {
+                          vote(isUpvote: true, postID: widget.thePost.postID!);
+                        } else {
+                          if (voteMap[postID]["vote"] == true) {
+                            cancelVote(
+                                isCancelUpvote: true,
+                                postID:
+                                    widget.thePost.postID!); // CANCEL UPVOTE
+                          } else {
+                            cancelVote(
+                                isCancelUpvote: false,
+                                postID:
+                                    widget.thePost.postID!); // CANCEL DOWNVOTE
+                            vote(
+                                isUpvote: true,
+                                postID: widget.thePost.postID!); // UPVOTE
+                          }
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    FeedInteractButton(
+                      icon: CupertinoIcons.arrowtriangle_down_circle,
+                      label: downvotes.toString(),
+                      color: downvoteColor,
+                      tapHandler: () async {
+                        /// DOWNVOTE PRESSED
+                        userProvider.ratePost(
+                            post: widget.thePost, upvoteClick: false);
+                        if (voteMap[postID]["vote"] == null) {
+                          vote(
+                              isUpvote: false,
+                              postID: widget.thePost.postID!); // DOWNVOTE
+                        } else {
+                          if (voteMap[postID]["vote"] == false) {
+                            cancelVote(
+                                isCancelUpvote: false,
+                                postID:
+                                    widget.thePost.postID!); // CANCEL DOWNVOTE
+                          } else {
+                            cancelVote(
+                                isCancelUpvote: true,
+                                postID:
+                                    widget.thePost.postID!); // CANCEL UPVOTE
+                            vote(
+                                isUpvote: false,
+                                postID: widget.thePost.postID!); // DOWNVOTE
+                          }
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    FeedInteractButton(
+                      icon: CupertinoIcons.chat_bubble_2,
+                      label: '',
+                      tapHandler: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          barrierColor: const Color(0xFF383838),
+                          builder: (ctx) {
+                            return CommentPage(
+                              post: widget.thePost,
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                ),
+                    ),
+                  ],
+                )
               ],
-            )
-          ],
-        ));
+            ));
   }
 }

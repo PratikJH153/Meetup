@@ -137,7 +137,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
             tapHandler: () async {
               /// UPVOTE PRESSED
               userProvider.ratePost(
-                  postID: widget.thePost.postID!, upvoteClick: true);
+                  post: widget.thePost, upvoteClick: true);
               if (voteMap[postID]["vote"] == null) {
                 _vote(isUpvote: true);
               } else {
@@ -160,7 +160,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
             tapHandler: () async {
               /// DOWNVOTE PRESSED
               userProvider.ratePost(
-                  postID: widget.thePost.postID!, upvoteClick: false);
+                  post: widget.thePost, upvoteClick: false);
               if (voteMap[postID]["vote"] == null) {
                 _vote(isUpvote: false); // DOWNVOTE
               } else {

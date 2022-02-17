@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meetupapp/providers/CurrentPostProvider.dart';
 import 'package:meetupapp/screens/EditProfilePage.dart';
+import 'package:meetupapp/screens/post/UserPostScreen.dart';
 import 'helper/custom_route.dart';
 import 'providers/PostProvider.dart';
 import 'providers/UserProvider.dart';
@@ -90,6 +91,7 @@ class MyApp extends StatelessWidget {
         initialRoute: Wrapper.routeName,
         routes: {
           Wrapper.routeName: (ctx) => const Wrapper(),
+          UserPosts.routeName: (ctx)=> const UserPosts(),
           HomePage.routeName: (ctx) => const HomePage(),
           LoginPage.routeName: (ctx) => const LoginPage(),
           RegisterPage.routeName: (ctx) => const RegisterPage(),

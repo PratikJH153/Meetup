@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meetupapp/models/post.dart';
 import '/models/user.dart';
 
 class UserProvider with ChangeNotifier {
@@ -6,22 +7,29 @@ class UserProvider with ChangeNotifier {
   bool wentWrongUser = false;
 
   Map _voteMap = {};
-
   Map get voteMap => {..._voteMap};
 
   UserClass? _user;
-
   UserClass? getUser() => _user;
 
-  void ratePost({required String postID, required bool upvoteClick}) {
-    if (_voteMap[postID]["vote"] == null) {
+
+  void ratePost({required Post post, required bool upvoteClick}) {
+    if(_voteMap[post.postID]==null){
+      _voteMap[post.postID] = {
+        "upvotes": post.upvotes,
+        "downvotes": post.downvotes,
+        "vote": upvoteClick
+      };
+    }
+
+    if (_voteMap[post.postID]["vote"] == null) {
       // THE USER HAS NEVER RATED THIS POST
       print("1");
 
-      int currentUpvotes = _voteMap[postID]["upvotes"];
-      int currentDownvotes = _voteMap[postID]["downvotes"];
+      int currentUpvotes = _voteMap[post.postID]["upvotes"];
+      int currentDownvotes = _voteMap[post.postID]["downvotes"];
 
-      _voteMap[postID] = {
+      _voteMap[post.postID] = {
         "upvotes": upvoteClick ? currentUpvotes + 1 : currentUpvotes,
         "downvotes": !upvoteClick ? currentDownvotes + 1 : currentDownvotes,
         "vote": upvoteClick
@@ -29,21 +37,21 @@ class UserProvider with ChangeNotifier {
     } else {
       // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
 
-      if (_voteMap[postID]["vote"] == upvoteClick) {
+      if (_voteMap[post.postID]["vote"] == upvoteClick) {
 
         // RATING AGAIN WHAT WAS PREVIOUSLY RATED, HENCE CANCELLATION
-        int currentUpvotes = _voteMap[postID]["upvotes"];
-        int currentDownvotes = _voteMap[postID]["downvotes"];
+        int currentUpvotes = _voteMap[post.postID]["upvotes"];
+        int currentDownvotes = _voteMap[post.postID]["downvotes"];
 
-        _voteMap[postID] = {
+        _voteMap[post.postID] = {
           "upvotes": upvoteClick ? currentUpvotes - 1 : currentUpvotes,
           "downvotes": !upvoteClick ? currentDownvotes - 1 : currentDownvotes,
           "vote": null
         };
       } else {
         // RATING DIFFERENT FROM WHAT WAS PREVIOUS
-        int currentUpvotes = _voteMap[postID]["upvotes"];
-        int currentDownvotes = _voteMap[postID]["downvotes"];
+        int currentUpvotes = _voteMap[post.postID]["upvotes"];
+        int currentDownvotes = _voteMap[post.postID]["downvotes"];
 
         Map newMap = {
           "vote": upvoteClick
@@ -58,11 +66,10 @@ class UserProvider with ChangeNotifier {
           newMap["downvotes"] = currentDownvotes-1;
         }
 
-        _voteMap[postID] = newMap;
+        _voteMap[post.postID] = newMap;
       }
     }
     notifyListeners();
-    print(_voteMap[postID]);
   }
 
   void initializeRatingMap(Map votesMap) {
@@ -126,5 +133,4 @@ class UserProvider with ChangeNotifier {
     wentWrongUser = true;
     notifyListeners();
   }
-
 }

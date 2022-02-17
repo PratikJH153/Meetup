@@ -99,8 +99,7 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   Future<void> _deleteComment(Map commentMap) async {
-    CurrentPostProvider currentPost =
-        Provider.of<CurrentPostProvider>(context, listen: false);
+    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context, listen: false);
 
     Comment comment = Comment.fromJson(commentMap);
 

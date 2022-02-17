@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '/models/post.dart';
+import 'feed_tile.dart';
 
 class SearchFeedTile extends StatelessWidget {
   final bool isDes;
@@ -13,6 +14,11 @@ class SearchFeedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map authorMap = post.author ?? {};
+
+    String profileUrl = authorMap["profileURL"] ?? placeholder;
+    String username = authorMap["username"] ?? "Unnamed";
+
     return Container(
       clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.all(22),
@@ -36,15 +42,15 @@ class SearchFeedTile extends StatelessWidget {
               Container(
                 height: 24,
                 width: 24,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     image: NetworkImage(
-                        "https://media.istockphoto.com/photos/millennial-male-team-leader-organize-virtual-workshop-with-employees-picture-id1300972574?b=1&k=20&m=1300972574&s=170667a&w=0&h=2nBGC7tr0kWIU8zRQ3dMg-C5JLo9H2sNUuDjQ5mlYfo="),
-                    fit: BoxFit.cover,
+                      profileUrl,
                   ),
+                    fit: BoxFit.cover
                 ),
-              ),
+              )),
               const SizedBox(
                 width: 15,
               ),
@@ -52,7 +58,7 @@ class SearchFeedTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    post.author!["username"],
+                    username,
                     maxLines: 2,
                     overflow: TextOverflow.fade,
                     style: const TextStyle(
