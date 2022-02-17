@@ -306,11 +306,9 @@ class _ViewPostPageState extends State<ViewPostPage> {
   bool _hasOpenedComments = false;
 
   Future<void> _initialize() async {
-    CurrentPostProvider currentPost =
-        Provider.of<CurrentPostProvider>(context, listen: false);
+    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context, listen: false);
 
-    final relatedPostsData =
-        await _postAPI.getRelatedPosts(widget.thePost.tag!);
+    final relatedPostsData = await _postAPI.getRelatedPosts(widget.thePost.tag!);
     Map unpackedRelatedPostsData = unPackLocally(relatedPostsData);
 
     if (unpackedRelatedPostsData["success"] == 1) {

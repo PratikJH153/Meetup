@@ -56,9 +56,6 @@ class FollowingList extends StatelessWidget {
                     itemBuilder: (ctx, index) {
                       Post currPost = Post.fromJson(postList[index]);
 
-                      print("widget.thePost.author");
-                      print(currPost.author);
-
                       return GestureDetector(
                         onTap: () {
                           showModalBottomSheet(

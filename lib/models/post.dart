@@ -4,7 +4,7 @@ class Post {
   final String? desc;
   final String? createdAt;
   final String? tag;
-  var author;
+  Map? author;
   int upvotes;
   int downvotes;
   bool? vote;
