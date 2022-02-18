@@ -41,9 +41,8 @@ class UserPosts extends StatelessWidget {
             ),
             physics: const BouncingScrollPhysics(),
             itemCount: userPosts.length,
-            itemBuilder: (ctx, index){
+            itemBuilder: (ctx, index) {
               Post currPost = Post.fromJson(userPosts[index]);
-
               return GestureDetector(
                 onTap: () {
                   showModalBottomSheet(
@@ -56,7 +55,7 @@ class UserPosts extends StatelessWidget {
                     },
                   );
                 },
-                child: FeedTile(currPost),
+                child: Text(currPost.title!),
               );
             },
           ),

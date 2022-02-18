@@ -37,35 +37,27 @@ class _FeedTileState extends State<FeedTile> {
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
     UserClass user = userProvider.getUser()!;
-    Color upvoteColor = Colors.grey;
-    Color downvoteColor = Colors.grey;
     String postID = widget.thePost.postID!;
     Map voteMap = userProvider.voteMap;
-    int upvotes = -1;
-    int downvotes = -1;
-    bool? user_vote = null;
 
-    late String username;
-    late String profileUrl;
+    Color upvoteColor = Colors.grey;
+    Color downvoteColor = Colors.grey;
 
-    profileUrl = user.profileURL??placeholder;
-    username = user.username??"Unnamed";
+    int? upvotes = voteMap[postID]["upvotes"];
+    int? downvotes = voteMap[postID]["downvotes"];
 
-    bool isRegisteredOnVoteMap = voteMap[postID] != null;
-
-    if (isRegisteredOnVoteMap) {
-      upvotes = voteMap[postID]["upvotes"]??0;
-      downvotes = voteMap[postID]["downvotes"]??0;
-      user_vote = voteMap[postID]["vote"];
-    } else {
-      upvotes = widget.thePost.upvotes;
-      downvotes = widget.thePost.downvotes;
+    Map authorMap = {};
+    if (widget.thePost.author.toString() == user.userID) {
+      authorMap = {"photoURL": user.profileURL, "username": user.username};
     }
 
-    if (user_vote == true) {
+    String profileUrl = authorMap["profileURL"] ?? placeholder;
+    String username = authorMap["username"] ?? "Unnamed";
+
+    if (voteMap[postID]["vote"] == true) {
       upvoteColor = Colors.red;
       downvoteColor = Colors.grey;
-    } else if (user_vote == false) {
+    } else if (voteMap[postID]["vote"] == false) {
       upvoteColor = Colors.grey;
       downvoteColor = Colors.blue;
     }
@@ -200,17 +192,12 @@ class _FeedTileState extends State<FeedTile> {
                       color: upvoteColor,
                       tapHandler: () async {
                         /// UPVOTE PRESSED
-                        if(voteMap[postID]==null){
-                          userProvider.initializeSingleRating(widget.thePost, true);
-                          return;
-                        }
-                        else{
-                          userProvider.ratePost(post: widget.thePost, upvoteClick: true);
-                        }
-                        if (user_vote == null) {
+                        userProvider.ratePost(
+                            post: widget.thePost, upvoteClick: true);
+                        if (voteMap[postID]["vote"] == null) {
                           vote(isUpvote: true, postID: widget.thePost.postID!);
                         } else {
-                          if (user_vote == true) {
+                          if (voteMap[postID]["vote"] == true) {
                             cancelVote(
                                 isCancelUpvote: true,
                                 postID:
@@ -236,18 +223,14 @@ class _FeedTileState extends State<FeedTile> {
                       color: downvoteColor,
                       tapHandler: () async {
                         /// DOWNVOTE PRESSED
-                        if(voteMap[postID]==null){
-                          userProvider.initializeSingleRating(widget.thePost, false);
-                          return;
-                        }
                         userProvider.ratePost(
                             post: widget.thePost, upvoteClick: false);
-                        if (user_vote == null) {
+                        if (voteMap[postID]["vote"] == null) {
                           vote(
                               isUpvote: false,
                               postID: widget.thePost.postID!); // DOWNVOTE
                         } else {
-                          if (user_vote == false) {
+                          if (voteMap[postID]["vote"] == false) {
                             cancelVote(
                                 isCancelUpvote: false,
                                 postID:

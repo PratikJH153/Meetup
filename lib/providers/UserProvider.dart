@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/models/post.dart';
+import 'package:meetupapp/models/post.dart';
 import '/models/user.dart';
 
 class UserProvider with ChangeNotifier {
@@ -7,14 +7,21 @@ class UserProvider with ChangeNotifier {
   bool wentWrongUser = false;
 
   Map _voteMap = {};
-
   Map get voteMap => {..._voteMap};
 
   UserClass? _user;
-
   UserClass? getUser() => _user;
 
+
   void ratePost({required Post post, required bool upvoteClick}) {
+    if(_voteMap[post.postID]==null){
+      _voteMap[post.postID] = {
+        "upvotes": post.upvotes,
+        "downvotes": post.downvotes,
+        "vote": upvoteClick
+      };
+    }
+
     if (_voteMap[post.postID]["vote"] == null) {
       // THE USER HAS NEVER RATED THIS POST
       print("1");
@@ -31,9 +38,10 @@ class UserProvider with ChangeNotifier {
       // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
 
       if (_voteMap[post.postID]["vote"] == upvoteClick) {
+
         // RATING AGAIN WHAT WAS PREVIOUSLY RATED, HENCE CANCELLATION
-        int currentUpvotes = _voteMap[post.postID]["upvotes"] ?? 0;
-        int currentDownvotes = _voteMap[post.postID]["downvotes"] ?? 0;
+        int currentUpvotes = _voteMap[post.postID]["upvotes"];
+        int currentDownvotes = _voteMap[post.postID]["downvotes"];
 
         _voteMap[post.postID] = {
           "upvotes": upvoteClick ? currentUpvotes - 1 : currentUpvotes,
@@ -45,14 +53,17 @@ class UserProvider with ChangeNotifier {
         int currentUpvotes = _voteMap[post.postID]["upvotes"];
         int currentDownvotes = _voteMap[post.postID]["downvotes"];
 
-        Map newMap = {"vote": upvoteClick};
+        Map newMap = {
+          "vote": upvoteClick
+        };
 
         if (!upvoteClick) {
-          newMap["upvotes"] = currentUpvotes - 1;
-          newMap["downvotes"] = currentDownvotes + 1;
-        } else {
-          newMap["upvotes"] = currentUpvotes + 1;
-          newMap["downvotes"] = currentDownvotes - 1;
+          newMap["upvotes"] = currentUpvotes-1;
+          newMap["downvotes"] = currentDownvotes+1;
+        }
+        else{
+          newMap["upvotes"] = currentUpvotes+1;
+          newMap["downvotes"] = currentDownvotes-1;
         }
 
         _voteMap[post.postID] = newMap;
@@ -65,19 +76,6 @@ class UserProvider with ChangeNotifier {
     votesMap.forEach((key, value) {
       _voteMap[key] = {"upvotes": null, "downvotes": null, "vote": value};
     });
-    notifyListeners();
-  }
-
-  void initializeSingleRating(Post post, bool value) {
-
-    int _upvotes = post.upvotes;
-    int _downvotes = post.downvotes;
-
-    _voteMap[post.postID] = {
-      "upvotes": value?_upvotes+1:_upvotes,
-      "downvotes": value?_downvotes:_downvotes+1,
-      "vote": value
-    };
     notifyListeners();
   }
 
@@ -105,11 +103,11 @@ class UserProvider with ChangeNotifier {
         // POSTS THAT HAVE BEEN LOADED BUT NOT LOADED HAVE
         // TO BE ADDED TO VOTE MAP IN ORDER TO TRACK THEIR
         // UPVOTES/DOWNVOTES AND VOTE STATUS
-        // Map newInitializedMap = {};
-        // newInitializedMap["upvotes"] = element["upvotes"];
-        // newInitializedMap["downvotes"] = element["downvotes"];
-        // newInitializedMap["vote"] = null;
-        // _voteMap[id] = newInitializedMap;
+        Map newInitializedMap = {};
+        newInitializedMap["upvotes"] = element["upvotes"];
+        newInitializedMap["downvotes"] = element["downvotes"];
+        newInitializedMap["vote"] = null;
+        _voteMap[id] = newInitializedMap;
       }
     });
     notifyListeners();
@@ -123,7 +121,7 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteUserLocalData() {
+  void deleteUserLocalData(){
     isUserDataLoaded = false;
     wentWrongUser = false;
     _voteMap = {};
