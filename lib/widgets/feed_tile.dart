@@ -46,7 +46,7 @@ class _FeedTileState extends State<FeedTile> {
     int? upvotes = voteMap[postID]["upvotes"];
     int? downvotes = voteMap[postID]["downvotes"];
 
-    Map authorMap = {};
+    Map authorMap = widget.thePost.author;
     if (widget.thePost.author.toString() == user.userID) {
       authorMap = {"photoURL": user.profileURL, "username": user.username};
     }
