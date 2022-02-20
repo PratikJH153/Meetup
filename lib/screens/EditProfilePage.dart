@@ -65,7 +65,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _updateProfile() async {
-    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
     String id = userProvider.getUser()!.userID!;
 
     Map updateBody = {
@@ -82,13 +83,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final updateResult = await _user.patchUser(id, updateBody);
     Map updateResultUnpacked = unPackLocally(updateResult);
 
-    if(updateResultUnpacked["success"]==1){
+    if (updateResultUnpacked["success"] == 1) {
       Fluttertoast.showToast(msg: "Updated Profile successfully!");
-    }
-    else{
+    } else {
       Fluttertoast.showToast(msg: "Couldn't update Profile!");
     }
-
   }
 
   Map selectMap = {};
@@ -141,9 +140,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
           actions: [
             IconButton(
-              onPressed: ()async{
-                bool correctValuesEntered = _editProfileKey.currentState!.validate();
-                if(correctValuesEntered)_updateProfile();
+              onPressed: () async {
+                bool correctValuesEntered =
+                    _editProfileKey.currentState!.validate();
+                if (correctValuesEntered) _updateProfile();
               },
               icon: const Icon(
                 CupertinoIcons.checkmark_alt,
@@ -217,6 +217,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 label: "First Name",
                                 validatorHandler: (val) =>
                                     Validator.validateTextField(result: val),
+                                inputType: TextInputType.name,
+                                icon: CupertinoIcons.person_alt,
                               ),
                             ),
                             const SizedBox(
@@ -228,6 +230,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 label: "Last Name",
                                 validatorHandler: (val) =>
                                     Validator.validateTextField(result: val),
+                                inputType: TextInputType.name,
+                                icon: CupertinoIcons.person_alt,
                               ),
                             )
                           ],
@@ -240,6 +244,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           label: "Username",
                           validatorHandler: (val) =>
                               Validator.validateTextField(result: val),
+                          inputType: TextInputType.name,
+                          icon: CupertinoIcons.at_circle,
                         ),
                         const SizedBox(
                           height: 15,
@@ -281,6 +287,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           isBio: true,
                           validatorHandler: (val) =>
                               Validator.validateTextField(result: val),
+                          inputType: TextInputType.text,
+                          icon: CupertinoIcons.bold_italic_underline,
                         ),
                         const SizedBox(
                           height: 20,

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meetupapp/helper/utils/validator.dart';
 import 'package:meetupapp/widgets/text_field_widget.dart';
@@ -27,6 +28,8 @@ class Register2 extends StatelessWidget {
                   label: "First Name",
                   validatorHandler: (val) =>
                       Validator.validateTextField(result: val),
+                  inputType: TextInputType.name,
+                  icon: CupertinoIcons.person_alt,
                 ),
               ),
               const SizedBox(
@@ -38,6 +41,8 @@ class Register2 extends StatelessWidget {
                   label: "Last Name",
                   validatorHandler: (val) =>
                       Validator.validateTextField(result: val),
+                  inputType: TextInputType.name,
+                  icon: CupertinoIcons.person_alt,
                 ),
               )
             ],
@@ -49,6 +54,8 @@ class Register2 extends StatelessWidget {
             editingController: nameController,
             label: "Username",
             validatorHandler: (val) => Validator.validateTextField(result: val),
+            inputType: TextInputType.name,
+            icon: CupertinoIcons.at_circle,
           ),
         ],
       ),

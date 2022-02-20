@@ -100,25 +100,25 @@ class _LoginPageState extends State<LoginPage> {
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
           floatingActionButton: Container(
-            margin: const EdgeInsets.only(bottom: 30),
-            padding: const EdgeInsets.symmetric(horizontal: 25),
+            margin: const EdgeInsets.only(bottom: 35),
+            padding: const EdgeInsets.symmetric(horizontal: 28),
             child: _isProcessing
                 ? const Padding(
                     padding: EdgeInsets.only(bottom: 30),
                     child: CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation(
-                        Color(0xFFFF416C),
+                        Color(0xFF4776E6),
                       ),
                     ),
                   )
                 : Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      GoogleSignInButton(_signInGoogle),
                       AuthenticationButton(
                         tapHandler: _submit,
                         label: "Sign in",
                       ),
+                      GoogleSignInButton(_signInGoogle),
                     ],
                   ),
           ),
@@ -128,8 +128,8 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Container(
                   margin: EdgeInsets.only(
-                    left: 25.0,
-                    right: 25.0,
+                    left: 28.0,
+                    right: 28.0,
                     top: 30,
                     bottom: MediaQuery.of(context).viewInsets.bottom + 10,
                   ),
@@ -141,14 +141,14 @@ class _LoginPageState extends State<LoginPage> {
                         child: GestureDetector(
                           onTap: () => Navigator.of(context).pop(),
                           child: Icon(
-                            CupertinoIcons.back,
+                            CupertinoIcons.arrow_turn_up_left,
                             color: Colors.grey[700],
                             size: 30,
                           ),
                         ),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 25,
                       ),
                       const Text(
                         "Hey,\nLogin Now.",
@@ -156,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: 32,
                           height: 1.2,
                           fontWeight: FontWeight.bold,
-                          fontFamily: "Ubuntu",
+                          fontFamily: "Nunito",
                           color: Color(0xFF4d4d4d),
                         ),
                       ),
@@ -183,6 +183,8 @@ class _LoginPageState extends State<LoginPage> {
                                   Validator.validateEmail(
                                 email: value,
                               ),
+                              icon: CupertinoIcons.mail_solid,
+                              inputType: TextInputType.emailAddress,
                             ),
                             const SizedBox(
                               height: 15,
@@ -194,6 +196,8 @@ class _LoginPageState extends State<LoginPage> {
                                   Validator.validatePassword(
                                 result: value,
                               ),
+                              icon: CupertinoIcons.lock,
+                              inputType: TextInputType.visiblePassword,
                             ),
                           ],
                         ),

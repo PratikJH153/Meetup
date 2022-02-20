@@ -88,13 +88,13 @@ class FireAuth {
     } on FirebaseAuthException catch (e) {
       snackBarWidget(
         getMessageFromErrorCode(e.code),
-        const Color(0xFFff2954),
+        const Color(0xFF4776E6),
         context,
       );
     } catch (err) {
       snackBarWidget(
         err.toString(),
-        const Color(0xFFff2954),
+        const Color(0xFF4776E6),
         context,
       );
     }
@@ -167,7 +167,8 @@ class FireAuth {
   }
 
   static Future<void> signOut(BuildContext context) async {
-    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
     FirebaseAuth auth = FirebaseAuth.instance;
 
     try {

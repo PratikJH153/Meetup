@@ -53,7 +53,7 @@ Row askUserAccountWidget({
         child: Text(
           label,
           style: const TextStyle(
-            color: Color(0xFFFF416C),
+            color: Color(0xFF4776E6),
           ),
         ),
       ),

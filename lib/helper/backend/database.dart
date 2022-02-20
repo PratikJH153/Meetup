@@ -6,7 +6,7 @@ const SUCCESS_CODE = 200;
 // NOT FOUND: 404
 // INTERNAL SEVER ERROR: 500
 // const endpoint = "http://192.168.0.212:9000/"; /// FOR REAL DEVICE
-const endpoint = "http://10.0.2.2:9000/";
+const endpoint = "https://enthem.herokuapp.com/";
 const bool kDebugMode = true;
 
 const ErrorCodesCustom = {
@@ -26,30 +26,28 @@ final socketErrorMessage = {
   "errCode": 100 // Server connection error
 };
 
-Map unPackLocally(Map data, {bool toPrint=true}) {
+Map unPackLocally(Map data, {bool toPrint = true}) {
   bool receivedResponseFromServer = data["local_status"] == 200;
   Map localData = data["local_result"];
 
   if (receivedResponseFromServer) {
     bool dataReceivedSuccessfully = localData["status"] == 200;
 
-    if(toPrint) print("Server responded! Status:${localData["status"]}");
+    if (toPrint) print("Server responded! Status:${localData["status"]}");
 
     if (dataReceivedSuccessfully) {
       var requestedSuccessData = localData["data"];
 
-      if(toPrint)
-        {
-          print("SUCCESS DATA:");
-          print(requestedSuccessData);
-          print("-----------------\n\n");
-        }
+      if (toPrint) {
+        print("SUCCESS DATA:");
+        print(requestedSuccessData);
+        print("-----------------\n\n");
+      }
 
       return {"success": 1, "unpacked": requestedSuccessData};
     } else {
       Map? requestFailedData = localData["data"];
-      if(toPrint)
-      {
+      if (toPrint) {
         print("INCORRECT DATA:");
         print(requestFailedData);
         print("-----------------\n\n");
@@ -60,8 +58,7 @@ Map unPackLocally(Map data, {bool toPrint=true}) {
       };
     }
   } else {
-    if(toPrint)
-    {
+    if (toPrint) {
       print(localData);
       print("Server Down! Status:$localData");
       print("-----------------\n\n");
