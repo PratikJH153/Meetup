@@ -12,7 +12,7 @@ class UserPosts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
-    List userPosts = userProvider.getUser()!.posts??[];
+    List userPosts = userProvider.userPosts;
 
     return SafeArea(
       child: Scaffold(
@@ -55,7 +55,7 @@ class UserPosts extends StatelessWidget {
                     },
                   );
                 },
-                child: Text(currPost.title!),
+                child: FeedTile(currPost),
               );
             },
           ),

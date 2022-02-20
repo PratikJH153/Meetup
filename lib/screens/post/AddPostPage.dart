@@ -39,16 +39,40 @@ class _AddPostState extends State<AddPost> {
 
   bool isEdit = false;
 
-  Future<void> _addPostApi(Map body) async {
-
+  Future<void> _addPostApi(BuildContext context) async {
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
     setState(() {
       _isLoading = true;
     });
 
-    final addPost = await _post.addPost(body);
+    final addPost = await _post.addPost({
+      "title": _titleController.text.trim(),
+      "description": _descController.text.trim(),
+      "author": userProvider.getUser()!.userID,
+      "tag": _selectedTag
+    });
     Map requestData = unPackLocally(addPost, toPrint: true);
 
     if (requestData["success"] == 1) {
+      Map unpacked = requestData["unpacked"];
+      Map addPostBody = {
+        "postID": unpacked["_id"],
+        "createdAt": unpacked["createdAt"],
+        "title": unpacked["title"],
+        "desc": unpacked["description"],
+        "tag": unpacked["tag"],
+        "author": {
+          "id": unpacked["author"],
+          "username": userProvider.getUser()!.username,
+          "profileURL": userProvider.getUser()!.profileURL,
+        },
+        "comments": unpacked["comments"] ?? [],
+        "upvotes": unpacked["upvotes"] ?? 0,
+        "downvotes": unpacked["downvotes"] ?? 0,
+      };
+
+      userProvider.addSingleUserPost(addPostBody);
       Fluttertoast.showToast(msg: "Added Post successfully!");
       Navigator.of(context).pop();
     } else {
@@ -62,7 +86,6 @@ class _AddPostState extends State<AddPost> {
 
   //! NOT DONE YET
   Future<void> _updatePostAPI(Map body) async {
-
     setState(() {
       _isLoading = true;
     });
@@ -116,16 +139,7 @@ class _AddPostState extends State<AddPost> {
                             }
                             if (_addPostFormKey.currentState!.validate()) {
                               if (!isEdit) {
-                                Map data = {
-                                  "title": _titleController.text.trim(),
-                                  "description": _descController.text.trim(),
-                                  "author": Provider.of<UserProvider>(context,
-                                          listen: false)
-                                      .getUser()!
-                                      .userID,
-                                  "tag": _selectedTag
-                                };
-                                _addPostApi(data);
+                                _addPostApi(context);
                               } else {
                                 Map data = {
                                   "title": _titleController.text.trim(),

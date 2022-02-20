@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/helper/GlobalFunctions.dart';
+import 'package:meetupapp/models/PopupMenuDataset.dart';
 import '/helper/backend/database.dart';
 import '/helper/utils/loader.dart';
 import '/providers/CurrentPostProvider.dart';
@@ -259,8 +261,7 @@ class _CommentPageState extends State<CommentPage> {
                                           ),
                                           child: _isAdding
                                               ? const Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
+                                                  child: CircularProgressIndicator(),
                                                 )
                                               : Row(
                                                   crossAxisAlignment:
@@ -430,14 +431,7 @@ class _CommentPageState extends State<CommentPage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  PopupMenuButton(
-                    itemBuilder: (BuildContext context) => [
-                      commentMenuOption(isCopy: true),
-                      if (isTheSamePerson)
-                        commentMenuOption(
-                            isCopy: false, comment: commentList[index])
-                    ],
-                  ),
+                  CustomPopupMenu(dataset: commentDataset,showOther: isTheSamePerson),
                   Text(
                     timeago.format(
                       DateTime.parse(commentList[index]["timestamp"]),

@@ -11,6 +11,7 @@ class UserAPIS {
   }
 
   Future<Map> getSingleUserData(String id) async {
+    // GETS USER DATA AND FILLS UserProvider
     if(kDebugMode){
       print("CALLING getSingleUserData(String id)");
     }
