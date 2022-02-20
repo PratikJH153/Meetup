@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:meetupapp/models/comment.dart';
 
 class PostProvider with ChangeNotifier {
   bool isLoadedPosts = false;

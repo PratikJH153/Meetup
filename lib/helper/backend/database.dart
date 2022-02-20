@@ -27,6 +27,14 @@ final socketErrorMessage = {
 };
 
 Map unPackLocally(Map data, {bool toPrint=true}) {
+  // "UNPACKS" OR RETURNS THE RESULT OF A REQUEST FROM A SERVER
+  // SAMPLE OUTPUTS:
+  /*
+  {"success":0, "unpacked":{"message":"Upvote Failed"}}
+  {"success":0, "unpacked":{"message":"SERVER ERROR"}}
+  {"success":1, "unpacked":{"message":"Upvote Successful"}}
+  */
+
   bool receivedResponseFromServer = data["local_status"] == 200;
   Map localData = data["local_result"];
 

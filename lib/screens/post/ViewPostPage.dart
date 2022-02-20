@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
+import '/models/PopupMenuDataset.dart';
+import '/helper/GlobalFunctions.dart';
 import '/helper/backend/database.dart';
 import '/helper/backend/apis.dart';
 import '/providers/CurrentPostProvider.dart';
@@ -14,7 +16,6 @@ import '/helper/utils/loader.dart';
 import '/models/comment.dart';
 import '/models/post.dart';
 import '/widgets/constants.dart';
-import '/widgets/feed_interact_button.dart';
 import '/widgets/recommended_feed_tile.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -29,9 +30,11 @@ class ViewPostPage extends StatefulWidget {
 }
 
 class _ViewPostPageState extends State<ViewPostPage> {
-  final _post = PostAPIS();
 
   _ProfileRow() {
+    User? user = FirebaseAuth.instance.currentUser;
+    bool isTheSameUser = user!.uid == widget.thePost.postID;
+
     return Row(
       children: [
         Container(
@@ -73,6 +76,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
             ),
           ],
         ),
+        const Spacer(),
+        CustomPopupMenu(dataset: postDataset, showOther: isTheSameUser),
       ],
     );
   }
@@ -103,98 +108,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
           ),
         ),
       ],
-    );
-  }
-
-  _VoteSection(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    String postID = widget.thePost.postID!;
-    Map voteMap = userProvider.voteMap;
-
-    Color upvoteColor = Colors.grey;
-    Color downvoteColor = Colors.grey;
-
-    int upvotes = voteMap[postID]["upvotes"];
-    int downvotes = voteMap[postID]["downvotes"];
-
-    if (voteMap[postID]["vote"] == true) {
-      upvoteColor = Colors.red;
-      downvoteColor = Colors.grey;
-    } else if (voteMap[postID]["vote"] == false) {
-      upvoteColor = Colors.grey;
-      downvoteColor = Colors.blue;
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(right: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FeedInteractButton(
-            icon: CupertinoIcons.arrowtriangle_up_circle,
-            label: upvotes.toString(),
-            color: upvoteColor,
-            tapHandler: () async {
-              /// UPVOTE PRESSED
-              userProvider.ratePost(
-                  post: widget.thePost, upvoteClick: true);
-              if (voteMap[postID]["vote"] == null) {
-                _vote(isUpvote: true);
-              } else {
-                if (voteMap[postID]["vote"] == true) {
-                  _cancelVote(isCancelUpvote: true); // CANCEL UPVOTE
-                } else {
-                  _cancelVote(isCancelUpvote: false); // CANCEL DOWNVOTE
-                  _vote(isUpvote: true); // UPVOTE
-                }
-              }
-            },
-          ),
-          const SizedBox(
-            width: 5,
-          ),
-          FeedInteractButton(
-            icon: CupertinoIcons.arrowtriangle_down_circle,
-            label: downvotes.toString(),
-            color: downvoteColor,
-            tapHandler: () async {
-              /// DOWNVOTE PRESSED
-              userProvider.ratePost(
-                  post: widget.thePost, upvoteClick: false);
-              if (voteMap[postID]["vote"] == null) {
-                _vote(isUpvote: false); // DOWNVOTE
-              } else {
-                if (voteMap[postID]["vote"] == false) {
-                  _cancelVote(isCancelUpvote: false); // CANCEL DOWNVOTE
-                } else {
-                  _cancelVote(isCancelUpvote: true); // CANCEL UPVOTE
-                  _vote(isUpvote: false); // DOWNVOTE
-                }
-              }
-            },
-          ),
-          const SizedBox(
-            width: 5,
-          ),
-          FeedInteractButton(
-            icon: CupertinoIcons.chat_bubble_2,
-            label: "",
-            tapHandler: () async {
-              // showModalBottomSheet(
-              //   context: context,
-              //   isScrollControlled: true,
-              //   backgroundColor: Colors.transparent,
-              //   barrierColor: const Color(0xFF383838),
-              //   builder: (ctx) {
-              //     return CommentPage(
-              //       post: widget.thePost,
-              //     );
-              //   },
-              // );
-            },
-          ),
-        ],
-      ),
     );
   }
 
@@ -341,49 +254,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
     }
   }
 
-  void _vote({bool isUpvote = true}) async {
-    Function func = isUpvote ? _post.upVote : _post.downVote;
-
-    User? curruser = FirebaseAuth.instance.currentUser;
-    Map requestBody = {
-      "postID": widget.thePost.postID,
-      "userID": curruser!.uid
-    };
-
-    if (curruser == null) {
-      return;
-    }
-    final res = await func(requestBody);
-    Map unpackedVote = unPackLocally(res, toPrint: false);
-
-    if (unpackedVote["success"] == 1) {
-      print("${isUpvote ? "UPVOTE" : "DOWNVOTE"} SUCCESSFUL!");
-    } else {
-      Fluttertoast.showToast(msg: "Couldn't vote!");
-    }
-  }
-
-  void _cancelVote({bool isCancelUpvote = true}) async {
-    Function func = !isCancelUpvote ? _post.cancelDownVote : _post.cancelUpVote;
-    User? curruser = FirebaseAuth.instance.currentUser;
-    Map requestBody = {
-      "postID": widget.thePost.postID,
-      "userID": curruser!.uid
-    };
-
-    if (curruser == null) {
-      return;
-    }
-    final res = await func(requestBody);
-    Map unpackedVote = unPackLocally(res, toPrint: false);
-
-    if (unpackedVote["success"] == 1) {
-      print("CANCEL ${isCancelUpvote ? "UPVOTE" : "DOWNVOTE"} SUCCESSFUL!");
-    } else {
-      Fluttertoast.showToast(msg: "Couldn't vote!");
-    }
-  }
-
   void copyText(String text) {}
 
   @override
@@ -526,7 +396,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                   const SizedBox(
                                     height: 20,
                                   ),
-                                  _VoteSection(context),
+                                  VoteSection(context, widget.thePost),
                                   const Text(
                                     "Related Posts",
                                     style: TextStyle(

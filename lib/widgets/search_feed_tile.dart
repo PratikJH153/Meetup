@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '/helper/GlobalFunctions.dart';
 import '/models/post.dart';
-import 'feed_tile.dart';
 
 class SearchFeedTile extends StatelessWidget {
   final bool isDes;
