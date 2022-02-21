@@ -74,7 +74,7 @@ class _CommentPageState extends State<CommentPage> {
 
         //! TIME ISSUE SOLVE IT!!!!
 
-        _commentController.text='';
+        _commentController.text = '';
         currentPostProvider.addSingleComment(comment);
       } else {
         Fluttertoast.showToast(msg: "Something went wrong!");
@@ -101,7 +101,8 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   Future<void> _deleteComment(Map commentMap) async {
-    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context, listen: false);
+    CurrentPostProvider currentPost =
+        Provider.of<CurrentPostProvider>(context, listen: false);
 
     Comment comment = Comment.fromJson(commentMap);
 
@@ -157,218 +158,200 @@ class _CommentPageState extends State<CommentPage> {
 
     bool isLoadedComments = currentPost.isCommentsLoaded;
     bool wentWrongComments = currentPost.wentWrongComments;
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => Navigator.of(context).pop(),
-      child: GestureDetector(
-        onTap: () {},
-        child: DraggableScrollableSheet(
-            initialChildSize: 1,
-            minChildSize: 0.7,
-            maxChildSize: 1,
-            builder: (_, controller) {
-              return Column(
-                children: [
-                  UpperWidgetOfBottomSheet(
-                    tapHandler: () {},
-                    icon: Icons.stop,
-                    toShow: false,
-                  ),
-                  wentWrongComments
-                      ? const Text("Couldn't fetch comments")
-                      : !isLoadedComments
-                          ? GlobalLoader()
-                          : commentList.isNotEmpty
-                              ? Expanded(
-                                  child: Container(
-                                    padding: const EdgeInsets.only(
-                                      top: 20,
-                                      left: 24,
-                                      right: 24,
-                                    ),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(40),
-                                        topRight: Radius.circular(40),
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: [
+            UpperWidgetOfBottomSheet(
+              tapHandler: () {},
+              icon: Icons.stop,
+              toShow: false,
+            ),
+            wentWrongComments
+                ? const Text("Couldn't fetch comments")
+                : !isLoadedComments
+                    ? GlobalLoader()
+                    : commentList.isNotEmpty
+                        ? Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                top: 20,
+                                left: 24,
+                                right: 24,
+                              ),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(40),
+                                  topRight: Radius.circular(40),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        "Comments",
+                                        style: TextStyle(
+                                          fontFamily: "Quicksand",
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 17,
+                                        ),
                                       ),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            const Text(
-                                              "Comments",
-                                              style: TextStyle(
-                                                fontFamily: "Quicksand",
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 17,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 8,
-                                            ),
-                                            Container(
-                                              decoration: const BoxDecoration(
-                                                color: Colors.white,
-                                                shape: BoxShape.circle,
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Color(0xFFdedede),
-                                                    blurRadius: 1,
-                                                    spreadRadius: 0.5,
-                                                    offset: Offset(0, 1),
-                                                  )
-                                                ],
-                                              ),
-                                              padding: const EdgeInsets.all(7),
-                                              child: Text(
-                                                commentList.length.toString(),
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 15,
-                                                ),
-                                              ),
-                                            ),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+                                      Container(
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Color(0xFFdedede),
+                                              blurRadius: 1,
+                                              spreadRadius: 0.5,
+                                              offset: Offset(0, 1),
+                                            )
                                           ],
                                         ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Expanded(
-                                          child: RefreshIndicator(
-                                            onRefresh: () {
-                                              return Future.delayed(
-                                                const Duration(seconds: 1),
-                                                () {
-                                                  setState(() {
-                                                    _initialize();
-                                                  });
-                                                },
-                                              );
-                                            },
-                                            child: _CommentList(commentList),
+                                        padding: const EdgeInsets.all(7),
+                                        child: Text(
+                                          commentList.length.toString(),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 15,
                                           ),
                                         ),
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                    .viewInsets
-                                                    .bottom +
-                                                20,
-                                          ),
-                                          child: _isAdding
-                                              ? const Center(
-                                                  child: CircularProgressIndicator(),
-                                                )
-                                              : Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          top: 3,
-                                                          bottom: 3,
-                                                        ),
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                          color:
-                                                              Color(0xFFf5f5fc),
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    15),
-                                                            bottomLeft:
-                                                                Radius.circular(
-                                                                    15),
-                                                          ),
-                                                        ),
-                                                        child: TextFormField(
-                                                          controller:
-                                                              _commentController,
-                                                          cursorColor:
-                                                              Colors.black,
-                                                          autofocus: false,
-                                                          decoration:
-                                                              const InputDecoration(
-                                                            hintText:
-                                                                "Comment Here...",
-                                                            border: InputBorder
-                                                                .none,
-                                                            contentPadding:
-                                                                EdgeInsets.only(
-                                                                    left: 20),
-                                                            hintStyle:
-                                                                TextStyle(
-                                                              color: Color(
-                                                                  0xFF404040),
-                                                              fontSize: 16,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap: _addComment,
-                                                      child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                          horizontal: 12,
-                                                          vertical: 15,
-                                                        ),
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    15),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    15),
-                                                          ),
-                                                          gradient:
-                                                              LinearGradient(
-                                                            colors: [
-                                                              Color(0xFFee0979),
-                                                              Color(0xFFff6a00),
-                                                            ],
-                                                            begin: Alignment
-                                                                .bottomLeft,
-                                                            end: Alignment
-                                                                .topRight,
-                                                          ),
-                                                        ),
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: const Icon(
-                                                          CupertinoIcons
-                                                              .location_fill,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                        )
-                                      ],
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Expanded(
+                                    child: RefreshIndicator(
+                                      onRefresh: () {
+                                        return Future.delayed(
+                                          const Duration(seconds: 1),
+                                          () {
+                                            setState(() {
+                                              _initialize();
+                                            });
+                                          },
+                                        );
+                                      },
+                                      child: _CommentList(commentList),
                                     ),
                                   ),
-                                )
-                              : Container(
-                                  color: Colors.red,
-                                  child: const Text("EMPTY LIST"),
+                                ],
+                              ),
+                            ),
+                          )
+                        : Center(
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 80),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Image.asset(
+                                    "assets/images/comment.png",
+                                    fit: BoxFit.cover,
+                                    height: 250,
+                                    width: 250,
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    "No Comments Yet!\nBe the first to comment.",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      height: 1.5,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+            if (commentList.isEmpty) const Spacer(),
+            Container(
+              margin: const EdgeInsets.only(
+                left: 24,
+                right: 24,
+                bottom: 20,
+              ),
+              child: _isAdding
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                              top: 3,
+                              bottom: 3,
+                            ),
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFf5f5fc),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                bottomLeft: Radius.circular(15),
+                              ),
+                            ),
+                            child: TextFormField(
+                              controller: _commentController,
+                              cursorColor: Colors.black,
+                              autofocus: false,
+                              decoration: const InputDecoration(
+                                hintText: "Comment Here...",
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.only(left: 20),
+                                hintStyle: TextStyle(
+                                  color: Color(0xFF404040),
+                                  fontSize: 16,
                                 ),
-                ],
-              );
-            }),
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: _addComment,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 15,
+                            ),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(15),
+                                bottomRight: Radius.circular(15),
+                              ),
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color(0xFF4776E6),
+                                  Color(0xFF8E54E9),
+                                ],
+                                begin: Alignment.bottomLeft,
+                                end: Alignment.topRight,
+                              ),
+                            ),
+                            alignment: Alignment.center,
+                            child: const Icon(
+                              CupertinoIcons.location_fill,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -431,7 +414,8 @@ class _CommentPageState extends State<CommentPage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CustomPopupMenu(dataset: commentDataset,showOther: isTheSamePerson),
+                  CustomPopupMenu(
+                      dataset: commentDataset, showOther: isTheSamePerson),
                   Text(
                     timeago.format(
                       DateTime.parse(commentList[index]["timestamp"]),

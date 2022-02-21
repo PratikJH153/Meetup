@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meetupapp/widgets/back_button.dart';
 import '/screens/authentication/Register_1_page.dart';
 import '/screens/authentication/Register_2_page.dart';
 import '/screens/authentication/Register_3_page.dart';
@@ -183,7 +184,7 @@ class _RegisterPageState extends State<RegisterPage> {
               FloatingActionButtonLocation.centerFloat,
           floatingActionButton: Container(
             height: 50,
-            margin: const EdgeInsets.only(bottom: 30),
+            margin: const EdgeInsets.only(bottom: 35),
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: _isProcessing
                 ? const Center(
@@ -191,7 +192,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       padding: EdgeInsets.only(bottom: 30),
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation(
-                          Color(0xFFff6a00),
+                          Color(0xFF4776E6),
                         ),
                       ),
                     ),
@@ -247,27 +248,17 @@ class _RegisterPageState extends State<RegisterPage> {
               children: [
                 Container(
                   margin: EdgeInsets.only(
-                    left: 25.0,
-                    right: 25.0,
+                    left: 28.0,
+                    right: 28.0,
                     top: 30,
                     bottom: MediaQuery.of(context).viewInsets.bottom + 10,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: GestureDetector(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Icon(
-                            CupertinoIcons.back,
-                            color: Colors.grey[700],
-                            size: 30,
-                          ),
-                        ),
-                      ),
+                      backButton(context),
                       const SizedBox(
-                        height: 20,
+                        height: 25,
                       ),
                       const Text(
                         "Welcome,",
@@ -307,7 +298,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             lineHeight: 2,
                             percent: step / 5,
                             padding: EdgeInsets.zero,
-                            progressColor: const Color(0xFFFF416C),
+                            progressColor: const Color(0xFF4776E6),
                           ),
                           const SizedBox(
                             height: 10,

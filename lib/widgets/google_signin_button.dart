@@ -11,7 +11,7 @@ class GoogleSignInButton extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(top: 18),
         padding: const EdgeInsets.symmetric(
-          vertical: 15,
+          vertical: 20,
         ),
         alignment: Alignment.center,
         decoration: BoxDecoration(

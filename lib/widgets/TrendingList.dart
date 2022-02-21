@@ -49,7 +49,7 @@ class TrendingList extends StatelessWidget {
                 : ListView.builder(
                     padding: const EdgeInsets.only(
                       bottom: 200,
-                      top: 30,
+                      top: 20,
                     ),
                     physics: const BouncingScrollPhysics(),
                     itemCount: postList.length,

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/screens/SearchPage.dart';
 import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -29,6 +30,8 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _widgetOptions = <Widget>[
     const FeedPage(),
+    const SearchPage(),
+    Container(),
     const ProfilePage(),
   ];
 
@@ -61,12 +64,16 @@ class _HomePageState extends State<HomePage> {
         : !isLoadingComplete
             ? Scaffold(body: GlobalLoader())
             : Scaffold(
-                floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+                resizeToAvoidBottomInset: false,
                 floatingActionButton: Container(
-                  margin: const EdgeInsets.only(bottom: 6),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(40),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40),
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey[200]!,
@@ -77,11 +84,11 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   padding: const EdgeInsets.symmetric(
-                    vertical: 10,
+                    vertical: 14,
+                    horizontal: 20,
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       InkWell(
                         child: BottomNavButton(
@@ -94,28 +101,80 @@ class _HomePageState extends State<HomePage> {
                           });
                         },
                       ),
-                      BottomAddButton(tapHandler: () async {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          barrierColor: const Color(0xFF383838),
-                          builder: (ctx) {
-                            return const AddPost();
-                          },
-                        );
-                      }),
                       InkWell(
+                        child: BottomNavButton(
+                          icon: CupertinoIcons.search,
+                          isSelected: _selectedIndex == 1,
+                        ),
                         onTap: () {
                           setState(() {
                             _selectedIndex = 1;
                           });
                         },
+                      ),
+                      BottomAddButton(tapHandler: () async {
+                        // showModalBottomSheet(
+                        //   context: context,
+                        //   isScrollControlled: true,
+                        //   backgroundColor: Colors.transparent,
+                        //   barrierColor: const Color(0xFF383838),
+                        //   builder: (ctx) {
+                        //     return const AddPost();
+                        //   },
+                        // );
+                        Navigator.of(context).pushNamed(AddPost.routeName);
+                      }),
+                      InkWell(
                         child: BottomNavButton(
-                          icon: CupertinoIcons.person_alt,
-                          isSelected: _selectedIndex == 1,
+                          icon: CupertinoIcons.bookmark,
+                          isSelected: _selectedIndex == 2,
+                        ),
+                        onTap: () {
+                          setState(() {
+                            _selectedIndex = 2;
+                          });
+                        },
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedIndex = 3;
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Container(
+                            height: 36,
+                            width: 36,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey[300]!,
+                                  blurRadius: 2,
+                                  spreadRadius: 0.1,
+                                  offset: const Offset(0, 3),
+                                )
+                              ],
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  Provider.of<UserProvider>(context,
+                                          listen: false)
+                                      .getUser()!
+                                      .profileURL!,
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
+                      // InkWell(
+                      //   child: BottomNavButton(
+                      //     icon: CupertinoIcons.person_alt,
+                      //     isSelected: _selectedIndex == 1,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

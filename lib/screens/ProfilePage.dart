@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/widgets/edit_button.dart';
 import '/helper/utils/fire_auth.dart';
 import '/screens/EditProfilePage.dart';
 import '/widgets/profile_buttons.dart';
@@ -20,7 +21,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   @override
   void initState() {
     super.initState();
@@ -49,19 +49,21 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           Container(
                             alignment: Alignment.topRight,
-                            height: 130,
+                            height: 120,
                             width: double.infinity,
                             decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Color(0xFFFF416C),
-                                  Color(0xFFFF4B2B),
-                                ],
-                                begin: Alignment.bottomLeft,
-                                end: Alignment.topRight,
-                              ),
+                              color: Colors.black87,
                             ),
-                            padding: const EdgeInsets.only(right: 10),
+                            padding: const EdgeInsets.only(
+                              right: 10,
+                              top: 10,
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.more_vert),
+                              iconSize: 30,
+                              color: Colors.white,
+                              onPressed: () {},
+                            ),
                           ),
                           const SizedBox(
                             height: 5,
@@ -78,7 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               children: [
                                 Container(
                                   margin: const EdgeInsets.only(
-                                    left: 105,
+                                    left: 110,
                                   ),
                                   child: Column(
                                     crossAxisAlignment:
@@ -105,12 +107,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 30,
+                                  height: 35,
                                 ),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     profileNumberWidget(
                                       context,
@@ -121,26 +123,29 @@ class _ProfilePageState extends State<ProfilePage> {
                                       context,
                                       "Posts",
                                       userPosts.length.toString(),
-                                    )
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(
                                   height: 32,
                                 ),
-                                Text(
+                                const Text(
                                   "About me",
                                   style: TextStyle(
-                                    color: Colors.grey[800],
                                     fontSize: 15,
-                                    letterSpacing: 1.1,
-                                    fontWeight: FontWeight.bold,
+                                    height: 1.5,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: "Nunito",
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 7,
+                                  height: 3,
                                 ),
                                 Text(
-                                  user.bio.toString(),
+                                  user.bio.toString() != ""
+                                      ? user.bio.toString()
+                                      : "A meetup user!",
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
@@ -150,15 +155,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 23,
+                                  height: 35,
                                 ),
-                                Text(
-                                  "My Interests",
+                                const Text(
+                                  "My interests",
                                   style: TextStyle(
-                                    color: Colors.grey[800],
                                     fontSize: 15,
-                                    letterSpacing: 1.1,
-                                    fontWeight: FontWeight.bold,
+                                    height: 1.5,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: "Nunito",
                                   ),
                                 ),
                                 const SizedBox(
@@ -179,73 +185,64 @@ class _ProfilePageState extends State<ProfilePage> {
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                            gradient: const LinearGradient(
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight,
-                                              colors: [
-                                                Color(0xFF485563),
-                                                Color(0xFF29323c),
-                                              ],
-                                            ),
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey[200]!,
+                                                blurRadius: 5,
+                                                spreadRadius: 0.1,
+                                                offset: const Offset(0, 2),
+                                              )
+                                            ],
                                           ),
                                           child: Text(
                                             e,
                                             style: const TextStyle(
-                                              color: Colors.white,
+                                              color: Colors.black,
                                             ),
                                           ),
                                         ),
                                       )
                                       .toList(),
                                 ),
-                                const SizedBox(
-                                  height: 30,
-                                ),
-                                ProfileButton(
-                                  label: "Edit Profile",
-                                  icon: CupertinoIcons.person_alt,
-                                  tapHandler: () {
-                                    Navigator.of(context).pushNamed(
-                                      EditProfilePage.routeName,
-                                    );
-                                  },
-                                ),
-                                ProfileButton(
-                                  label: "Settings",
-                                  icon: CupertinoIcons.settings,
-                                  tapHandler: () {},
-                                ),
-                                ProfileButton(
-                                  label: "Help",
-                                  icon: CupertinoIcons.question_circle_fill,
-                                  tapHandler: () {},
-                                  isExtra: true,
-                                ),
+                                // const SizedBox(
+                                //   height: 30,
+                                // ),
+                                // ProfileButton(
+                                //   label: "Help",
+                                //   icon: CupertinoIcons.question_circle_fill,
+                                //   tapHandler: () {},
+                                //   isExtra: true,
+                                // ),
                               ],
                             ),
                           ),
-                          InkWell(
-                            onTap: () async {
-                              await FireAuth.signOut(context);
-                            },
-                            child: Container(
-                              color: Colors.blue,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              child: const Text("Sign Out",
-                                  style: TextStyle(color: Colors.white)),
-                            ),
-                          )
+                          // InkWell(
+                          //   onTap: () async {
+                          //     await FireAuth.signOut(context);
+                          //   },
+                          //   child: Container(
+                          //     color: Colors.blue,
+                          //     padding: const EdgeInsets.symmetric(
+                          //         vertical: 10, horizontal: 20),
+                          //     child: const Text("Sign Out",
+                          //         style: TextStyle(color: Colors.white)),
+                          //   ),
+                          // )
                         ],
                       ),
                       Positioned(
-                        top: 110,
-                        left: 24,
+                        top: 80,
+                        left: 20,
                         child: Container(
-                          height: 90,
-                          width: 90,
+                          height: 100,
+                          width: 100,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(35),
+                            border: Border.all(
+                              width: 6,
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                            ),
                             image: DecorationImage(
                               fit: BoxFit.cover,
                               image: NetworkImage(

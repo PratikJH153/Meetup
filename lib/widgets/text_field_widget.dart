@@ -52,8 +52,8 @@ class TextFieldWidget extends StatelessWidget {
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.only(left: 12),
                 hintStyle: const TextStyle(
-                  color: Color(0xFF404040),
-                  fontSize: 16,
+                  color: Color(0xFF595959),
+                  fontSize: 15,
                 ),
               ),
             ),

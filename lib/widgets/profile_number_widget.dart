@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '/screens/post/UserPostScreen.dart';
 
-GestureDetector profileNumberWidget(BuildContext context,String label, String title) {
+GestureDetector profileNumberWidget(
+    BuildContext context, String label, String title) {
   return GestureDetector(
-    onTap: (){
-      if(label=="Posts"){
+    onTap: () {
+      if (label == "Posts") {
         Navigator.of(context).pushNamed(UserPosts.routeName);
       }
     },
@@ -13,8 +14,9 @@ GestureDetector profileNumberWidget(BuildContext context,String label, String ti
         Text(
           title,
           style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
+            fontSize: 23,
+            fontWeight: FontWeight.w500,
+            fontFamily: "DMSans",
           ),
         ),
         const SizedBox(

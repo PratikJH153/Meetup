@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/widgets/tab_button.dart';
 import '/widgets/FollwingList.dart';
 import '/widgets/TrendingList.dart';
 import '/screens/SearchPage.dart';
@@ -16,8 +17,9 @@ class FeedPage extends StatefulWidget {
 
 class _FeedPageState extends State<FeedPage>
     with SingleTickerProviderStateMixin {
+  late PageController _pageController;
   late ScrollController _scrollController;
-  late TabController _tabController;
+  int bottomSelectedIndex = 0;
 
   bool _isOpened = false;
   Map<String, bool> _selectMap = {};
@@ -102,10 +104,41 @@ class _FeedPageState extends State<FeedPage>
     );
   }
 
+  void pageChanged(int index) {
+    setState(() {
+      bottomSelectedIndex = index;
+    });
+  }
+
+  void bottomTapped(int index) {
+    setState(() {
+      bottomSelectedIndex = index;
+      _pageController.jumpToPage(
+        index,
+      );
+    });
+  }
+
+  Widget buildPageView() {
+    return PageView(
+      controller: _pageController,
+      onPageChanged: (index) {
+        pageChanged(index);
+      },
+      children: const <Widget>[
+        FollowingList(),
+        TrendingList(),
+      ],
+    );
+  }
+
   @override
   void initState() {
+    _pageController = PageController(
+      initialPage: 0,
+      keepPage: true,
+    );
     _scrollController = ScrollController();
-    _tabController = TabController(vsync: this, length: 2);
     for (String city in _interests.keys.toList()) {
       items.add(DropdownMenuItem(value: city, child: Text(city)));
     }
@@ -114,8 +147,8 @@ class _FeedPageState extends State<FeedPage>
 
   @override
   void dispose() {
+    _pageController.dispose();
     _scrollController.dispose();
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -130,6 +163,7 @@ class _FeedPageState extends State<FeedPage>
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 SliverAppBar(
+                  expandedHeight: MediaQuery.of(context).size.height * 0.14,
                   title: Container(
                     margin: const EdgeInsets.only(
                       left: 8,
@@ -139,46 +173,33 @@ class _FeedPageState extends State<FeedPage>
                     child: Column(
                       children: [
                         Row(
-                          children: [
-                            const Text(
-                              "Discover 👋",
+                          children: const [
+                            Text(
+                              "Explore Now 👋",
                               style: TextStyle(
                                 color: Colors.black,
+                                fontFamily: "DMSans",
+                                fontSize: 18,
                               ),
                             ),
-                            const Spacer(),
-                            ButtonWidget(
-                              icon: CupertinoIcons.search,
-                              tapHandler: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  barrierColor: const Color(0xFF383838),
-                                  builder: (ctx) {
-                                    return const SearchPage();
-                                  },
-                                );
-                              },
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            ButtonWidget(
-                              icon: CupertinoIcons.slider_horizontal_3,
-                              tapHandler: () {
-                                setState(() {
-                                  // _isOpened = !_isOpened;
-                                  // showModalBottomSheet(
-                                  //   context: context,
-                                  //   builder: (ctx) {
-                                  //     return _filterBox();
-                                  //   },
-                                  // );
-                                  print("FILTER IS DONE JUST UI REMAINING!");
-                                });
-                              },
-                            ),
+                            // const Spacer(),
+                            // ButtonWidget(
+                            //   icon: CupertinoIcons.search,
+                            //   tapHandler: () {
+                            //     showModalBottomSheet(
+                            //       context: context,
+                            //       isScrollControlled: true,
+                            //       backgroundColor: Colors.transparent,
+                            //       barrierColor: const Color(0xFF383838),
+                            //       builder: (ctx) {
+                            //         return const SearchPage();
+                            //       },
+                            //     );
+                            //   },
+                            // ),
+                            // const SizedBox(
+                            //   width: 10,
+                            // ),
                           ],
                         ),
                       ],
@@ -190,33 +211,69 @@ class _FeedPageState extends State<FeedPage>
                   elevation: 0,
                   snap: false,
                   forceElevated: innerBoxIsScrolled,
-                  bottom: TabBar(
-                    unselectedLabelColor: Colors.grey,
-                    labelColor: Colors.black,
-                    indicatorWeight: 2,
-                    isScrollable: true,
-                    indicatorColor: Colors.black,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    tabs: const <Tab>[
-                      Tab(
-                        text: "Following",
+                  bottom: PreferredSize(
+                    preferredSize: const Size.fromHeight(48),
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                        left: 20,
+                        right: 32,
                       ),
-                      Tab(
-                        text: "Trending",
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: const Color(0xFFf5f5fc),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  TabButton(
+                                    label: "Following",
+                                    isSelected: bottomSelectedIndex == 0,
+                                    tapHandler: () {
+                                      bottomTapped(0);
+                                    },
+                                  ),
+                                  TabButton(
+                                    label: "Trending",
+                                    isSelected: bottomSelectedIndex == 1,
+                                    tapHandler: () {
+                                      bottomTapped(1);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          ButtonWidget(
+                            icon: CupertinoIcons.slider_horizontal_3,
+                            tapHandler: () {
+                              setState(() {
+                                // _isOpened = !_isOpened;
+                                // showModalBottomSheet(
+                                //   context: context,
+                                //   builder: (ctx) {
+                                //     return _filterBox();
+                                //   },
+                                // );
+                                print("FILTER IS DONE JUST UI REMAINING!");
+                              });
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                    controller: _tabController,
+                    ),
                   ),
                 ),
               ];
             },
-            body: TabBarView(
-              controller: _tabController,
-              children: const <Widget>[
-                FollowingList(),
-                TrendingList(),
-              ],
-            ),
+            body: buildPageView(),
           ),
         ),
       ),

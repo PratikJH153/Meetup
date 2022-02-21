@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '/helper/backend/apis.dart';
 import '/helper/backend/database.dart';
@@ -116,255 +117,267 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          title: const Text(
-            "Profile",
-            style: TextStyle(
-              color: Colors.black,
-              fontFamily: "Quicksand",
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.1,
-            ),
-          ),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(
-              CupertinoIcons.arrow_left,
-              color: Colors.black,
-            ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () async {
-                bool correctValuesEntered =
-                    _editProfileKey.currentState!.validate();
-                if (correctValuesEntered) _updateProfile();
-              },
-              icon: const Icon(
-                CupertinoIcons.checkmark_alt,
-                color: Colors.black,
-              ),
-            ),
-          ],
-        ),
+        // appBar: AppBar(
+        //   elevation: 0,
+        //   backgroundColor: Colors.white,
+        //   centerTitle: true,
+        //   title: const Text(
+        //     "Profile",
+        //     style: TextStyle(
+        //       color: Colors.black,
+        //       fontFamily: "Quicksand",
+        //       fontWeight: FontWeight.bold,
+        //       letterSpacing: 1.1,
+        //     ),
+        //   ),
+        //   leading: IconButton(
+        //     onPressed: () {
+        //       Navigator.of(context).pop();
+        //     },
+        //     icon: const Icon(
+        //       CupertinoIcons.arrow_left,
+        //       color: Colors.black,
+        //     ),
+        //   ),
+        //   actions: [
+        //     IconButton(
+        //       onPressed: () async {
+        //         bool correctValuesEntered =
+        //             _editProfileKey.currentState!.validate();
+        //         if (correctValuesEntered) _updateProfile();
+        //       },
+        //       icon: const Icon(
+        //         CupertinoIcons.checkmark_alt,
+        //         color: Colors.black,
+        //       ),
+        //     ),
+        //   ],
+        // ),
         body: user != null
             ? SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                child: Form(
-                  key: _editProfileKey,
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                      top: 20,
-                      left: kLeftPadding,
-                      right: kRightPadding,
+                child: Column(
+                  children: [
+                    UpperWidgetOfBottomSheet(
+                      tapHandler: () {},
+                      icon: Icons.check,
+                      toShow: true,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Stack(
+                    Form(
+                      key: _editProfileKey,
+                      child: Container(
+                        padding: const EdgeInsets.only(
+                          top: 10,
+                          left: kLeftPadding,
+                          right: kRightPadding,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Container(
-                              height: 130,
-                              width: 130,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFf0f0f0),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  user.profileURL!,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: Container(
-                                padding: const EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: const Color(0xFF4265ff),
-                                  border: Border.all(
-                                    width: 6,
-                                    color: const Color(0xFFfafbff),
+                            Stack(
+                              children: [
+                                Container(
+                                  height: 130,
+                                  width: 130,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFf0f0f0),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: Image.network(
+                                      user.profileURL!,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                                child: const Icon(
-                                  CupertinoIcons.pen,
-                                  size: 20,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextFieldWidget(
-                                editingController: firstNameController,
-                                label: "First Name",
-                                validatorHandler: (val) =>
-                                    Validator.validateTextField(result: val),
-                                inputType: TextInputType.name,
-                                icon: CupertinoIcons.person_alt,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: TextFieldWidget(
-                                editingController: lastNameController,
-                                label: "Last Name",
-                                validatorHandler: (val) =>
-                                    Validator.validateTextField(result: val),
-                                inputType: TextInputType.name,
-                                icon: CupertinoIcons.person_alt,
-                              ),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        TextFieldWidget(
-                          editingController: usernameController,
-                          label: "Username",
-                          validatorHandler: (val) =>
-                              Validator.validateTextField(result: val),
-                          inputType: TextInputType.name,
-                          icon: CupertinoIcons.at_circle,
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: DropDownWidget(
-                                items: genders,
-                                value: gendervalue,
-                                onChanged: (val) {
-                                  setState(() {
-                                    gendervalue = val;
-                                  });
-                                },
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: AgePicker(
-                                value: age,
-                                onChanged: (val) {
-                                  setState(() {
-                                    age = val;
-                                  });
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        TextFieldWidget(
-                          editingController: bioController,
-                          label: "About me",
-                          isBio: true,
-                          validatorHandler: (val) =>
-                              Validator.validateTextField(result: val),
-                          inputType: TextInputType.text,
-                          icon: CupertinoIcons.bold_italic_underline,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "Interests",
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                CupertinoIcons.add,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Wrap(
-                            children: user.interests!
-                                .map(
-                                  (e) => Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 14,
-                                      vertical: 8,
-                                    ),
-                                    margin: const EdgeInsets.only(
-                                      right: 8,
-                                      bottom: 8,
-                                    ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(5),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      gradient: const LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          Color(0xFF485563),
-                                          Color(0xFF29323c),
-                                        ],
+                                      shape: BoxShape.circle,
+                                      color: const Color(0xFF4265ff),
+                                      border: Border.all(
+                                        width: 6,
+                                        color: const Color(0xFFfafbff),
                                       ),
                                     ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          CupertinoIcons.xmark_circle_fill,
-                                          color: Colors.white,
-                                          size: 15,
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          e,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ],
+                                    child: const Icon(
+                                      CupertinoIcons.pen,
+                                      size: 20,
+                                      color: Colors.white,
                                     ),
                                   ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFieldWidget(
+                                    editingController: firstNameController,
+                                    label: "First Name",
+                                    validatorHandler: (val) =>
+                                        Validator.validateTextField(
+                                            result: val),
+                                    inputType: TextInputType.name,
+                                    icon: CupertinoIcons.person_alt,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: TextFieldWidget(
+                                    editingController: lastNameController,
+                                    label: "Last Name",
+                                    validatorHandler: (val) =>
+                                        Validator.validateTextField(
+                                            result: val),
+                                    inputType: TextInputType.name,
+                                    icon: CupertinoIcons.person_alt,
+                                  ),
                                 )
-                                .toList(),
-                          ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            TextFieldWidget(
+                              editingController: usernameController,
+                              label: "Username",
+                              validatorHandler: (val) =>
+                                  Validator.validateTextField(result: val),
+                              inputType: TextInputType.name,
+                              icon: CupertinoIcons.at_circle,
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: DropDownWidget(
+                                    items: genders,
+                                    value: gendervalue,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        gendervalue = val;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: AgePicker(
+                                    value: age,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        age = val;
+                                      });
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            TextFieldWidget(
+                              editingController: bioController,
+                              label: "About me",
+                              isBio: true,
+                              validatorHandler: (val) =>
+                                  Validator.validateTextField(result: val),
+                              inputType: TextInputType.text,
+                              icon: CupertinoIcons.bold_italic_underline,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Interests",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    CupertinoIcons.add,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Wrap(
+                                children: user.interests!
+                                    .map(
+                                      (e) => Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 14,
+                                          vertical: 8,
+                                        ),
+                                        margin: const EdgeInsets.only(
+                                          right: 8,
+                                          bottom: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          gradient: const LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              Color(0xFF485563),
+                                              Color(0xFF29323c),
+                                            ],
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Icon(
+                                              CupertinoIcons.xmark_circle_fill,
+                                              color: Colors.white,
+                                              size: 15,
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              e,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               )
             : Container(),

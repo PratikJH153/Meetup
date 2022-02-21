@@ -18,7 +18,8 @@ class UpperWidgetOfBottomSheet extends StatelessWidget {
       children: [
         Container(
           margin: const EdgeInsets.only(
-            top: kTopPadding,
+            top: 20,
+            bottom: 10,
           ),
           padding: const EdgeInsets.symmetric(
             horizontal: kLeftPadding,
@@ -57,16 +58,6 @@ class UpperWidgetOfBottomSheet extends StatelessWidget {
                   ),
                 ),
             ],
-          ),
-        ),
-        Center(
-          child: Container(
-            height: 3,
-            width: 80,
-            color: Colors.white,
-            margin: const EdgeInsets.only(
-              bottom: 10,
-            ),
           ),
         ),
       ],

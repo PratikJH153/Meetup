@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/widgets/back_button.dart';
 import '/widgets/authentication_button.dart';
 
 import '/helper/GlobalFunctions.dart';
@@ -136,19 +137,9 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: GestureDetector(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Icon(
-                            CupertinoIcons.arrow_turn_up_left,
-                            color: Colors.grey[700],
-                            size: 30,
-                          ),
-                        ),
-                      ),
+                      backButton(context),
                       const SizedBox(
-                        height: 25,
+                        height: 20,
                       ),
                       const Text(
                         "Hey,\nLogin Now.",

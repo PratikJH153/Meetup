@@ -19,29 +19,62 @@ const placeholder =
 
 Widget CustomPopupMenu(
     {required PopupMenuDataset dataset, required showOther}) {
-  return PopupMenuButton(itemBuilder: (BuildContext context) {
-    return [
-      PopupMenuItem(
-        child: Row(
-          children: [
-            Icon(dataset.primaryIcon),
-            Text(dataset.primary),
-          ],
-        ),
-        onTap: () {},
+  return PopupMenuButton(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
       ),
-      if(showOther)
-      PopupMenuItem(
-        child: Row(
-          children: [
-            Icon(dataset.secondaryIcon),
-            Text(dataset.secondary),
-          ],
-        ),
-        onTap: () {},
-      )
-    ];
-  });
+      elevation: 2,
+      icon: Icon(
+        Icons.more_vert,
+        color: Colors.grey[700],
+      ),
+      itemBuilder: (BuildContext context) {
+        return [
+          PopupMenuItem(
+            child: Row(
+              children: [
+                Icon(
+                  dataset.primaryIcon,
+                  color: Colors.black45,
+                  size: 22,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  dataset.primary,
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+            onTap: () {},
+          ),
+          if (showOther)
+            PopupMenuItem(
+              child: Row(
+                children: [
+                  Icon(
+                    dataset.secondaryIcon,
+                    color: Colors.black45,
+                    size: 22,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    dataset.secondary,
+                    style: const TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {},
+            )
+        ];
+      });
 }
 
 Future<void> initialize(BuildContext context) async {
@@ -63,7 +96,8 @@ Future<void> initialize(BuildContext context) async {
       Map votesList = unpackedUserData["unpacked"]["votes"];
 
       userProvider.initializeRatingMap(votesList);
-      userProvider.setUser(unpackedUserData["unpacked"]);
+      userProvider
+          .setUser(unpackedUserData["unpacked"] as Map<String, dynamic>);
     } else {
       userProvider.setWentWrong();
       return;
@@ -101,11 +135,11 @@ Future<void> initialize(BuildContext context) async {
   }
 }
 
-Container VoteSection(BuildContext context, Post post) {
+Row VoteSection(BuildContext context, Post post) {
   UserProvider userProvider = Provider.of<UserProvider>(context);
 
-  Color upvoteColor = Colors.grey;
-  Color downvoteColor = Colors.grey;
+  Color upvoteColor = Colors.white;
+  Color downvoteColor = Colors.white;
 
   String postID = post.postID!;
   Map voteMap = userProvider.voteMap;
@@ -123,96 +157,74 @@ Container VoteSection(BuildContext context, Post post) {
   }
 
   if (userVote == true) {
-    upvoteColor = Colors.red;
-    downvoteColor = Colors.grey;
+    upvoteColor = Colors.teal.withOpacity(0.7);
+    downvoteColor = Colors.white;
   } else if (userVote == false) {
-    upvoteColor = Colors.grey;
-    downvoteColor = Colors.blue;
+    upvoteColor = Colors.white;
+    downvoteColor = Colors.pink.withOpacity(0.7);
+    ;
   }
 
-  return Container(
-    margin: const EdgeInsets.only(right: 20),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        FeedInteractButton(
-          icon: CupertinoIcons.arrowtriangle_up_circle,
-          label: upvotes.toString(),
-          color: upvoteColor,
-          tapHandler: () async {
-            const bool voteValueInBool = true;
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      FeedInteractButton(
+        icon: CupertinoIcons.arrowtriangle_up_circle,
+        label: upvotes.toString(),
+        color: upvoteColor,
+        tapHandler: () async {
+          const bool voteValueInBool = true;
 
-            userProvider.ratePost(post: post, upvoteClick: voteValueInBool);
+          userProvider.ratePost(post: post, upvoteClick: voteValueInBool);
 
-            if (userVote == null) {
-              // THE USER HAS NEVER RATED THIS POST
-              vote(postID: postID, isUpvote: voteValueInBool);
+          if (userVote == null) {
+            // THE USER HAS NEVER RATED THIS POST
+            vote(postID: postID, isUpvote: voteValueInBool);
+          } else {
+            // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
+
+            if (userVote == voteValueInBool) {
+              // RATING AGAIN WHAT WAS PREVIOUSLY RATED, HENCE CANCELLATION
+              cancelVote(postID: postID, isCancelUpvote: voteValueInBool);
             } else {
-              // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
-
-              if (userVote == voteValueInBool) {
-                // RATING AGAIN WHAT WAS PREVIOUSLY RATED, HENCE CANCELLATION
-                cancelVote(postID: postID, isCancelUpvote: voteValueInBool);
-              } else {
-                // RATING DIFFERENT FROM WHAT WAS PREVIOUS
-                vote(postID: postID, isUpvote: voteValueInBool);
-                cancelVote(postID: postID, isCancelUpvote: !voteValueInBool);
-              }
-            }
-          },
-        ),
-        const SizedBox(
-          width: 5,
-        ),
-        FeedInteractButton(
-          icon: CupertinoIcons.arrowtriangle_down_circle,
-          label: downvotes.toString(),
-          color: downvoteColor,
-          tapHandler: () async {
-            /// DOWNVOTE PRESSED
-            const bool voteValueInBool = false;
-
-            userProvider.ratePost(post: post, upvoteClick: voteValueInBool);
-
-            if (userVote == null) {
-              // THE USER HAS NEVER RATED THIS POST
+              // RATING DIFFERENT FROM WHAT WAS PREVIOUS
               vote(postID: postID, isUpvote: voteValueInBool);
-            } else {
-              // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
-
-              if (userVote == voteValueInBool) {
-                // RATING AGAIN WHAT WAS PREVIOUSLY RATED, HENCE CANCELLATION
-                cancelVote(postID: postID, isCancelUpvote: voteValueInBool);
-              } else {
-                // RATING DIFFERENT FROM WHAT WAS PREVIOUS
-                vote(postID: postID, isUpvote: voteValueInBool);
-                cancelVote(postID: postID, isCancelUpvote: !voteValueInBool);
-              }
+              cancelVote(postID: postID, isCancelUpvote: !voteValueInBool);
             }
-          },
-        ),
-        const SizedBox(
-          width: 5,
-        ),
-        FeedInteractButton(
-          icon: CupertinoIcons.chat_bubble_2,
-          label: "",
-          tapHandler: () async {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              barrierColor: const Color(0xFF383838),
-              builder: (ctx) {
-                return CommentPage(
-                  post: post,
-                );
-              },
-            );
-          },
-        ),
-      ],
-    ),
+          }
+        },
+      ),
+      const SizedBox(
+        width: 5,
+      ),
+      FeedInteractButton(
+        icon: CupertinoIcons.arrowtriangle_down_circle,
+        label: downvotes.toString(),
+        color: downvoteColor,
+        tapHandler: () async {
+          /// DOWNVOTE PRESSED
+          const bool voteValueInBool = false;
+
+          userProvider.ratePost(post: post, upvoteClick: voteValueInBool);
+
+          if (userVote == null) {
+            // THE USER HAS NEVER RATED THIS POST
+            vote(postID: postID, isUpvote: voteValueInBool);
+          } else {
+            // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
+
+            if (userVote == voteValueInBool) {
+              // RATING AGAIN WHAT WAS PREVIOUSLY RATED, HENCE CANCELLATION
+              cancelVote(postID: postID, isCancelUpvote: voteValueInBool);
+            } else {
+              // RATING DIFFERENT FROM WHAT WAS PREVIOUS
+              vote(postID: postID, isUpvote: voteValueInBool);
+              cancelVote(postID: postID, isCancelUpvote: !voteValueInBool);
+            }
+          }
+        },
+      ),
+    ],
   );
 }
 

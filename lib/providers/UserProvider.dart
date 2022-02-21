@@ -18,11 +18,12 @@ class UserProvider with ChangeNotifier {
 
   List get userPosts => [..._userPosts.values.toList()];
 
-  void addSingleUserPost(Map newPost){
+  void addSingleUserPost(Map newPost) {
     _userPosts[newPost["_id"]] = newPost;
     notifyListeners();
   }
-  void deleteSingleUserPost(Post post){
+
+  void deleteSingleUserPost(Post post) {
     _userPosts.remove(post.postID);
     notifyListeners();
   }
@@ -39,8 +40,7 @@ class UserProvider with ChangeNotifier {
         "downvotes": !upvoteClick ? currentDownvotes + 1 : currentDownvotes,
         "vote": null
       };
-    }
-    else{
+    } else {
       currentUpvotes = _voteMap[post.postID]["upvotes"];
       currentDownvotes = _voteMap[post.postID]["downvotes"];
     }
@@ -55,7 +55,6 @@ class UserProvider with ChangeNotifier {
         "downvotes": !upvoteClick ? currentDownvotes + 1 : currentDownvotes,
         "vote": upvoteClick
       };
-
     } else {
       // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
 
@@ -134,7 +133,7 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setUser(Map? userMap) {
+  void setUser(Map<String, dynamic>? userMap) {
     if (userMap != null) {
       List userPostList = [...userMap["posts"]];
       userPostList.forEach((element) {

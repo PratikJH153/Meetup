@@ -174,7 +174,6 @@ class FireAuth {
     try {
       userProvider.deleteUserLocalData();
       await auth.signOut();
-      Navigator.of(context).pushReplacementNamed(GetStartedPage.routeName);
     } catch (err) {
       print(err.toString());
     }
