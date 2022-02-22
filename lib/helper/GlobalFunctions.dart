@@ -26,62 +26,29 @@ void copyToClipboard(String text) {
 
 Widget CustomPopupMenu(
     {required PopupMenuDataset dataset, required showOther}) {
-  return PopupMenuButton(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      elevation: 2,
-      icon: Icon(
-        Icons.more_vert,
-        color: Colors.grey[700],
-      ),
-      itemBuilder: (BuildContext context) {
-        return [
-          PopupMenuItem(
-            child: Row(
-              children: [
-                Icon(
-                  dataset.primaryIcon,
-                  color: Colors.black45,
-                  size: 22,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  dataset.primary,
-                  style: const TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-            onTap: () {},
-          ),
-          if (showOther)
-            PopupMenuItem(
-              child: Row(
-                children: [
-                  Icon(
-                    dataset.secondaryIcon,
-                    color: Colors.black45,
-                    size: 22,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    dataset.secondary,
-                    style: const TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {},
-            )
-        ];
-      });
+  return PopupMenuButton(itemBuilder: (BuildContext context) {
+    return [
+      // PopupMenuItem(
+      //   child: Row(
+      //     children: [
+      //       Icon(dataset.primaryIcon),
+      //       Text(dataset.primary),
+      //     ],
+      //   ),
+      //   onTap: () {},
+      // ),
+      // if(showOther)
+      PopupMenuItem(
+        child: Row(
+          children: [
+            Icon(dataset.secondaryIcon),
+            Text(dataset.secondary),
+          ],
+        ),
+        onTap: () {},
+      )
+    ];
+  });
 }
 
 Future<void> deletePost(BuildContext context, Post post) async {
@@ -103,7 +70,7 @@ Future<void> deletePost(BuildContext context, Post post) async {
 
 Future<void> deleteComment(BuildContext context, Map commentMap, Post post) async {
   CurrentPostProvider currentPost =
-      Provider.of<CurrentPostProvider>(context, listen: false);
+  Provider.of<CurrentPostProvider>(context, listen: false);
 
   Comment comment = Comment.fromJson(commentMap);
 
@@ -184,11 +151,11 @@ void initializeTrendingPosts(BuildContext context) async {
   }
 }
 
-Row VoteSection(BuildContext context, Post post) {
+Container VoteSection(BuildContext context, Post post) {
   UserProvider userProvider = Provider.of<UserProvider>(context);
 
-  Color upvoteColor = Colors.white;
-  Color downvoteColor = Colors.white;
+  Color upvoteColor = Colors.grey;
+  Color downvoteColor = Colors.grey;
 
   String postID = post.postID!;
   Map voteMap = userProvider.voteMap;
@@ -206,35 +173,30 @@ Row VoteSection(BuildContext context, Post post) {
   }
 
   if (userVote == true) {
-    upvoteColor = Colors.teal.withOpacity(0.7);
-    downvoteColor = Colors.white;
+    upvoteColor = Colors.red;
+    downvoteColor = Colors.grey;
   } else if (userVote == false) {
-    upvoteColor = Colors.white;
-    downvoteColor = Colors.pink.withOpacity(0.7);
-    ;
+    upvoteColor = Colors.grey;
+    downvoteColor = Colors.blue;
   }
 
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.end,
-    children: [
-      FeedInteractButton(
-        icon: CupertinoIcons.arrowtriangle_up_circle,
-        label: upvotes.toString(),
-        color: upvoteColor,
-        tapHandler: () async {
-          const bool voteValueInBool = true;
+  return Container(
+    margin: const EdgeInsets.only(right: 20),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        FeedInteractButton(
+          icon: CupertinoIcons.arrowtriangle_up_circle,
+          label: upvotes.toString(),
+          color: upvoteColor,
+          tapHandler: () async {
+            const bool voteValueInBool = true;
 
-          userProvider.ratePost(post: post, upvoteClick: voteValueInBool);
+            userProvider.ratePost(post: post, upvoteClick: voteValueInBool);
 
-          if (userVote == null) {
-            // THE USER HAS NEVER RATED THIS POST
-            vote(postID: postID, isUpvote: voteValueInBool);
-          } else {
-            // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
-
-            if (userVote == voteValueInBool) {
-              // RATING AGAIN WHAT WAS PREVIOUSLY RATED, HENCE CANCELLATION
-              cancelVote(postID: postID, isCancelUpvote: voteValueInBool);
+            if (userVote == null) {
+              // THE USER HAS NEVER RATED THIS POST
+              vote(postID: postID, isUpvote: voteValueInBool);
             } else {
               // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
 
@@ -265,33 +227,6 @@ Row VoteSection(BuildContext context, Post post) {
             if (userVote == null) {
               // THE USER HAS NEVER RATED THIS POST
               vote(postID: postID, isUpvote: voteValueInBool);
-              cancelVote(postID: postID, isCancelUpvote: !voteValueInBool);
-            }
-          }
-        },
-      ),
-      const SizedBox(
-        width: 5,
-      ),
-      FeedInteractButton(
-        icon: CupertinoIcons.arrowtriangle_down_circle,
-        label: downvotes.toString(),
-        color: downvoteColor,
-        tapHandler: () async {
-          /// DOWNVOTE PRESSED
-          const bool voteValueInBool = false;
-
-          userProvider.ratePost(post: post, upvoteClick: voteValueInBool);
-
-          if (userVote == null) {
-            // THE USER HAS NEVER RATED THIS POST
-            vote(postID: postID, isUpvote: voteValueInBool);
-          } else {
-            // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
-
-            if (userVote == voteValueInBool) {
-              // RATING AGAIN WHAT WAS PREVIOUSLY RATED, HENCE CANCELLATION
-              cancelVote(postID: postID, isCancelUpvote: voteValueInBool);
             } else {
               // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
 
@@ -335,7 +270,7 @@ void vote({required bool isUpvote, required String postID}) async {
 
 void cancelVote({required bool isCancelUpvote, required String postID}) async {
   Function func =
-      !isCancelUpvote ? _postAPI.cancelDownVote : _postAPI.cancelUpVote;
+  !isCancelUpvote ? _postAPI.cancelDownVote : _postAPI.cancelUpVote;
   User? curruser = FirebaseAuth.instance.currentUser;
   Map requestBody = {"postID": postID, "userID": curruser!.uid};
 
