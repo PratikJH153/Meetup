@@ -14,7 +14,7 @@ class FollowingList extends StatelessWidget {
   Widget build(BuildContext context) {
     PostProvider postProvider = Provider.of<PostProvider>(context);
 
-    List postList = postProvider.loadedPosts;
+    Map postList = postProvider.loadedPosts;
     bool isLoadedAllPosts = postProvider.isLoadedPosts;
     bool wentWrongAllPosts = postProvider.wentWrongAllPosts;
 
@@ -54,7 +54,7 @@ class FollowingList extends StatelessWidget {
                     physics: const BouncingScrollPhysics(),
                     itemCount: postList.length,
                     itemBuilder: (ctx, index) {
-                      Post currPost = Post.fromJson(postList[index]);
+                      Post currPost = Post.fromJson(postList.values.toList()[index]);
 
                       return GestureDetector(
                         onTap: () {

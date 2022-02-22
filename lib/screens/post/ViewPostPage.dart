@@ -77,7 +77,31 @@ class _ViewPostPageState extends State<ViewPostPage> {
           ],
         ),
         const Spacer(),
-        CustomPopupMenu(dataset: postDataset, showOther: isTheSameUser),
+        if (isTheSameUser)
+          PopupMenuButton(itemBuilder: (BuildContext context) {
+            return [
+              PopupMenuItem(
+                child: Row(
+                  children: const [
+                    Icon(Icons.delete),
+                    Text("Delete Post"),
+                  ],
+                ),
+                onTap: () async {
+                  deletePost(context, widget.thePost);
+                },
+              ),
+              PopupMenuItem(
+                child: Row(
+                  children: const [
+                    Icon(Icons.edit),
+                    Text("Edit"),
+                  ],
+                ),
+                onTap: () async {},
+              ),
+            ];
+          }),
       ],
     );
   }

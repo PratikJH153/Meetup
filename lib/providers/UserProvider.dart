@@ -4,7 +4,10 @@ import '/models/user.dart';
 
 class UserProvider with ChangeNotifier {
   bool isUserDataLoaded = false;
+  bool isUserPostsLoaded = false;
+
   bool wentWrongUser = false;
+  bool wentWrongPosts = false;
 
   Map _voteMap = {};
 
@@ -14,16 +17,25 @@ class UserProvider with ChangeNotifier {
 
   UserClass? getUser() => _user;
 
-  Map _userPosts = {};
+  final Map _userPosts = {};
 
-  List get userPosts => [..._userPosts.values.toList()];
+  Map get userPosts => {..._userPosts};
+
+  void initializeUserPosts(List posts){
+    for (var element in posts) {
+      _userPosts[element["_id"]] = element;
+    }
+    isUserPostsLoaded = true;
+    notifyListeners();
+  }
 
   void addSingleUserPost(Map newPost){
     _userPosts[newPost["_id"]] = newPost;
     notifyListeners();
   }
-  void deleteSingleUserPost(Post post){
-    _userPosts.remove(post.postID);
+
+  void deleteSingleUserPost(String postId){
+    _userPosts.remove(postId);
     notifyListeners();
   }
 
@@ -41,8 +53,8 @@ class UserProvider with ChangeNotifier {
       };
     }
     else{
-      currentUpvotes = _voteMap[post.postID]["upvotes"];
-      currentDownvotes = _voteMap[post.postID]["downvotes"];
+      currentUpvotes = _voteMap[post.postID]["upvotes"]??0;
+      currentDownvotes = _voteMap[post.postID]["downvotes"]??0;
     }
 
     bool? currUserVote = _voteMap[post.postID]["vote"];
@@ -136,10 +148,6 @@ class UserProvider with ChangeNotifier {
 
   void setUser(Map? userMap) {
     if (userMap != null) {
-      List userPostList = [...userMap["posts"]];
-      userPostList.forEach((element) {
-        _userPosts[element["_id"]] = element;
-      });
       _user = UserClass.fromJson(userMap);
     }
     isUserDataLoaded = true;
@@ -156,6 +164,11 @@ class UserProvider with ChangeNotifier {
 
   void setWentWrong() {
     wentWrongUser = true;
+    notifyListeners();
+  }
+
+  void setWentWrongPosts() {
+    wentWrongPosts = true;
     notifyListeners();
   }
 }

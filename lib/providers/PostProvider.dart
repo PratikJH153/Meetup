@@ -7,31 +7,25 @@ class PostProvider with ChangeNotifier {
   bool isLoadedTrendingPosts = false;
   bool wentWrongTrendingPosts = false;
 
-  List _loadedPosts = [];
-  List _trendingPosts = [];
+  Map _loadedPosts = {};
+  Map _trendingPosts = {};
 
-  List<Map> get loadedPosts => [..._loadedPosts];
+  Map get loadedPosts => {..._loadedPosts};
 
-  List<Map> get trendingPosts => [..._trendingPosts];
-
-  List<Map> taggedPosts(List<String> interests) {
-    List<Map> newPosts = [];
-    loadedPosts.forEach((post) {
-      if (interests.contains(post["tag"])) {
-        newPosts.add(post);
-      }
-    });
-    return newPosts;
-  }
+  Map get trendingPosts => {..._trendingPosts};
 
   void setPosts(List thePosts) {
-    _loadedPosts = thePosts;
+    for (var element in thePosts) {
+      _loadedPosts[element["_id"]] = element;
+    }
     isLoadedPosts = true;
     notifyListeners();
   }
 
   void setTrendingPosts(List thePosts) {
-    _trendingPosts = thePosts;
+    for (var element in thePosts) {
+      _trendingPosts[element["_id"]] = element;
+    }
     isLoadedTrendingPosts = true;
     notifyListeners();
   }
@@ -43,6 +37,12 @@ class PostProvider with ChangeNotifier {
 
   void toggleTrendingWentWrong({required bool didGoWrong}) {
     wentWrongTrendingPosts = didGoWrong;
+    notifyListeners();
+  }
+
+  void removeSinglePost({required String postId}){
+    _trendingPosts.remove(postId);
+    _loadedPosts.remove(postId);
     notifyListeners();
   }
 }

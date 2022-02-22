@@ -98,7 +98,7 @@ class MyApp extends StatelessWidget {
           GetStartedPage.routeName: (ctx) => const GetStartedPage(),
           ProfilePage.routeName: (ctx) => const ProfilePage(),
           FeedPage.routeName: (ctx) => const FeedPage(),
-          AddPost.routeName: (ctx) => const AddPost(),
+          AddPost.routeName: (ctx) => AddPost(),
           SearchPage.routeName: (ctx) => const SearchPage(),
           EditProfilePage.routeName: (ctx) => const EditProfilePage(),
         },

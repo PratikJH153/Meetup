@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                           backgroundColor: Colors.transparent,
                           barrierColor: const Color(0xFF383838),
                           builder: (ctx) {
-                            return const AddPost();
+                            return AddPost();
                           },
                         );
                       }),

@@ -2,8 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/helper/GlobalFunctions.dart';
-import 'package:meetupapp/models/PopupMenuDataset.dart';
+import '/helper/GlobalFunctions.dart';
 import '/helper/backend/database.dart';
 import '/helper/utils/loader.dart';
 import '/providers/CurrentPostProvider.dart';
@@ -100,28 +99,6 @@ class _CommentPageState extends State<CommentPage> {
     }
   }
 
-  Future<void> _deleteComment(Map commentMap) async {
-    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context, listen: false);
-
-    Comment comment = Comment.fromJson(commentMap);
-
-    Map deleteBody = {
-      "commentID": comment.commentID,
-      "postID": widget.post.postID
-    };
-
-    final deleteCommentResult = await _postAPI.deleteComment(deleteBody);
-    Map deleteData = unPackLocally(deleteCommentResult);
-
-    if (deleteData["success"] == 1) {
-      currentPost.removeSingleComment(commentMap);
-    } else {
-      Fluttertoast.showToast(msg: "Couldn't delete comment!");
-    }
-  }
-
-  void copyText(String text) {}
-
   @override
   void initState() {
     _initialize();
@@ -144,7 +121,7 @@ class _CommentPageState extends State<CommentPage> {
       ),
       onTap: () {
         if (!isCopy) {
-          _deleteComment(comment!);
+          deleteComment(context,comment!,widget.post);
         }
       },
     );
@@ -431,7 +408,34 @@ class _CommentPageState extends State<CommentPage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CustomPopupMenu(dataset: commentDataset,showOther: isTheSamePerson),
+                  PopupMenuButton(itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem(
+                        child: Row(
+                          children: const [
+                            Icon(Icons.copy),
+                            Text("Copy text"),
+                          ],
+                        ),
+                        onTap: ()async{
+                          copyToClipboard(commentList[index]["message"]);
+                          Fluttertoast.showToast(msg: "Copied to Clipboard!");
+                        },
+                      ),
+                      if(isTheSamePerson)
+                      PopupMenuItem(
+                        child: Row(
+                          children: const [
+                            Icon(Icons.delete),
+                            Text("Delete Post"),
+                          ],
+                        ),
+                        onTap: ()async{
+                          _post.deleteComment(commentList[index]);
+                        },
+                      ),
+                    ];
+                  }),
                   Text(
                     timeago.format(
                       DateTime.parse(commentList[index]["timestamp"]),
