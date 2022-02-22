@@ -67,7 +67,7 @@ class _TrendingListState extends State<TrendingList> {
                 : ListView.builder(
                     padding: const EdgeInsets.only(
                       bottom: 200,
-                      top: 30,
+                      top: 20,
                     ),
                     physics: const BouncingScrollPhysics(),
                     itemCount: postList.length,

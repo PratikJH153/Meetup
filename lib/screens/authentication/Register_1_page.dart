@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meetupapp/helper/utils/validator.dart';
 import 'package:meetupapp/widgets/text_field_widget.dart';
@@ -23,6 +24,8 @@ class Register1 extends StatelessWidget {
             validatorHandler: (val) => Validator.validateEmail(
               email: val,
             ),
+            icon: CupertinoIcons.mail_solid,
+            inputType: TextInputType.emailAddress,
           ),
           const SizedBox(
             height: 15,
@@ -33,6 +36,8 @@ class Register1 extends StatelessWidget {
             validatorHandler: (val) => Validator.validatePassword(
               result: val,
             ),
+            icon: CupertinoIcons.lock,
+            inputType: TextInputType.visiblePassword,
           ),
         ],
       ),

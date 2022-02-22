@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/helper/backend/apis.dart';
-import 'package:meetupapp/helper/backend/database.dart';
+import 'package:meetupapp/widgets/edit_button.dart';
 import '/helper/utils/fire_auth.dart';
 import '/screens/EditProfilePage.dart';
 import '/widgets/profile_buttons.dart';
@@ -76,60 +74,160 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       child: Stack(
                         children: [
-                          Column(
-                            children: [
-                              Container(
-                                alignment: Alignment.topRight,
-                                height: 130,
-                                width: double.infinity,
-                                decoration: const BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFFFF416C),
-                                      Color(0xFFFF4B2B),
+                          Container(
+                            alignment: Alignment.topRight,
+                            height: 120,
+                            width: double.infinity,
+                            decoration: const BoxDecoration(
+                              color: Colors.black87,
+                            ),
+                            padding: const EdgeInsets.only(
+                              right: 10,
+                              top: 10,
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.more_vert),
+                              iconSize: 30,
+                              color: Colors.white,
+                              onPressed: () {},
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            margin: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                    left: 110,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${user.firstname} ${user.lastname}",
+                                        style: const TextStyle(
+                                          fontSize: 19,
+                                          letterSpacing: 1.1,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        user.username.toString(),
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.grey[400],
+                                        ),
+                                      ),
                                     ],
                                     begin: Alignment.bottomLeft,
                                     end: Alignment.topRight,
                                   ),
                                 ),
-                                padding: const EdgeInsets.only(right: 10),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Container(
-                                width: double.infinity,
-                                margin: const EdgeInsets.only(top: 8),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
+                                const SizedBox(
+                                  height: 35,
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                        left: 105,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "${user.firstname} ${user.lastname}",
+                                    profileNumberWidget(
+                                      context,
+                                      "Gender",
+                                      user.gender.toString(),
+                                    ),
+                                    profileNumberWidget(
+                                      context,
+                                      "Posts",
+                                      userPosts.length.toString(),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 32,
+                                ),
+                                const Text(
+                                  "About me",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    height: 1.5,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: "Nunito",
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 3,
+                                ),
+                                Text(
+                                  user.bio.toString() != ""
+                                      ? user.bio.toString()
+                                      : "A meetup user!",
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    height: 1.5,
+                                    color: Colors.grey[700],
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 35,
+                                ),
+                                const Text(
+                                  "My interests",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    height: 1.5,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: "Nunito",
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                Wrap(
+                                  children: user.interests!
+                                      .map(
+                                        (e) => Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 8,
+                                          ),
+                                          margin: const EdgeInsets.only(
+                                            right: 8,
+                                            bottom: 8,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey[200]!,
+                                                blurRadius: 5,
+                                                spreadRadius: 0.1,
+                                                offset: const Offset(0, 2),
+                                              )
+                                            ],
+                                          ),
+                                          child: Text(
+                                            e,
                                             style: const TextStyle(
-                                              fontSize: 19,
-                                              letterSpacing: 1.1,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                            user.username.toString(),
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: Colors.grey[400],
+                                              color: Colors.black,
                                             ),
                                           ),
                                         ],
@@ -149,142 +247,51 @@ class _ProfilePageState extends State<ProfilePage> {
                                           "Gender",
                                           user.gender.toString(),
                                         ),
-                                        profileNumberWidget(
-                                          context,
-                                          "Posts",
-                                          userPosts.length.toString(),
-                                        )
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 32,
-                                    ),
-                                    Text(
-                                      "About me",
-                                      style: TextStyle(
-                                        color: Colors.grey[800],
-                                        fontSize: 15,
-                                        letterSpacing: 1.1,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 7,
-                                    ),
-                                    Text(
-                                      user.bio.toString(),
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        height: 1.5,
-                                        color: Colors.grey[700],
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 23,
-                                    ),
-                                    Text(
-                                      "My Interests",
-                                      style: TextStyle(
-                                        color: Colors.grey[800],
-                                        fontSize: 15,
-                                        letterSpacing: 1.1,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 12,
-                                    ),
-                                    Wrap(
-                                      children: user.interests!
-                                          .map(
-                                            (e) => Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 14,
-                                                vertical: 8,
-                                              ),
-                                              margin: const EdgeInsets.only(
-                                                right: 8,
-                                                bottom: 8,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                gradient: const LinearGradient(
-                                                  begin: Alignment.topLeft,
-                                                  end: Alignment.bottomRight,
-                                                  colors: [
-                                                    Color(0xFF485563),
-                                                    Color(0xFF29323c),
-                                                  ],
-                                                ),
-                                              ),
-                                              child: Text(
-                                                e,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                          .toList(),
-                                    ),
-                                    const SizedBox(
-                                      height: 30,
-                                    ),
-                                    ProfileButton(
-                                      label: "Edit Profile",
-                                      icon: CupertinoIcons.person_alt,
-                                      tapHandler: () {
-                                        Navigator.of(context).pushNamed(
-                                          EditProfilePage.routeName,
-                                        );
-                                      },
-                                    ),
-                                    ProfileButton(
-                                      label: "Settings",
-                                      icon: CupertinoIcons.settings,
-                                      tapHandler: () {},
-                                    ),
-                                    ProfileButton(
-                                      label: "Help",
-                                      icon: CupertinoIcons.question_circle_fill,
-                                      tapHandler: () {},
-                                      isExtra: true,
-                                    ),
-                                  ],
+                                      )
+                                      .toList(),
                                 ),
-                              ),
-                              InkWell(
-                                onTap: () async {
-                                  await FireAuth.signOut(context);
-                                },
-                                child: Container(
-                                  color: Colors.blue,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  child: const Text("Sign Out",
-                                      style: TextStyle(color: Colors.white)),
-                                ),
-                              )
-                            ],
+                                // const SizedBox(
+                                //   height: 30,
+                                // ),
+                                // ProfileButton(
+                                //   label: "Help",
+                                //   icon: CupertinoIcons.question_circle_fill,
+                                //   tapHandler: () {},
+                                //   isExtra: true,
+                                // ),
+                              ],
+                            ),
                           ),
-                          Positioned(
-                            top: 110,
-                            left: 24,
-                            child: Container(
-                              height: 90,
-                              width: 90,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(
-                                    user.profileURL!,
-                                  ),
-                                ),
+                          // InkWell(
+                          //   onTap: () async {
+                          //     await FireAuth.signOut(context);
+                          //   },
+                          //   child: Container(
+                          //     color: Colors.blue,
+                          //     padding: const EdgeInsets.symmetric(
+                          //         vertical: 10, horizontal: 20),
+                          //     child: const Text("Sign Out",
+                          //         style: TextStyle(color: Colors.white)),
+                          //   ),
+                          // )
+                        ],
+                      ),
+                      Positioned(
+                        top: 80,
+                        left: 20,
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(35),
+                            border: Border.all(
+                              width: 6,
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                            ),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(
+                                user.profileURL!,
                               ),
                             ),
                           ),

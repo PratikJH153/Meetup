@@ -49,7 +49,7 @@ class FollowingList extends StatelessWidget {
                 : ListView.builder(
                     padding: const EdgeInsets.only(
                       bottom: 200,
-                      top: 30,
+                      top: 20,
                     ),
                     physics: const BouncingScrollPhysics(),
                     itemCount: postList.length,
@@ -58,14 +58,19 @@ class FollowingList extends StatelessWidget {
 
                       return GestureDetector(
                         onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            barrierColor: const Color(0xFF383838),
-                            builder: (ctx) {
-                              return ViewPostPage(currPost);
-                            },
+                          // showModalBottomSheet(
+                          //   context: context,
+                          //   isScrollControlled: true,
+                          //   backgroundColor: Colors.transparent,
+                          //   barrierColor: const Color(0xFF383838),
+                          //   builder: (ctx) {
+                          //     return ViewPostPage(currPost);
+                          //   },
+                          // );
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (ctx) => ViewPostPage(currPost),
+                            ),
                           );
                         },
                         child: FeedTile(currPost),

@@ -30,7 +30,6 @@ class ViewPostPage extends StatefulWidget {
 }
 
 class _ViewPostPageState extends State<ViewPostPage> {
-
   _ProfileRow() {
     User? user = FirebaseAuth.instance.currentUser;
     bool isTheSameUser = user!.uid == widget.thePost.postID;
@@ -122,15 +121,16 @@ class _ViewPostPageState extends State<ViewPostPage> {
         const SizedBox(
           height: 10,
         ),
-        Text(
-          widget.thePost.desc!,
-          style: TextStyle(
-            fontSize: 16,
-            height: 1.5,
-            color: Colors.grey[700],
-            fontFamily: "Raleway",
+        if (widget.thePost.desc != "")
+          Text(
+            widget.thePost.desc!,
+            style: TextStyle(
+              fontSize: 16,
+              height: 1.5,
+              color: Colors.grey[800],
+              fontFamily: "Raleway",
+            ),
           ),
-        ),
       ],
     );
   }
@@ -222,14 +222,19 @@ class _ViewPostPageState extends State<ViewPostPage> {
                             ? const SizedBox()
                             : GestureDetector(
                                 onTap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    barrierColor: const Color(0xFF383838),
-                                    builder: (ctx) {
-                                      return ViewPostPage(post);
-                                    },
+                                  // showModalBottomSheet(
+                                  //   context: context,
+                                  //   isScrollControlled: true,
+                                  //   backgroundColor: Colors.transparent,
+                                  //   barrierColor: const Color(0xFF383838),
+                                  //   builder: (ctx) {
+                                  //     return ViewPostPage(post);
+                                  //   },
+                                  // );
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (ctx) => ViewPostPage(post),
+                                    ),
                                   );
                                 },
                                 child: RecommededFeedTile(post));
@@ -305,150 +310,145 @@ class _ViewPostPageState extends State<ViewPostPage> {
       onTap: () => Navigator.of(context).pop(),
       child: GestureDetector(
         onTap: () {},
-        child: Scaffold(
-            backgroundColor: Colors.transparent,
-            floatingActionButton: FloatingActionButton(
-              onPressed: () async {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => AddCommentPage(post: widget.thePost)));
-              },
-              child: const Icon(
-                Icons.comment_outlined,
-                color: Colors.white,
-              ),
-              backgroundColor: Colors.black,
-            ),
-            body: DraggableScrollableSheet(
-              initialChildSize: 1,
-              minChildSize: 0.7,
-              maxChildSize: 1,
-              builder: (_, controller) {
-                return Column(
-                  children: [
-                    UpperWidgetOfBottomSheet(
-                      tapHandler: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          barrierColor: const Color(0xFF383838),
-                          builder: (ctx) {
-                            return AddPost(
-                              tag: widget.thePost.tag,
-                              title: widget.thePost.title,
-                              description: widget.thePost.desc,
-                            );
-                          },
-                        );
-                      },
-                      toShow: Provider.of<UserProvider>(context, listen: false)
-                              .getUser()!
-                              .userID ==
-                          widget.thePost.author!["_id"],
-                      icon: CupertinoIcons.pen,
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(
-                          left: kLeftPadding,
-                          right: kRightPadding,
-                        ),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(40),
-                            topRight: Radius.circular(40),
-                          ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
-                          child: ListView(
-                            physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.only(top: 30),
-                            controller: controller,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 15,
-                                          vertical: 8,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFF6b7fff),
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                        ),
-                                        child: Text(
-                                          widget.thePost.tag!,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w900,
-                                            fontFamily: "Raleway",
-                                            letterSpacing: 0.8,
-                                            fontSize: 11,
-                                          ),
-                                        ),
-                                      ),
-                                      const Text(
-                                        "5 min read",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  _ProfileRow(),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  _TitleDescriptionSection(),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  VoteSection(context, widget.thePost),
-                                  const Text(
-                                    "Related Posts",
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      height: 1.5,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Quicksand",
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  _ReccomendedPostsSection(
-                                      posts: trendingList,
-                                      wentWrong: wentWrongTrending,
-                                      isLoading: !isLoadedTrending)
-                                ],
-                              ),
-                            ],
-                          ),
+        child: SafeArea(
+          child: Scaffold(
+            body: Column(
+              children: [
+                UpperWidgetOfBottomSheet(
+                  tapHandler: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (ctx) => AddPost(
+                          tag: widget.thePost.tag,
+                          title: widget.thePost.title,
+                          description: widget.thePost.desc,
                         ),
                       ),
+                    );
+                  },
+                  toShow: Provider.of<UserProvider>(context, listen: false)
+                          .getUser()!
+                          .userID ==
+                      widget.thePost.author!["_id"],
+                  icon: CupertinoIcons.pen,
+                ),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                      left: kLeftPadding,
+                      right: kRightPadding,
                     ),
-                  ],
-                );
-              },
-            )),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                      child: ListView(
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.only(top: 30),
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 15,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF6b7fff),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: Text(
+                                      widget.thePost.tag!,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w900,
+                                        fontFamily: "Raleway",
+                                        letterSpacing: 0.8,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ),
+                                  const Text(
+                                    "5 min read",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              _ProfileRow(),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              _TitleDescriptionSection(),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  VoteSection(context, widget.thePost),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: const Icon(
+                                      CupertinoIcons.chat_bubble_2,
+                                      color: Colors.grey,
+                                      size: 22,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              const Text(
+                                "Related Posts",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  height: 1.5,
+                                  color: Colors.black38,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: "Nunito",
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              _ReccomendedPostsSection(
+                                  posts: trendingList,
+                                  wentWrong: wentWrongTrending,
+                                  isLoading: !isLoadedTrending)
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

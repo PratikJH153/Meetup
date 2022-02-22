@@ -29,7 +29,7 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void addSingleUserPost(Map newPost){
+  void addSingleUserPost(Map newPost) {
     _userPosts[newPost["_id"]] = newPost;
     notifyListeners();
   }
@@ -51,10 +51,10 @@ class UserProvider with ChangeNotifier {
         "downvotes": !upvoteClick ? currentDownvotes + 1 : currentDownvotes,
         "vote": null
       };
-    }
-    else{
-      currentUpvotes = _voteMap[post.postID]["upvotes"]??0;
-      currentDownvotes = _voteMap[post.postID]["downvotes"]??0;
+
+    } else {
+      currentUpvotes = _voteMap[post.postID]["upvotes"];
+      currentDownvotes = _voteMap[post.postID]["downvotes"];
     }
 
     bool? currUserVote = _voteMap[post.postID]["vote"];
@@ -67,7 +67,6 @@ class UserProvider with ChangeNotifier {
         "downvotes": !upvoteClick ? currentDownvotes + 1 : currentDownvotes,
         "vote": upvoteClick
       };
-
     } else {
       // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
 
@@ -146,7 +145,7 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setUser(Map? userMap) {
+  void setUser(Map<String, dynamic>? userMap) {
     if (userMap != null) {
       _user = UserClass.fromJson(userMap);
     }

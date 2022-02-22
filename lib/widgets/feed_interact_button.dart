@@ -13,51 +13,38 @@ class FeedInteractButton extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  // Color get getColor {
-  //   if (isComment) {
-  //     return Colors.white;
-  //   } else if (isTap != null) {
-  //     if (isTap!) {
-  //       if (isUpvote) {
-  //         return Colors.green;
-  //       }
-  //     } else {
-  //       if (isDownvote) {
-  //         return Colors.red;
-  //       }
-  //     }
-  //   }
-  //   return Colors.white;
-  // }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: tapHandler,
       child: Container(
-        padding: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          //isTap true ⬆️ / false ⬇️ / null
-          color: Colors.white,
+        padding: EdgeInsets.symmetric(
+          horizontal: color != Colors.white ? 10 : 5,
+          vertical: 5,
         ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: color ?? Colors.white,
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 2),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
               icon,
-              color: color??Colors.grey,
-              size: 22,
+              color: color == Colors.white ? Colors.grey : Colors.white,
+              size: 20,
             ),
             const SizedBox(
               width: 3,
             ),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: "Ubuntu",
                 fontWeight: FontWeight.w500,
                 fontSize: 15,
-                color: Colors.grey,
+                color: color == Colors.white ? Colors.grey : Colors.white,
               ),
             ),
           ],

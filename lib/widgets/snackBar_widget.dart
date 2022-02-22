@@ -8,7 +8,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBarWidget(
       content: Text(
         label,
         style: const TextStyle(
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
         ),
       ),
       backgroundColor: color,

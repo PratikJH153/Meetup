@@ -36,8 +36,8 @@ class _FeedTileState extends State<FeedTile> {
     bool isTheSameUser = id == userProvider.getUser()!.userID;
 
     return Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        padding: const EdgeInsets.all(22),
+        margin: const EdgeInsets.only(bottom: 26),
+        padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: Colors.white,
@@ -128,7 +128,7 @@ class _FeedTileState extends State<FeedTile> {
               ],
             ),
             const SizedBox(
-              height: 12,
+              height: 10,
             ),
             Text(
               widget.thePost.title ?? "No title",
@@ -142,9 +142,9 @@ class _FeedTileState extends State<FeedTile> {
               ),
             ),
             const SizedBox(
-              height: 10,
+              height: 5,
             ),
-            if (widget.thePost.desc != null)
+            if (widget.thePost.desc != "")
               Text(
                 widget.thePost.desc!,
                 maxLines: 4,
@@ -157,7 +157,7 @@ class _FeedTileState extends State<FeedTile> {
                 ),
               ),
             const SizedBox(
-              height: 24,
+              height: 28,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -187,24 +187,21 @@ class _FeedTileState extends State<FeedTile> {
                 const Spacer(),
                 VoteSection(context, widget.thePost),
                 const SizedBox(
-                  width: 5,
+                  width: 10,
                 ),
-                FeedInteractButton(
-                  icon: CupertinoIcons.chat_bubble_2,
-                  label: '',
-                  tapHandler: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      barrierColor: const Color(0xFF383838),
-                      builder: (ctx) {
-                        return CommentPage(
-                          post: widget.thePost,
-                        );
-                      },
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (ctx) => CommentPage(post: widget.thePost),
+                      ),
                     );
                   },
+                  child: const Icon(
+                    CupertinoIcons.chat_bubble_2,
+                    color: Colors.grey,
+                    size: 22,
+                  ),
                 ),
               ],
             )

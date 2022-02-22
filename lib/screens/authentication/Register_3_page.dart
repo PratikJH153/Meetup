@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meetupapp/helper/utils/validator.dart';
 import 'package:meetupapp/widgets/drop_down_widget.dart';
@@ -54,6 +55,8 @@ class Register3 extends StatelessWidget {
             label: "About me",
             isBio: true,
             validatorHandler: (val) {},
+            inputType: TextInputType.text,
+            icon: CupertinoIcons.bold_italic_underline,
           ),
         ],
       ),

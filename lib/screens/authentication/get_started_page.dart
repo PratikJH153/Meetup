@@ -13,7 +13,7 @@ class GetStartedPage extends StatelessWidget {
   static const String _descGetStarted =
       "Here is the place where the 'Magic' happens, surround yourselves with a mist of Like minds! JOIN US!";
   static const String _getStarted = "Get Started";
-  static const String _fontFamily = "Quicksand";
+  static const String _fontFamily = "Nunito";
 
   @override
   Widget build(BuildContext context) {
@@ -21,26 +21,27 @@ class GetStartedPage extends StatelessWidget {
       child: Scaffold(
         body: Container(
           margin: const EdgeInsets.symmetric(
-            horizontal: 30,
+            horizontal: 34,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Image.asset(
-                  "assets/images/space.gif",
+                  "assets/images/phone.png",
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
+                padding: const EdgeInsets.only(bottom: 40.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
                       _startAMeetup,
                       style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 35,
+                        fontFamily: "Quicksand",
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
                     const SizedBox(
@@ -53,13 +54,12 @@ class GetStartedPage extends StatelessWidget {
                         letterSpacing: 1,
                         wordSpacing: 1,
                         height: 1.5,
-                        fontWeight: FontWeight.bold,
                         fontFamily: _fontFamily,
                         color: Colors.grey[500],
                       ),
                     ),
                     const SizedBox(
-                      height: 40,
+                      height: 50,
                     ),
                     SizedBox(
                       width: double.infinity,

@@ -12,7 +12,6 @@ import '/widgets/button_widget.dart';
 import '/widgets/close_button.dart';
 import '/widgets/constants.dart';
 import '/widgets/search_feed_tile.dart';
-import '/widgets/search_field_widget.dart';
 import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
@@ -101,99 +100,124 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   @override
-  void didChangeDependencies() {
-    setState(() {});
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     Size s = MediaQuery.of(context).size;
 
     return SafeArea(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => Navigator.of(context).pop(),
-        child: _isLoading
+      child: Scaffold(
+        body: _isLoading
             ? GlobalLoader(color: Colors.white)
-            : GestureDetector(
-                onTap: () {},
-                child: DraggableScrollableSheet(
-                  initialChildSize: 1,
-                  minChildSize: 0.7,
-                  maxChildSize: 1,
-                  builder: (_, controller) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        UpperWidgetOfBottomSheet(
-                          tapHandler: () {},
-                          icon: Icons.stop,
-                          toShow: false,
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                        left: kLeftPadding,
+                        right: kLeftPadding,
+                      ),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(40),
+                          topRight: Radius.circular(40),
                         ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.only(
-                              top: 20,
-                              left: kLeftPadding,
-                              right: kLeftPadding,
-                            ),
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(40),
-                                topRight: Radius.circular(40),
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: SearchField(
-                                        editingController: _searchController,
-                                      ),
-                                    ), //
-                                    const SizedBox(
-                                      width: 10,
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFf5f5fc),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: TextField(
+                                    controller: _searchController,
+                                    style: const TextStyle(
+                                      fontSize: 13,
                                     ),
-                                    _isLoading
-                                        ? const CircularProgressIndicator(
-                                            color: Colors.black)
-                                        : ButtonWidget(
-                                            icon: CupertinoIcons.search,
-                                            tapHandler: () async {
-                                              if (_searchController
-                                                  .text.isEmpty) {
-                                                const snackBar = SnackBar(
-                                                  content: Text(
-                                                      'Search query can\'t be empty!'),
-                                                );
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(snackBar);
-                                                return;
-                                              }
-                                              _searchApi();
-                                            },
-                                          ),
-                                  ],
+                                    cursorColor: Colors.black,
+                                    decoration: const InputDecoration(
+                                      hintText: "Search any post...",
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                        left: 20,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                postList.isEmpty &&
-                                        _searchController.text.isEmpty
-                                    ? Expanded(
+                              ), //
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              _isLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.black)
+                                  : ButtonWidget(
+                                      icon: CupertinoIcons.search,
+                                      tapHandler: () async {
+                                        if (_searchController.text.isEmpty) {
+                                          const snackBar = SnackBar(
+                                            content: Text(
+                                                'Search query can\'t be empty!'),
+                                          );
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
+                                          return;
+                                        }
+                                        _searchApi();
+                                      },
+                                    ),
+                            ],
+                          ),
+                          postList.isEmpty && _searchController.text.isEmpty
+                              ? Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(top: 80),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Image.asset(
+                                          "assets/images/search.png",
+                                          fit: BoxFit.cover,
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Text(
+                                          "Search what you like!\nDiscover some new feeds.",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            height: 1.5,
+                                            color: Colors.grey[700],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : postList.isEmpty
+                                  ? Expanded(
+                                      child: Container(
+                                        margin: const EdgeInsets.only(top: 100),
                                         child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                              MainAxisAlignment.start,
                                           children: [
                                             Image.asset(
-                                              "assets/images/search.png",
+                                              "assets/images/404.png",
                                               fit: BoxFit.cover,
                                             ),
                                             const SizedBox(
                                               height: 20,
                                             ),
                                             Text(
-                                              "Search what you like!\nDiscover some new feeds.",
+                                              "No Results Found!",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 fontSize: 18,
@@ -203,77 +227,54 @@ class _SearchPageState extends State<SearchPage> {
                                             ),
                                           ],
                                         ),
-                                      )
-                                    : postList.isEmpty
-                                        ? Expanded(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Image.asset(
-                                                  "assets/images/404.png",
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                const SizedBox(
-                                                  height: 20,
-                                                ),
-                                                Text(
-                                                  "No Results Found!",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    height: 1.5,
-                                                    color: Colors.grey[700],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        : Expanded(
-                                            child: MasonryGridView.count(
-                                              crossAxisCount: 2,
-                                              mainAxisSpacing: 10,
-                                              crossAxisSpacing: 10,
-                                              itemCount: postList.length,
-                                              physics:
-                                                  const BouncingScrollPhysics(),
-                                              padding: const EdgeInsets.only(
-                                                  top: 15),
-                                              itemBuilder: (context, index) {
-                                                Post currPost = Post.fromJson(
-                                                    postList[index]);
+                                      ),
+                                    )
+                                  : Expanded(
+                                      child: MasonryGridView.count(
+                                        crossAxisCount: 2,
+                                        mainAxisSpacing: 10,
+                                        crossAxisSpacing: 10,
+                                        itemCount: postList.length,
+                                        physics: const BouncingScrollPhysics(),
+                                        padding: const EdgeInsets.only(top: 15),
+                                        itemBuilder: (context, index) {
+                                          Post currPost =
+                                              Post.fromJson(postList[index]);
 
-                                                return GestureDetector(
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                      context: context,
-                                                      isScrollControlled: true,
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      barrierColor: const Color(
-                                                          0xFF383838),
-                                                      builder: (ctx) {
-                                                        return ViewPostPage(
-                                                            currPost);
-                                                      },
-                                                    );
-                                                  },
-                                                  child: SearchFeedTile(
-                                                    isDes: index % 2 == 0,
-                                                    post: currPost,
-                                                  ),
-                                                );
-                                              },
+                                          return GestureDetector(
+                                            onTap: () {
+                                              // showModalBottomSheet(
+                                              //   context: context,
+                                              //   isScrollControlled: true,
+                                              //   backgroundColor:
+                                              //       Colors.transparent,
+                                              //   barrierColor:
+                                              //       const Color(0xFF383838),
+                                              //   builder: (ctx) {
+                                              //     return ViewPostPage(
+                                              //         currPost);
+                                              //   },
+                                              // );
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (ctx) =>
+                                                      ViewPostPage(currPost),
+                                                ),
+                                              );
+                                            },
+                                            child: SearchFeedTile(
+                                              isDes: index % 2 == 0,
+                                              post: currPost,
                                             ),
-                                          ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
       ),
     );

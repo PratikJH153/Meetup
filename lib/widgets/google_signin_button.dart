@@ -9,19 +9,19 @@ class GoogleSignInButton extends StatelessWidget {
     return GestureDetector(
       onTap: signIn,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 15),
+        margin: const EdgeInsets.only(top: 18),
         padding: const EdgeInsets.symmetric(
-          vertical: 15,
+          vertical: 20,
         ),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
               color: Colors.grey[200]!,
               blurRadius: 7,
-              spreadRadius: 0.2,
-              offset: const Offset(0, 3),
+              spreadRadius: 0.1,
+              offset: const Offset(0, 5),
             )
           ],
           color: Colors.white,
@@ -42,7 +42,7 @@ class GoogleSignInButton extends StatelessWidget {
             Text(
               "Sign In With Google",
               style: TextStyle(
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
                 color: Colors.grey[700]!,
               ),
             )
