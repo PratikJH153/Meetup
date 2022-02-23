@@ -71,9 +71,9 @@ class PostAPIS {
 
   Future<Map> getUserPosts(String userID) async {
     if (kDebugMode) {
-      print("CALLING getUser(Map body)");
+      print("CALLING getUserPosts(String)");
     }
-    String endpoint = "posts/getUserPosts/$userID";
+    String endpoint = "users/getUserPosts/$userID";
     return GET(endpoint);
   }
 
@@ -113,11 +113,8 @@ class PostAPIS {
     if (kDebugMode) {
       print("CALLING deleteComment(Map body)");
     }
-    if (kDebugMode) {
-      print(body);
-    }
-    String endpoint = "posts/deleteComment/";
-    return DELETE(endpoint, body: body);
+    String endpoint = "posts/deleteComment";
+    return POST(endpoint, body);
   }
 
   Future<Map> getComments(String id) async {
@@ -126,6 +123,14 @@ class PostAPIS {
     }
     String endpoint = "posts/getComments/$id";
     return GET(endpoint);
+  }
+
+  Future<Map> deletePost(String id) async {
+    if (kDebugMode) {
+      print("CALLING deletePost(String id)");
+    }
+    String endpoint = "posts/deletePost/$id";
+    return DELETE(endpoint);
   }
 
   Future<Map> searchPost(Map body) async {

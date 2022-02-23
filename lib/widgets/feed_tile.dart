@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '/models/PopupMenuDataset.dart';
+import 'package:meetupapp/screens/post/AddPostPage.dart';
 import '/providers/UserProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -28,9 +28,11 @@ class _FeedTileState extends State<FeedTile> {
   Widget build(BuildContext context) {
     UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
-    String id = widget.thePost.author["_id"];
-    String username = widget.thePost.author["username"];
-    String profileUrl = widget.thePost.author["profileURL"];
+
+    Map authorMap = widget.thePost.author ?? {};
+    String id = authorMap["_id"];
+    String username = authorMap["username"];
+    String profileUrl = authorMap["profileURL"];
     bool isTheSameUser = id == userProvider.getUser()!.userID;
 
     return Container(
@@ -96,7 +98,33 @@ class _FeedTileState extends State<FeedTile> {
                   ],
                 ),
                 const Spacer(),
-                CustomPopupMenu(dataset: postDataset, showOther: isTheSameUser),
+                if (isTheSameUser)
+                  PopupMenuButton(itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem(
+                        child: Row(
+                          children: const [
+                            Icon(Icons.delete),
+                            Text("Delete Post"),
+                          ],
+                        ),
+                        onTap: () async {
+                          deletePost(context, widget.thePost);
+                        },
+                      ),
+                      PopupMenuItem(
+                        child: Row(
+                          children: const [
+                            Icon(Icons.edit),
+                            Text("Edit"),
+                          ],
+                        ),
+                        onTap: (){
+                          print("Hey");
+                        },
+                      ),
+                    ];
+                  })
               ],
             ),
             const SizedBox(

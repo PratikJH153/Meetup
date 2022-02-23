@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/models/post.dart';
 import 'package:provider/provider.dart';
 import '/helper/backend/database.dart';
 import '/providers/UserProvider.dart';
@@ -15,13 +16,12 @@ class AddPost extends StatefulWidget {
   final String? title;
   final String? description;
   final String? tag;
+  final bool isEdit;
+  final Post? post;
   static const routeName = "/addpost";
 
-  const AddPost({
-    this.title,
-    this.description,
-    this.tag,
-  });
+  AddPost(
+      {this.isEdit = false, this.post, this.title, this.description, this.tag});
 
   @override
   State<AddPost> createState() => _AddPostState();
@@ -58,13 +58,13 @@ class _AddPostState extends State<AddPost> {
     if (requestData["success"] == 1) {
       Map unpacked = requestData["unpacked"];
       Map addPostBody = {
-        "postID": unpacked["_id"],
+        "_id": unpacked["_id"],
         "createdAt": unpacked["createdAt"],
         "title": unpacked["title"],
-        "desc": unpacked["description"],
+        "desc": unpacked["description"] ?? "",
         "tag": unpacked["tag"],
         "author": {
-          "id": unpacked["author"],
+          "_id": unpacked["author"],
           "username": userProvider.getUser()!.username,
           "profileURL": userProvider.getUser()!.profileURL,
         },
@@ -106,11 +106,10 @@ class _AddPostState extends State<AddPost> {
 
   @override
   void initState() {
-    if (widget.title != null && widget.description != null) {
-      _titleController.text = widget.title!;
-      _descController.text = widget.description!;
+    if (widget.post!=null) {
+      _titleController.text = widget.post!.title!;
+      _descController.text = widget.post!.desc??"";
       _selectedTag = widget.tag!;
-      isEdit = true;
     }
     super.initState();
   }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 import 'database.dart';
 
 final client = Dio();
@@ -9,6 +10,7 @@ final client = Dio();
 Function _post = client.post;
 Function _patch = client.patch;
 Function _delete = client.delete;
+Function _deleteHTTP = http.delete;
 Function _get = client.get;
 
 Future<Map> GET(String url) async {

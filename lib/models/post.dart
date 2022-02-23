@@ -4,14 +4,15 @@ class Post {
   final String? desc;
   final String? createdAt;
   final String? tag;
-  var author;
+  Map? author;
   int upvotes;
   int downvotes;
   bool? vote;
   final List? comments;
 
   int timeReadCalc() {
-    return (((title! + " " + desc!).split(" ").length) / 180).round() + 1;
+    String desc_refined = desc??"";
+    return (((title! + " " + desc_refined).split(" ").length) / 180).round() + 1;
   }
 
   Post({

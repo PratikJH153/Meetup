@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '/helper/GlobalFunctions.dart';
 import '/providers/PostProvider.dart';
 import '/models/post.dart';
 import '/screens/post/ViewPostPage.dart';
@@ -7,8 +8,25 @@ import '/screens/post/ViewPostPage.dart';
 import 'constants.dart';
 import 'feed_tile.dart';
 
-class TrendingList extends StatelessWidget {
+class TrendingList extends StatefulWidget {
   const TrendingList({Key? key}) : super(key: key);
+
+  @override
+  State<TrendingList> createState() => _TrendingListState();
+}
+
+class _TrendingListState extends State<TrendingList> {
+
+  @override
+  void initState() {
+    PostProvider postProvider = Provider.of<PostProvider>(context, listen: false);
+
+    if(!postProvider.isLoadedTrendingPosts){
+      initializeTrendingPosts(context);
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +34,7 @@ class TrendingList extends StatelessWidget {
 
     bool isLoadedTrending = postProvider.isLoadedTrendingPosts;
     bool wentWrongTrending = postProvider.wentWrongTrendingPosts;
-    List postList = postProvider.trendingPosts;
+    Map postList = postProvider.trendingPosts;
 
     return Container(
       margin: const EdgeInsets.symmetric(
@@ -54,7 +72,7 @@ class TrendingList extends StatelessWidget {
                     physics: const BouncingScrollPhysics(),
                     itemCount: postList.length,
                     itemBuilder: (ctx, index) {
-                      Post currPost = Post.fromJson(postList[index]);
+                      Post currPost = Post.fromJson(postList.values.toList()[index]);
                       return GestureDetector(
                         onTap: () {
                           showModalBottomSheet(

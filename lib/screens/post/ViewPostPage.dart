@@ -44,7 +44,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
             borderRadius: BorderRadius.circular(100),
             child: FadeInImage.assetNetwork(
               placeholder: "assets/images/placeholder.jpg",
-              image: widget.thePost.author["profileURL"],
+              image: widget.thePost.author!["profileURL"],
               fit: BoxFit.cover,
             ),
           ),
