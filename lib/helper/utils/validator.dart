@@ -27,6 +27,19 @@ class Validator {
     }
   }
 
+  static String? validateTitle(
+      {required String? result, String? message = "Field can't be empty!"}) {
+    if (result == null) {
+      return null;
+    }
+
+    if (result.isEmpty) {
+      return message;
+    } else if (result.length > 200) {
+      return "Limit of characters 0-200";
+    }
+  }
+
   static String? validatePassword(
       {required String? result, String? message = "Password can't be empty"}) {
     if (result == null) {

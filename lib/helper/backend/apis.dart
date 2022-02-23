@@ -3,7 +3,7 @@ import 'rest_apis.dart';
 
 class UserAPIS {
   Future<Map> getUsers() async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING getUsers()");
     }
     String endpoint = "users/getAllUsers/";
@@ -12,7 +12,7 @@ class UserAPIS {
 
   Future<Map> getSingleUserData(String id) async {
     // GETS USER DATA AND FILLS UserProvider
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING getSingleUserData(String id)");
     }
     String endpoint = "users/getUserInfoAdmin/$id";
@@ -20,7 +20,7 @@ class UserAPIS {
   }
 
   Future<Map> getRecommendations(String id) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING getRecommendations(String id)");
     }
     String endpoint = "users/getRecommendations/$id";
@@ -28,7 +28,7 @@ class UserAPIS {
   }
 
   Future<Map> addUser(Map body) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING addUser(Map body)");
     }
     String endpoint = "users/addUser/";
@@ -36,7 +36,7 @@ class UserAPIS {
   }
 
   Future<Map> deleteUser(String id) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING deleteUser(String id)");
     }
     String endpoint = "users/deleteSingleUser/$id";
@@ -44,17 +44,25 @@ class UserAPIS {
   }
 
   Future<Map> patchUser(String id, Map body) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING patchUser(String id, Map body)");
     }
     String endpoint = "users/updateUserInfo/$id";
     return PATCH(endpoint, body);
   }
+
+  static Future<Map> getCheckUserExists(String id) async {
+    if (kDebugMode) {
+      print("CALLING getCheckUserExists(String id)");
+    }
+    String endpoint = "users/checkUserExists/$id";
+    return GET(endpoint);
+  }
 }
 
 class PostAPIS {
   Future<Map> getPosts(Map body) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING getPosts(Map body)");
     }
     String endpoint = "posts/getAllPosts/";
@@ -62,7 +70,7 @@ class PostAPIS {
   }
 
   Future<Map> getUserPosts(String userID) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING getUser(Map body)");
     }
     String endpoint = "posts/getUserPosts/$userID";
@@ -70,7 +78,7 @@ class PostAPIS {
   }
 
   Future<Map> getRelatedPosts(String tag) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING getRelatedPosts(String tag)");
     }
     String endpoint = "posts/getRelatedPosts/$tag";
@@ -78,7 +86,7 @@ class PostAPIS {
   }
 
   Future<Map> getTrendingPosts() async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING getTrendingPosts()");
     }
     String endpoint = "posts/getTrendingPosts/";
@@ -86,7 +94,7 @@ class PostAPIS {
   }
 
   Future<Map> addPost(Map body) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING addPost(Map body)");
     }
     String endpoint = "posts/addPost/";
@@ -94,7 +102,7 @@ class PostAPIS {
   }
 
   Future<Map> addComment(String pID, Map body) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING addComment(String pID, Map body)");
     }
     String endpoint = "posts/addComment/$pID";
@@ -102,10 +110,10 @@ class PostAPIS {
   }
 
   Future<Map> deleteComment(Map body) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING deleteComment(Map body)");
     }
-    if(kDebugMode){
+    if (kDebugMode) {
       print(body);
     }
     String endpoint = "posts/deleteComment/";
@@ -113,7 +121,7 @@ class PostAPIS {
   }
 
   Future<Map> getComments(String id) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING getComments(String id)");
     }
     String endpoint = "posts/getComments/$id";
@@ -121,7 +129,7 @@ class PostAPIS {
   }
 
   Future<Map> searchPost(Map body) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING searchPost(Map body)");
     }
     String endpoint = "posts/search/";
@@ -129,7 +137,7 @@ class PostAPIS {
   }
 
   Future<Map> upVote(Map body) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING upVote(Map body)");
     }
     String endpoint = "posts/upvote/";
@@ -137,7 +145,7 @@ class PostAPIS {
   }
 
   Future<Map> downVote(Map body) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING downVote(Map body)");
     }
     String endpoint = "posts/downvote/";
@@ -145,7 +153,7 @@ class PostAPIS {
   }
 
   Future<Map> cancelUpVote(Map body) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING cancelUpVote(Map body)");
     }
     String endpoint = "posts/cancelupvote/";
@@ -153,7 +161,7 @@ class PostAPIS {
   }
 
   Future<Map> cancelDownVote(Map body) async {
-    if(kDebugMode){
+    if (kDebugMode) {
       print("CALLING cancelDownVote(Map body)");
     }
     String endpoint = "posts/canceldownvote/";

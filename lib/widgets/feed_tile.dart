@@ -53,17 +53,17 @@ class _FeedTileState extends State<FeedTile> {
           children: [
             Row(
               children: [
-                Container(
+                SizedBox(
                   height: 30,
                   width: 30,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          profileUrl,
-                        ),
-                        fit: BoxFit.cover,
-                      )),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "assets/images/placeholder.jpg",
+                      image: profileUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   width: 15,

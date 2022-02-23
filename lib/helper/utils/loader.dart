@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
 class GlobalLoader extends StatelessWidget {
-  Color? color;
-  GlobalLoader({Key? key, this.color}) : super(key: key);
+  const GlobalLoader({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: CircularProgressIndicator(color: color??Colors.blue));
+    return const Center(
+      child: CircularProgressIndicator(
+        color: Color(0xFF4776E6),
+      ),
+    );
   }
 }
-
-DateInWords(){{
-
-}}

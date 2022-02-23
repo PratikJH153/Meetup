@@ -217,18 +217,18 @@ class _ProfilePageState extends State<ProfilePage> {
                               ],
                             ),
                           ),
-                          // InkWell(
-                          //   onTap: () async {
-                          //     await FireAuth.signOut(context);
-                          //   },
-                          //   child: Container(
-                          //     color: Colors.blue,
-                          //     padding: const EdgeInsets.symmetric(
-                          //         vertical: 10, horizontal: 20),
-                          //     child: const Text("Sign Out",
-                          //         style: TextStyle(color: Colors.white)),
-                          //   ),
-                          // )
+                          InkWell(
+                            onTap: () async {
+                              await FireAuth.signOut(context);
+                            },
+                            child: Container(
+                              color: Colors.blue,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              child: const Text("Sign Out",
+                                  style: TextStyle(color: Colors.white)),
+                            ),
+                          )
                         ],
                       ),
                       Positioned(
@@ -237,18 +237,24 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Container(
                           height: 100,
                           width: 100,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(35),
+                            child: FadeInImage.assetNetwork(
+                              placeholder: "assets/images/placeholder.jpg",
+                              image: user.profileURL!,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(35),
-                            border: Border.all(
-                              width: 6,
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                user.profileURL!,
-                              ),
-                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey[300]!,
+                                blurRadius: 2,
+                                spreadRadius: 0.1,
+                                offset: const Offset(0, 3),
+                              )
+                            ],
                           ),
                         ),
                       ),
@@ -256,7 +262,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               )
-            : GlobalLoader(),
+            : const GlobalLoader(),
       ),
     );
   }

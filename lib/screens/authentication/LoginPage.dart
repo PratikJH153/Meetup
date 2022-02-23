@@ -62,26 +62,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _signInGoogle() async {
-    FocusScope.of(context).unfocus();
-
-    setState(() {
-      _isProcessing = true;
-    });
-
-    User? user = await FireAuth.signInWithGoogle(context: context);
-    if (user != null) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        HomePage.routeName,
-        (route) => false,
-      );
-    }
-    setState(() {
-      _isProcessing = false;
-    });
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -119,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                         tapHandler: _submit,
                         label: "Sign in",
                       ),
-                      GoogleSignInButton(_signInGoogle),
+                      // GoogleSignInButton(_signInGoogle),
                     ],
                   ),
           ),

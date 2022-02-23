@@ -360,7 +360,6 @@ class _CommentPageState extends State<CommentPage> {
     return ListView.builder(
       padding: const EdgeInsets.only(bottom: 100),
       itemCount: commentList.length,
-      physics: const BouncingScrollPhysics(),
       itemBuilder: (ctx, index) {
         UserProvider userProvider =
             Provider.of<UserProvider>(context, listen: false);
@@ -369,10 +368,11 @@ class _CommentPageState extends State<CommentPage> {
         return Container(
           margin: const EdgeInsets.only(bottom: 25),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: 40,
-                width: 40,
+                height: 35,
+                width: 35,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
@@ -385,8 +385,7 @@ class _CommentPageState extends State<CommentPage> {
               const SizedBox(
                 width: 10,
               ),
-              SizedBox(
-                width: 190,
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -395,14 +394,14 @@ class _CommentPageState extends State<CommentPage> {
                           .toString()
                           .capitalize(),
                       style: const TextStyle(
-                        fontSize: 14,
+                        fontSize: 13,
                         color: Colors.grey,
                       ),
                     ),
-                    Text(
+                    SelectableText(
                       commentList[index]["message"],
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         color: Colors.black,
                         height: 1.3,
                       ),
@@ -410,12 +409,11 @@ class _CommentPageState extends State<CommentPage> {
                   ],
                 ),
               ),
-              const Spacer(),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CustomPopupMenu(
-                      dataset: commentDataset, showOther: isTheSamePerson),
+                  // CustomPopupMenu(
+                  //     dataset: commentDataset, showOther: isTheSamePerson),
                   Text(
                     timeago.format(
                       DateTime.parse(commentList[index]["timestamp"]),

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/widgets/snackBar_widget.dart';
 import '/models/PopupMenuDataset.dart';
 import '/screens/post/CommentPage.dart';
 import '/models/post.dart';
@@ -75,6 +76,28 @@ Widget CustomPopupMenu(
             )
         ];
       });
+}
+
+Future<int> checkUserExists(BuildContext context, String uid) async {
+  final response = await UserAPIS.getCheckUserExists(uid);
+
+  Map responseData = unPackLocally(response);
+
+  if (responseData["success"] == 1) {
+    // print(responseData);
+    return 1;
+  } else {
+    if (responseData["status"] == 404) {
+      return 2;
+    } else {
+      snackBarWidget(
+        "Error while authentication",
+        const Color(0xFFff2954),
+        context,
+      );
+      return 0;
+    }
+  }
 }
 
 Future<void> initialize(BuildContext context) async {

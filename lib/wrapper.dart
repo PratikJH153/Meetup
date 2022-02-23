@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/helper/GlobalFunctions.dart';
+import 'package:meetupapp/screens/authentication/RegisterPage.dart';
 import 'screens/authentication/get_started_page.dart';
 import 'screens/HomePage.dart';
 
@@ -17,17 +19,29 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-
+      builder: (context, AsyncSnapshot snapshot) {
+        print("CALLED AGAIN WRAPPER!");
         if (snapshot.hasData) {
-          // FETCH USER
-          return const HomePage();
-        } else {
-          return const GetStartedPage();
+          return FutureBuilder(
+            future: checkUserExists(context, snapshot.data!.uid!),
+            builder: (ctx, snap) {
+              if (snap.hasData) {
+                final data = snap.data;
+                if (data == 1) {
+                  return const HomePage();
+                } else if (data == 2) {
+                  return const RegisterPage();
+                } else {
+                  return const GetStartedPage();
+                }
+              }
+              return const GetStartedPage();
+            },
+          );
         }
+        return const GetStartedPage();
       },
     );
   }

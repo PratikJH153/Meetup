@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lottie/lottie.dart';
 import 'package:meetupapp/helper/backend/apis.dart';
 import 'package:meetupapp/helper/utils/loader.dart';
+import 'package:meetupapp/widgets/snackBar_widget.dart';
 import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
 import '/models/post.dart';
 import '/providers/UserProvider.dart';
@@ -101,12 +102,10 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size s = MediaQuery.of(context).size;
-
     return SafeArea(
       child: Scaffold(
         body: _isLoading
-            ? GlobalLoader(color: Colors.white)
+            ? const GlobalLoader()
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -160,12 +159,11 @@ class _SearchPageState extends State<SearchPage> {
                                       icon: CupertinoIcons.search,
                                       tapHandler: () async {
                                         if (_searchController.text.isEmpty) {
-                                          const snackBar = SnackBar(
-                                            content: Text(
-                                                'Search query can\'t be empty!'),
+                                          snackBarWidget(
+                                            "Seach query can't be empty",
+                                            Colors.black87,
+                                            context,
                                           );
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(snackBar);
                                           return;
                                         }
                                         _searchApi();

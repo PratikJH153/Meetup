@@ -103,6 +103,7 @@ class FireAuth {
   }
 
   static Future<User?> signInWithGoogle({
+    required String label,
     required BuildContext context,
   }) async {
     final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -127,21 +128,7 @@ class FireAuth {
         user = userCredential.user;
       } else {
         snackBarWidget(
-          "Error while Google sign in",
-          const Color(0xFFff2954),
-          context,
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        snackBarWidget(
-          "User not registered for this email.",
-          const Color(0xFFff2954),
-          context,
-        );
-      } else if (e.code == 'wrong-password') {
-        snackBarWidget(
-          "Password is incorrect.",
+          label,
           const Color(0xFFff2954),
           context,
         );

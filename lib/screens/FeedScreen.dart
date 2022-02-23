@@ -173,8 +173,8 @@ class _FeedPageState extends State<FeedPage>
                     child: Column(
                       children: [
                         Row(
-                          children: const [
-                            Text(
+                          children: [
+                            const Text(
                               "Explore Now 👋",
                               style: TextStyle(
                                 color: Colors.black,
@@ -182,24 +182,13 @@ class _FeedPageState extends State<FeedPage>
                                 fontSize: 18,
                               ),
                             ),
-                            // const Spacer(),
-                            // ButtonWidget(
-                            //   icon: CupertinoIcons.search,
-                            //   tapHandler: () {
-                            //     showModalBottomSheet(
-                            //       context: context,
-                            //       isScrollControlled: true,
-                            //       backgroundColor: Colors.transparent,
-                            //       barrierColor: const Color(0xFF383838),
-                            //       builder: (ctx) {
-                            //         return const SearchPage();
-                            //       },
-                            //     );
-                            //   },
-                            // ),
-                            // const SizedBox(
-                            //   width: 10,
-                            // ),
+                            const Spacer(),
+                            ButtonWidget(
+                              icon: CupertinoIcons.search,
+                              tapHandler: () {
+                                //
+                              },
+                            ),
                           ],
                         ),
                       ],
@@ -216,7 +205,7 @@ class _FeedPageState extends State<FeedPage>
                     child: Container(
                       margin: const EdgeInsets.only(
                         left: 20,
-                        right: 32,
+                        right: 24,
                       ),
                       child: Row(
                         children: [

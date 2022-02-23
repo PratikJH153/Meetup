@@ -30,8 +30,6 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _widgetOptions = <Widget>[
     const FeedPage(),
-    const SearchPage(),
-    Container(),
     const ProfilePage(),
   ];
 
@@ -62,7 +60,7 @@ class _HomePageState extends State<HomePage> {
             ),
           )
         : !isLoadingComplete
-            ? Scaffold(body: GlobalLoader())
+            ? const Scaffold(body: GlobalLoader())
             : Scaffold(
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerDocked,
@@ -84,11 +82,11 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   padding: const EdgeInsets.symmetric(
-                    vertical: 14,
-                    horizontal: 20,
+                    vertical: 16,
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       InkWell(
                         child: BottomNavButton(
@@ -101,51 +99,33 @@ class _HomePageState extends State<HomePage> {
                           });
                         },
                       ),
-                      InkWell(
-                        child: BottomNavButton(
-                          icon: CupertinoIcons.search,
-                          isSelected: _selectedIndex == 1,
-                        ),
+
+                      BottomAddButton(tapHandler: () async {
+                        Navigator.of(context).pushNamed(AddPost.routeName);
+                      }),
+
+                      GestureDetector(
                         onTap: () {
                           setState(() {
                             _selectedIndex = 1;
                           });
                         },
-                      ),
-                      BottomAddButton(tapHandler: () async {
-                        // showModalBottomSheet(
-                        //   context: context,
-                        //   isScrollControlled: true,
-                        //   backgroundColor: Colors.transparent,
-                        //   barrierColor: const Color(0xFF383838),
-                        //   builder: (ctx) {
-                        //     return const AddPost();
-                        //   },
-                        // );
-                        Navigator.of(context).pushNamed(AddPost.routeName);
-                      }),
-                      InkWell(
-                        child: BottomNavButton(
-                          icon: CupertinoIcons.bookmark,
-                          isSelected: _selectedIndex == 2,
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _selectedIndex = 2;
-                          });
-                        },
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedIndex = 3;
-                          });
-                        },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const EdgeInsets.symmetric(horizontal: 25),
                           child: Container(
                             height: 36,
                             width: 36,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "assets/images/placeholder.jpg",
+                                image: Provider.of<UserProvider>(context,
+                                        listen: false)
+                                    .getUser()!
+                                    .profileURL!,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               boxShadow: [
@@ -156,15 +136,6 @@ class _HomePageState extends State<HomePage> {
                                   offset: const Offset(0, 3),
                                 )
                               ],
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  Provider.of<UserProvider>(context,
-                                          listen: false)
-                                      .getUser()!
-                                      .profileURL!,
-                                ),
-                                fit: BoxFit.cover,
-                              ),
                             ),
                           ),
                         ),

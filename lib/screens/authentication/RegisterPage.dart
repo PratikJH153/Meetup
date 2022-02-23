@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -77,27 +78,16 @@ class _RegisterPageState extends State<RegisterPage> {
           step += 1;
         });
       }
-    } else if (step == 2) {
-      if (_registerFormKey.currentState!.validate()) {
-        print("GO FORWARD");
-        setState(() {
-          step += 1;
-        });
-      }
-    } else if (step == 3 || step == 4) {
+    } else if (step == 2 || step == 3) {
       setState(() {
         step += 1;
       });
-    } else if (step == 5) {
+    } else if (step == 4) {
       if (_selectedInterests.length < 5) {
         snackBarWidget("Please select atleast 5 Interests",
             const Color(0xFFff2954), context);
       } else {
-        final user = await FireAuth.registerUsingEmailPassword(
-          name: _nameTextController.text,
-          email: _emailTextController.text,
-          password: _passwordTextController.text,
-        );
+        final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
           String? url;
           if (image != null) {
@@ -108,9 +98,8 @@ class _RegisterPageState extends State<RegisterPage> {
             "firstname": _firstNameController.text.trim(),
             "lastname": _lastNameController.text.trim(),
             "username": _nameTextController.text.trim(),
-            "email": _emailTextController.text.trim(),
-            "profileURL": url ??
-                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+            "email": user.email,
+            "profileURL": url ?? user.photoURL,
             "gender": gendervalue,
             "age": age,
             "bio": _bioTextController.text.trim() != ""
@@ -229,7 +218,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                             )
                           : const SizedBox(),
-                      if (step != 1)
+                      if (step != 2)
                         const SizedBox(
                           width: 10,
                         ),
@@ -296,7 +285,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             backgroundColor: const Color(0xFFe8e8e8),
                             barRadius: const Radius.circular(5),
                             lineHeight: 2,
-                            percent: step / 5,
+                            percent: step / 4,
                             padding: EdgeInsets.zero,
                             progressColor: const Color(0xFF4776E6),
                           ),
@@ -316,7 +305,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
                                 ),
                                 const TextSpan(
-                                  text: "/ 5 Steps",
+                                  text: "/ 4 Steps",
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Color(0xFF757575),
@@ -332,59 +321,53 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: Column(
                           children: [
                             step == 1
-                                ? Register1(
-                                    emailController: _emailTextController,
-                                    passwordController: _passwordTextController,
+                                ? Register2(
+                                    firstNameController: _firstNameController,
+                                    lastNameController: _lastNameController,
+                                    nameController: _nameTextController,
                                   )
                                 : step == 2
-                                    ? Register2(
-                                        firstNameController:
-                                            _firstNameController,
-                                        lastNameController: _lastNameController,
-                                        nameController: _nameTextController,
+                                    ? Register3(
+                                        genders: genders,
+                                        genderValue: gendervalue,
+                                        onAgeTapHandler: (val) {
+                                          setState(() {
+                                            age = val;
+                                          });
+                                        },
+                                        age: age,
+                                        onGenderTapHandler: (val) {
+                                          setState(() {
+                                            gendervalue = val;
+                                          });
+                                        },
+                                        bioController: _bioTextController,
                                       )
                                     : step == 3
-                                        ? Register3(
-                                            genders: genders,
-                                            genderValue: gendervalue,
-                                            onAgeTapHandler: (val) {
-                                              setState(() {
-                                                age = val;
-                                              });
-                                            },
-                                            age: age,
-                                            onGenderTapHandler: (val) {
-                                              setState(() {
-                                                gendervalue = val;
-                                              });
-                                            },
-                                            bioController: _bioTextController,
+                                        ? Register4(
+                                            image: image,
+                                            tapHandler: _imagePicker,
                                           )
                                         : step == 4
-                                            ? Register4(
-                                                image: image,
-                                                tapHandler: _imagePicker,
+                                            ? Register5(
+                                                selectedInterests:
+                                                    _selectedInterests,
+                                                tapHandler: (val) {
+                                                  if (_selectedInterests
+                                                      .contains(val)) {
+                                                    setState(() {
+                                                      _selectedInterests
+                                                          .remove(val);
+                                                    });
+                                                  } else {
+                                                    setState(() {
+                                                      _selectedInterests
+                                                          .add(val);
+                                                    });
+                                                  }
+                                                },
                                               )
-                                            : step == 5
-                                                ? Register5(
-                                                    selectedInterests:
-                                                        _selectedInterests,
-                                                    tapHandler: (val) {
-                                                      if (_selectedInterests
-                                                          .contains(val)) {
-                                                        setState(() {
-                                                          _selectedInterests
-                                                              .remove(val);
-                                                        });
-                                                      } else {
-                                                        setState(() {
-                                                          _selectedInterests
-                                                              .add(val);
-                                                        });
-                                                      }
-                                                    },
-                                                  )
-                                                : SizedBox()
+                                            : SizedBox()
                           ],
                         ),
                       ),

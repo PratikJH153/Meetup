@@ -6,6 +6,7 @@ const SUCCESS_CODE = 200;
 // NOT FOUND: 404
 // INTERNAL SEVER ERROR: 500
 // const endpoint = "http://192.168.0.212:9000/"; /// FOR REAL DEVICE
+
 const endpoint = "http://10.0.2.2:9000/";
 const bool kDebugMode = true;
 
@@ -30,48 +31,54 @@ Map unPackLocally(Map data, {bool toPrint = true}) {
   // "UNPACKS" OR RETURNS THE RESULT OF A REQUEST FROM A SERVER
   // SAMPLE OUTPUTS:
   /*
-  {"success":0, "unpacked":{"message":"Upvote Failed"}}
-  {"success":0, "unpacked":{"message":"SERVER ERROR"}}
-  {"success":1, "unpacked":{"message":"Upvote Successful"}}
+  {"success":0, "unpacked":{"message":"Upvote Failed"}, "status": 500}
+  {"success":0, "unpacked":{"message":"SERVER ERROR", "status": 404}}
+  {"success":1, "unpacked":{"message":"Upvote Successful", "status": 200}}
   */
+  int status = 500;
+  int success = 0;
+  dynamic dataReceived;
 
-  bool receivedResponseFromServer = data["local_status"] == 200;
+  bool normalDataReceived = data["local_status"] == 200;
+  bool dioErrorReceived = data["local_status"] == 404;
+
   Map localData = data["local_result"];
 
-  if (receivedResponseFromServer) {
+  if (normalDataReceived) {
     bool dataReceivedSuccessfully = localData["status"] == 200;
-
-    if (toPrint) print("Server responded! Status:${localData["status"]}");
 
     if (dataReceivedSuccessfully) {
       var requestedSuccessData = localData["data"];
 
       if (toPrint) {
+        print("Server responded! Status:${localData["status"]}");
         print("SUCCESS DATA:");
         print(requestedSuccessData);
         print("-----------------\n\n");
       }
 
-      return {"success": 1, "unpacked": requestedSuccessData};
-    } else {
-      Map? requestFailedData = localData["data"];
-      if (toPrint) {
-        print("INCORRECT DATA:");
-        print(requestFailedData);
-        print("-----------------\n\n");
-      }
-      return {
-        "success": 0,
-        "unpacked": "Internal Server error!Wrong request sent!"
-      };
+      success = 1;
+      status = 200;
+      dataReceived = requestedSuccessData;
+    }
+  } else if (dioErrorReceived) {
+    status = 404;
+    success = 0;
+    dataReceived = localData;
+    if (toPrint) {
+      print("Server Reponded! Dio Error Received:");
+      print(localData);
+      print("-----------------\n\n");
     }
   } else {
+    status = 500;
+    success = 0;
+    dataReceived = "Couldn't reach the servers!";
     if (toPrint) {
       print(localData);
       print("Server Down! Status:$localData");
       print("-----------------\n\n");
     }
-
-    return {"success": 0, "unpacked": "Couldn't reach the servers!"};
   }
+  return {"success": success, "unpacked": dataReceived, "status": status};
 }

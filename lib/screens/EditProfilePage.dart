@@ -186,8 +186,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(50),
-                                    child: Image.network(
-                                      user.profileURL!,
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder:
+                                          "assets/images/placeholder.jpg",
+                                      image: user.profileURL!,
                                       fit: BoxFit.cover,
                                     ),
                                   ),
