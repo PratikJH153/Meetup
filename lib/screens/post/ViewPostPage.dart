@@ -214,11 +214,14 @@ class _ViewPostPageState extends State<ViewPostPage> {
   final PostAPIS _postAPI = PostAPIS();
 
   Future<void> _initialize() async {
-    CurrentPostProvider currentPost =
-        Provider.of<CurrentPostProvider>(context, listen: false);
+    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context, listen: false);
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
 
     final relatedPostsData =
-        await _postAPI.getRelatedPosts(widget.thePost.tag!);
+        await _postAPI.getRelatedPosts({
+          "interest": widget.thePost.tag,
+          "userID": userProvider.getUser()!.userID,
+        });
     Map unpackedRelatedPostsData = unPackLocally(relatedPostsData);
 
     if (unpackedRelatedPostsData["success"] == 1) {
