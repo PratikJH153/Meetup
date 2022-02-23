@@ -42,10 +42,24 @@ class _GetStartedPageState extends State<GetStartedPage> {
       label: "Error while Google sign in",
     );
     if (user != null) {
-      checkUserExists(
+      final status = await checkUserExists(
         context,
         user.uid.toString(),
       );
+      if (status == 1) {
+        Navigator.of(context).pushReplacementNamed(HomePage.routeName);
+        return;
+      } else if (status == 2) {
+        Navigator.of(context).pushReplacementNamed(RegisterPage.routeName);
+        return;
+      } else {
+        snackBarWidget(
+          "Error while Authenticating",
+          const Color(0xFFff2954),
+          context,
+        );
+        return;
+      }
     }
     setState(() {
       _isProcessing = false;

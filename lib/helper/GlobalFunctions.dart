@@ -180,8 +180,8 @@ void initializeTrendingPosts(BuildContext context) async {
 Container VoteSection(BuildContext context, Post post) {
   UserProvider userProvider = Provider.of<UserProvider>(context);
 
-  Color upvoteColor = Colors.grey;
-  Color downvoteColor = Colors.grey;
+  Color upvoteColor = Colors.white;
+  Color downvoteColor = Colors.white;
 
   String postID = post.postID!;
   Map voteMap = userProvider.voteMap;
@@ -200,14 +200,14 @@ Container VoteSection(BuildContext context, Post post) {
 
   if (userVote == true) {
     upvoteColor = Colors.red;
-    downvoteColor = Colors.grey;
+    downvoteColor = Colors.white;
   } else if (userVote == false) {
-    upvoteColor = Colors.grey;
+    upvoteColor = Colors.white;
     downvoteColor = Colors.blue;
   }
 
   return Container(
-    margin: const EdgeInsets.only(right: 20),
+    margin: const EdgeInsets.only(right: 8),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -266,9 +266,6 @@ Container VoteSection(BuildContext context, Post post) {
               }
             }
           },
-        ),
-        const SizedBox(
-          width: 5,
         ),
       ],
     ),

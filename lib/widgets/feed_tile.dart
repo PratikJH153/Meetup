@@ -119,7 +119,7 @@ class _FeedTileState extends State<FeedTile> {
                             Text("Edit"),
                           ],
                         ),
-                        onTap: (){
+                        onTap: () {
                           print("Hey");
                         },
                       ),
@@ -186,9 +186,6 @@ class _FeedTileState extends State<FeedTile> {
                       ),
                 const Spacer(),
                 VoteSection(context, widget.thePost),
-                const SizedBox(
-                  width: 10,
-                ),
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
