@@ -77,12 +77,12 @@ class PostAPIS {
     return GET(endpoint);
   }
 
-  Future<Map> getRelatedPosts(String tag) async {
+  Future<Map> getRelatedPosts(Map body) async {
     if (kDebugMode) {
       print("CALLING getRelatedPosts(String tag)");
     }
-    String endpoint = "posts/getRelatedPosts/$tag";
-    return GET(endpoint);
+    String endpoint = "posts/getRelatedPosts/";
+    return POST(endpoint,body);
   }
 
   Future<Map> getTrendingPosts() async {
