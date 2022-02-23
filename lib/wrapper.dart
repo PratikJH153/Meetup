@@ -36,6 +36,7 @@ class _WrapperState extends State<Wrapper> {
                 } else if (data == 2) {
                   return const RegisterPage();
                 } else {
+                  Fluttertoast.showToast(msg: "Error while Authenticating");
                   return const GetStartedPage();
                 }
               } else if (snap.hasError) {
