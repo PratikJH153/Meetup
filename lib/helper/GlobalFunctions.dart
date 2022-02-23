@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/models/comment.dart';
-import 'package:meetupapp/providers/CurrentPostProvider.dart';
-import 'package:meetupapp/widgets/snackBar_widget.dart';
+import '/models/comment.dart';
+import '/providers/CurrentPostProvider.dart';
+import '/widgets/snackBar_widget.dart';
 import '/models/PopupMenuDataset.dart';
 import '/models/post.dart';
 import '/widgets/feed_interact_button.dart';
@@ -18,39 +18,98 @@ import 'package:flutter/services.dart';
 final UserAPIS _userAPI = UserAPIS();
 final PostAPIS _postAPI = PostAPIS();
 
+const String extra = ""
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+    "aosiduiaduiaduiahgdiuahdihasdiasdoa";
+
 const placeholder =
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+
+bool inRange(int n1, int n2, int num) {
+  return n1 <= num && n2 >= num;
+}
+
+String numberParser(int number) {
+  if (inRange(0, 999, number)) {
+    return "$number";
+  } else if (inRange(1000, 999999, number)) {
+    String num = (number / 1000).floor().toString();
+    if (num.length == 1) num += "." + number.toString()[1];
+    return "$num k";
+  } else if (inRange(1000000, 999999999, number)) {
+    String num = (number / 1000000).floor().toString();
+    if (num.length == 1) num += "." + number.toString()[1];
+    return "$num m";
+  } else {
+    return "1b+";
+  }
+}
 
 void copyToClipboard(String text) {
   Clipboard.setData(ClipboardData(text: text));
 }
 
 Widget CustomPopupMenu(
-    {required PopupMenuDataset dataset, required showOther}) {
-  return PopupMenuButton(itemBuilder: (BuildContext context) {
-    return [
-      // PopupMenuItem(
-      //   child: Row(
-      //     children: [
-      //       Icon(dataset.primaryIcon),
-      //       Text(dataset.primary),
-      //     ],
-      //   ),
-      //   onTap: () {},
-      // ),
-      // if(showOther)
-      PopupMenuItem(
-        child: Row(
-          children: [
-            Icon(dataset.secondaryIcon),
-            Text(dataset.secondary),
-          ],
-        ),
-        onTap: () {},
-      )
-    ];
-  });
-}
+        {required PopupMenuDataset dataset, required showOther}) =>
+    PopupMenuButton(itemBuilder: (BuildContext context) {
+      return [
+        // PopupMenuItem(
+        //   child: Row(
+        //     children: [
+        //       Icon(dataset.primaryIcon),
+        //       Text(dataset.primary),
+        //     ],
+        //   ),
+        //   onTap: () {},
+        // ),
+        // if(showOther)
+        PopupMenuItem(
+          child: Row(
+            children: [
+              Icon(dataset.secondaryIcon),
+              Text(dataset.secondary),
+            ],
+          ),
+          onTap: () {},
+        )
+      ];
+    });
 
 Future<void> deletePost(BuildContext context, Post post) async {
   final deleteData = await _postAPI.deletePost(post.postID!);
@@ -213,26 +272,32 @@ Container VoteSection(BuildContext context, Post post) {
       children: [
         FeedInteractButton(
           icon: CupertinoIcons.arrowtriangle_up_circle,
-          label: upvotes.toString(),
+          label: numberParser(upvotes),
           color: upvoteColor,
           tapHandler: () async {
-            const bool voteValueInBool = true;
+            if (userProvider.isProcessing(post.postID!)) {
+              Fluttertoast.showToast(msg: "Ruko jara sabar karo!");
+              return;
+            }
 
+            const bool voteValueInBool = true;
             userProvider.ratePost(post: post, upvoteClick: voteValueInBool);
 
             if (userVote == null) {
               // THE USER HAS NEVER RATED THIS POST
-              vote(postID: postID, isUpvote: voteValueInBool);
+              await vote(context, postID: postID, isUpvote: voteValueInBool);
             } else {
               // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
 
               if (userVote == voteValueInBool) {
                 // RATING AGAIN WHAT WAS PREVIOUSLY RATED, HENCE CANCELLATION
-                cancelVote(postID: postID, isCancelUpvote: voteValueInBool);
+                await cancelVote(context,
+                    postID: postID, isCancelUpvote: voteValueInBool);
               } else {
                 // RATING DIFFERENT FROM WHAT WAS PREVIOUS
-                cancelVote(postID: postID, isCancelUpvote: !voteValueInBool);
-                vote(postID: postID, isUpvote: voteValueInBool);
+                await cancelVote(context,
+                    postID: postID, isCancelUpvote: !voteValueInBool);
+                await vote(context, postID: postID, isUpvote: voteValueInBool);
               }
             }
           },
@@ -242,27 +307,32 @@ Container VoteSection(BuildContext context, Post post) {
         ),
         FeedInteractButton(
           icon: CupertinoIcons.arrowtriangle_down_circle,
-          label: downvotes.toString(),
+          label: numberParser(downvotes),
           color: downvoteColor,
           tapHandler: () async {
             /// DOWNVOTE PRESSED
+            if (userProvider.isProcessing(post.postID!)) {
+              Fluttertoast.showToast(msg: "Ruko jara sabar karo!");
+              return;
+            }
+
             const bool voteValueInBool = false;
-
             userProvider.ratePost(post: post, upvoteClick: voteValueInBool);
-
             if (userVote == null) {
               // THE USER HAS NEVER RATED THIS POST
-              vote(postID: postID, isUpvote: voteValueInBool);
+              await vote(context, postID: postID, isUpvote: voteValueInBool);
             } else {
               // THE USER HAS RATED THIS POST AND IS EDITING HIS VOTE AGAIN
 
               if (userVote == voteValueInBool) {
                 // RATING AGAIN WHAT WAS PREVIOUSLY RATED, HENCE CANCELLATION
-                cancelVote(postID: postID, isCancelUpvote: voteValueInBool);
+                await cancelVote(context,
+                    postID: postID, isCancelUpvote: voteValueInBool);
               } else {
                 // RATING DIFFERENT FROM WHAT WAS PREVIOUS
-                cancelVote(postID: postID, isCancelUpvote: !voteValueInBool);
-                vote(postID: postID, isUpvote: voteValueInBool);
+                await cancelVote(context,
+                    postID: postID, isCancelUpvote: !voteValueInBool);
+                await vote(context, postID: postID, isUpvote: voteValueInBool);
               }
             }
           },
@@ -272,7 +342,11 @@ Container VoteSection(BuildContext context, Post post) {
   );
 }
 
-void vote({required bool isUpvote, required String postID}) async {
+Future<void> vote(BuildContext context,
+    {required bool isUpvote, required String postID}) async {
+  UserProvider userProvider = Provider.of(context, listen: false);
+  userProvider.addVoteToProcessing(postID);
+
   Function func = isUpvote ? _postAPI.upVote : _postAPI.downVote;
 
   User? curruser = FirebaseAuth.instance.currentUser;
@@ -284,6 +358,8 @@ void vote({required bool isUpvote, required String postID}) async {
   final res = await func(requestBody);
   Map unpackedVote = unPackLocally(res, toPrint: false);
 
+  await Future.delayed(const Duration(seconds: 5));
+  userProvider.removeVoteFromProcess(postID);
   if (unpackedVote["success"] == 1) {
     print("${isUpvote ? "UPVOTE" : "DOWNVOTE"} SUCCESSFUL!");
   } else {
@@ -291,7 +367,10 @@ void vote({required bool isUpvote, required String postID}) async {
   }
 }
 
-void cancelVote({required bool isCancelUpvote, required String postID}) async {
+Future<void> cancelVote(BuildContext context,
+    {required bool isCancelUpvote, required String postID}) async {
+  UserProvider userProvider = Provider.of(context, listen: false);
+  userProvider.addVoteToProcessing(postID);
   Function func =
       !isCancelUpvote ? _postAPI.cancelDownVote : _postAPI.cancelUpVote;
   User? curruser = FirebaseAuth.instance.currentUser;
@@ -303,6 +382,8 @@ void cancelVote({required bool isCancelUpvote, required String postID}) async {
   final res = await func(requestBody);
   Map unpackedVote = unPackLocally(res, toPrint: false);
 
+  await Future.delayed(const Duration(seconds: 5));
+  userProvider.removeVoteFromProcess(postID);
   if (unpackedVote["success"] == 1) {
     print("CANCEL ${isCancelUpvote ? "UPVOTE" : "DOWNVOTE"} SUCCESSFUL!");
   } else {

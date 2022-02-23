@@ -9,6 +9,22 @@ class UserProvider with ChangeNotifier {
   bool wentWrongUser = false;
   bool wentWrongPosts = false;
 
+  Map _processingVotePosts = {};
+
+  void addVoteToProcessing(String postId){
+    _processingVotePosts[postId] = true;
+    print("ADD:"+_processingVotePosts.keys.toString());
+    notifyListeners();
+  }
+
+  void removeVoteFromProcess(String postId){
+    _processingVotePosts.remove(postId);
+    print("REMOVE:"+_processingVotePosts.keys.toString());
+    notifyListeners();
+  }
+
+  bool isProcessing(String postId) => _processingVotePosts.containsKey(postId);
+
   Map _voteMap = {};
 
   Map get voteMap => {..._voteMap};

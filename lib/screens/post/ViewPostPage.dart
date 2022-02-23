@@ -1,20 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/screens/post/CommentPage.dart';
+import '/screens/post/CommentPage.dart';
 import 'package:provider/provider.dart';
 
-import '/models/PopupMenuDataset.dart';
 import '/helper/GlobalFunctions.dart';
 import '/helper/backend/database.dart';
 import '/helper/backend/apis.dart';
 import '/providers/CurrentPostProvider.dart';
 import '/providers/UserProvider.dart';
-import '/screens/AddCommentScreen.dart';
 import '/screens/post/AddPostPage.dart';
 import '/helper/utils/loader.dart';
-import '/models/comment.dart';
 import '/models/post.dart';
 import '/widgets/constants.dart';
 import '/widgets/recommended_feed_tile.dart';
@@ -31,10 +26,8 @@ class ViewPostPage extends StatefulWidget {
 }
 
 class _ViewPostPageState extends State<ViewPostPage> {
-  _ProfileRow() {
-    User? user = FirebaseAuth.instance.currentUser;
-    bool isTheSameUser = user!.uid == widget.thePost.postID;
 
+  _ProfileRow(double w) {
     return Row(
       children: [
         SizedBox(
@@ -81,96 +74,40 @@ class _ViewPostPageState extends State<ViewPostPage> {
     );
   }
 
-  _TitleDescriptionSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SelectableText(
-          widget.thePost.title!.toString(),
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-            height: 1.5,
-            fontFamily: "Ubuntu",
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        if (widget.thePost.desc != "")
+  _TitleDescriptionSection(double w) {
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: w*0.8
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           SelectableText(
-            widget.thePost.desc!,
-            style: TextStyle(
-              fontSize: 16,
+            widget.thePost.title!.toString(),
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
               height: 1.5,
-              color: Colors.grey[800],
-              fontFamily: "Raleway",
+              fontFamily: "Ubuntu",
             ),
           ),
-      ],
+          const SizedBox(
+            height: 10,
+          ),
+          if (widget.thePost.desc != "")
+            SelectableText(
+              widget.thePost.desc!,
+              style: TextStyle(
+                fontSize: 16,
+                height: 1.5,
+                color: Colors.grey[800],
+                fontFamily: "Raleway",
+              ),
+            ),
+        ],
+      ),
     );
   }
-
-  // _CommentsWidget(
-  //     {required List comments,
-  //     required bool wentWrong,
-  //     required bool isLoading}) {
-  //   return !_hasOpenedComments
-  //       ? const SizedBox()
-  //       : wentWrong
-  //           ? const Text("Couldn't fetch comments")
-  //           : isLoading
-  //               ? GlobalLoader()
-  //               : comments.isEmpty
-  //                   ? const Text("No comments yet")
-  //                   : ListView.builder(
-  //                       shrinkWrap: true,
-  //                       physics: const NeverScrollableScrollPhysics(),
-  //                       itemCount: comments.length,
-  //                       itemBuilder: (BuildContext context, int index) {
-  //                         Comment currComment =
-  //                             Comment.fromJson(comments[index]);
-
-  //                         Duration duration = DateTime.now().difference(
-  //                             DateTime.parse(currComment.timeStamp!));
-  //                         UserProvider userProvider =
-  //                             Provider.of<UserProvider>(context, listen: false);
-  //                         bool isTheSamePerson = currComment.userID ==
-  //                             userProvider.getUser()!.userID;
-
-  //                         PopupMenuItem commentMenuOption(
-  //                             {required bool isCopy}) {
-  //                           return PopupMenuItem(
-  //                             child: Row(
-  //                               children: [
-  //                                 Icon(isCopy ? Icons.copy : Icons.delete),
-  //                                 Text(isCopy ? "Copy Text" : "Delete"),
-  //                               ],
-  //                             ),
-  //                             onTap: () {
-  //                               if (!isCopy) {
-  //                                 _deleteComment(comments[index]);
-  //                               }
-  //                             },
-  //                           );
-  //                         }
-
-  //                         return ListTile(
-  //                           title: Text(currComment.message!),
-  //                           subtitle:
-  //                               Text("Posted ${duration.inDays} days ago"),
-  //                           contentPadding: EdgeInsets.zero,
-  //                           trailing: PopupMenuButton(
-  //                             itemBuilder: (BuildContext context) => [
-  //                               commentMenuOption(isCopy: true),
-  //                               if (isTheSamePerson)
-  //                                 commentMenuOption(isCopy: false)
-  //                             ],
-  //                           ),
-  //                         );
-  //                       },
-  //                     );
-  // }
 
   _ReccomendedPostsSection(
       {required List posts, required bool wentWrong, required bool isLoading}) {
@@ -231,27 +168,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
     }
   }
 
-  // Future<void> _deleteComment(Map<String, dynamic> commentMap) async {
-  //   CurrentPostProvider currentPost =
-  //       Provider.of<CurrentPostProvider>(context, listen: false);
-
-  //   Comment comment = Comment.fromJson(commentMap);
-
-  //   Map deleteBody = {
-  //     "commentID": comment.commentID,
-  //     "postID": widget.thePost.postID
-  //   };
-
-  //   final deleteCommentResult = await _postAPI.deleteComment(deleteBody);
-  //   Map deleteData = unPackLocally(deleteCommentResult);
-
-  //   if (deleteData["success"] == 1) {
-  //     currentPost.removeSingleComment(commentMap);
-  //   } else {
-  //     Fluttertoast.showToast(msg: "Couldn't delete comment!");
-  //   }
-  // }
-
   @override
   void initState() {
     _initialize();
@@ -264,6 +180,9 @@ class _ViewPostPageState extends State<ViewPostPage> {
       context,
       listen: false,
     );
+
+    Size s = MediaQuery.of(context).size;
+    double w = s.width;
 
     List trendingList = currentPost.relatedPost;
 
@@ -321,6 +240,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
+                                constraints: BoxConstraints(maxWidth: w * 0.6),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 15,
                                   vertical: 8,
@@ -331,6 +251,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                 ),
                                 child: Text(
                                   widget.thePost.tag!,
+                                  maxLines: 1,
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w900,
@@ -340,11 +261,15 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                   ),
                                 ),
                               ),
-                              Text(
-                                "${widget.thePost.timeReadCalc()} mins read",
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
+                              Container(
+                                constraints: BoxConstraints(maxWidth: w * 0.3),
+                                child: Text(
+                                  "${widget.thePost.timeReadCalc()} mins read",
+                                  maxLines: 1,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ),
                             ],
@@ -352,11 +277,11 @@ class _ViewPostPageState extends State<ViewPostPage> {
                           const SizedBox(
                             height: 15,
                           ),
-                          _ProfileRow(),
+                          _ProfileRow(w),
                           const SizedBox(
                             height: 15,
                           ),
-                          _TitleDescriptionSection(),
+                          _TitleDescriptionSection(w),
                           const SizedBox(
                             height: 30,
                           ),

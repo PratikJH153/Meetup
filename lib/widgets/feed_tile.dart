@@ -1,13 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/screens/post/AddPostPage.dart';
 import '/providers/UserProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '/helper/GlobalFunctions.dart';
 import '/screens/post/CommentPage.dart';
 import '/models/post.dart';
-import 'feed_interact_button.dart';
 
 class FeedTile extends StatefulWidget {
   final Post thePost;

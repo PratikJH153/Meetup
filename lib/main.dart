@@ -1,13 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:meetupapp/providers/CurrentPostProvider.dart';
-import 'package:meetupapp/screens/EditProfilePage.dart';
-import 'package:meetupapp/screens/post/UserPostScreen.dart';
+import 'providers/CurrentPostProvider.dart';
+import 'screens/EditProfilePage.dart';
+import 'screens/post/UserPostScreen.dart';
 import 'helper/custom_route.dart';
 import 'providers/PostProvider.dart';
 import 'providers/UserProvider.dart';
-import 'screens/AddCommentScreen.dart';
 import 'screens/FeedScreen.dart';
 import 'screens/HomePage.dart';
 import 'screens/authentication/LoginPage.dart';
