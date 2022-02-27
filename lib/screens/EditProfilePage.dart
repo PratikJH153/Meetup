@@ -138,7 +138,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     UpperWidgetOfBottomSheet(
                       tapHandler: () {},
                       icon: Icons.check,
-                      toEdit: true,
+                      toShow: true,
                     ),
                     Form(
                       key: _editProfileKey,

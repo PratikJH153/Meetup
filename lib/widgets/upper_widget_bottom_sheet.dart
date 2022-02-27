@@ -4,18 +4,17 @@ import '/widgets/constants.dart';
 class UpperWidgetOfBottomSheet extends StatelessWidget {
   final VoidCallback tapHandler;
   final IconData icon;
-  final bool toEdit;
+  final bool toShow;
 
   const UpperWidgetOfBottomSheet({
     required this.tapHandler,
     required this.icon,
-    this.toEdit = false,
+    this.toShow = false,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         Container(
@@ -44,25 +43,25 @@ class UpperWidgetOfBottomSheet extends StatelessWidget {
                   ),
                 ),
               ),
-              if(toEdit)
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: tapHandler,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.delete,
-                        size: 22,
+              if (toShow)
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: tapHandler,
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.delete,
+                          size: 22,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
             ],
           ),
         ),
