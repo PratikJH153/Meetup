@@ -90,8 +90,8 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: Wrapper.routeName,
         routes: {
-          Wrapper.routeName: (ctx) => const Wrapper(),
-          UserPosts.routeName: (ctx)=> const UserPosts(),
+          Wrapper.routeName: (ctx) => Wrapper(),
+          UserPosts.routeName: (ctx) => const UserPosts(),
           HomePage.routeName: (ctx) => const HomePage(),
           LoginPage.routeName: (ctx) => const LoginPage(),
           RegisterPage.routeName: (ctx) => const RegisterPage(),

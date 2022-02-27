@@ -42,6 +42,7 @@ class TextFieldWidget extends StatelessWidget {
               cursorColor: Colors.black,
               autofocus: false,
               maxLines: isBio ? null : 1,
+              maxLength: isBio ? 200 : null,
               keyboardType: inputType,
               validator: (value) => validatorHandler(
                 value!.trim(),

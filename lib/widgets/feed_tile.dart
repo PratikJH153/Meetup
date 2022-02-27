@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meetupapp/screens/post/AddPostPage.dart';
+import 'package:meetupapp/widgets/tag_widget.dart';
 import '/providers/UserProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -97,34 +98,6 @@ class _FeedTileState extends State<FeedTile> {
                     ),
                   ],
                 ),
-                const Spacer(),
-                if (isTheSameUser)
-                  PopupMenuButton(itemBuilder: (BuildContext context) {
-                    return [
-                      PopupMenuItem(
-                        child: Row(
-                          children: const [
-                            Icon(Icons.delete),
-                            Text("Delete Post"),
-                          ],
-                        ),
-                        onTap: () async {
-                          deletePost(context, widget.thePost);
-                        },
-                      ),
-                      PopupMenuItem(
-                        child: Row(
-                          children: const [
-                            Icon(Icons.edit),
-                            Text("Edit"),
-                          ],
-                        ),
-                        onTap: () {
-                          print("Hey");
-                        },
-                      ),
-                    ];
-                  })
               ],
             ),
             const SizedBox(
@@ -160,46 +133,38 @@ class _FeedTileState extends State<FeedTile> {
               height: 28,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                widget.thePost.tag == null
-                    ? const SizedBox()
-                    : Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF6b7fff),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Text(
-                          widget.thePost.tag!,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                            fontFamily: "Raleway",
-                            letterSpacing: 0.8,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ),
-                const Spacer(),
-                VoteSection(context, widget.thePost),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (ctx) => CommentPage(post: widget.thePost),
-                      ),
-                    );
-                  },
-                  child: const Icon(
-                    CupertinoIcons.chat_bubble_2,
-                    color: Colors.grey,
-                    size: 22,
+                if (widget.thePost.tag != null)
+                  TagWidget(
+                    tag: widget.thePost.tag!,
+                    tapHandler: () {
+                      print("HELLO");
+                    },
+                    canAdd: !userProvider
+                        .getUser()!
+                        .interests!
+                        .contains(widget.thePost.tag!),
                   ),
-                ),
+                Row(
+                  children: [
+                    VoteSection(context, widget.thePost),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (ctx) => CommentPage(post: widget.thePost),
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        CupertinoIcons.chat_bubble_2,
+                        color: Colors.grey,
+                        size: 22,
+                      ),
+                    ),
+                  ],
+                )
               ],
             )
           ],

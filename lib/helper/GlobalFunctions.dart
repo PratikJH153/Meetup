@@ -110,6 +110,28 @@ Future<int> checkUserExists(BuildContext context, String uid) async {
   }
 }
 
+Future<int> checkUsernameExists(BuildContext context, String username) async {
+  final response = await UserAPIS.getCheckUsernameExists(username);
+
+  Map responseData = unPackLocally(response);
+
+  if (responseData["success"] == 1) {
+    // print(responseData);
+    return 1;
+  } else {
+    if (responseData["status"] == 404) {
+      return 2;
+    } else {
+      snackBarWidget(
+        "Error while authentication. Try again!",
+        const Color(0xFFff2954),
+        context,
+      );
+      return 0;
+    }
+  }
+}
+
 Future<void> initialize(BuildContext context) async {
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -159,7 +181,7 @@ Future<void> initializeFollowingPosts(BuildContext context,
   }
 }
 
-void initializeTrendingPosts(BuildContext context) async {
+Future<void> initializeTrendingPosts(BuildContext context) async {
   /// FETCHES TRENDING POSTS WHENEVER CALLED
   UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
   PostProvider postProvider = Provider.of<PostProvider>(context, listen: false);
@@ -199,11 +221,11 @@ Container VoteSection(BuildContext context, Post post) {
   }
 
   if (userVote == true) {
-    upvoteColor = Colors.red;
+    upvoteColor = Colors.teal;
     downvoteColor = Colors.white;
   } else if (userVote == false) {
     upvoteColor = Colors.white;
-    downvoteColor = Colors.blue;
+    downvoteColor = Colors.pink;
   }
 
   return Container(

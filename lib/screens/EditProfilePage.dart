@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '/helper/backend/apis.dart';
@@ -11,19 +15,6 @@ import '/providers/UserProvider.dart';
 import '/widgets/constants.dart';
 import '/widgets/drop_down_widget.dart';
 import '/widgets/text_field_widget.dart';
-
-/*
-firstname
-lastname
-username
-profileURL
-cupcakes
-email
-gender
-age
-bio
-interests
- */
 
 class EditProfilePage extends StatefulWidget {
   static const routeName = "/editprofilepage";
@@ -60,9 +51,32 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   bool _isLoadedInit = false;
 
-  @override
-  void initState() {
-    super.initState();
+  File? image;
+
+  void _imagePicker() async {
+    ImagePicker _picker = ImagePicker();
+    PickedFile? pickedFile =
+        await _picker.getImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      File pickedImage = File(pickedFile.path);
+      setState(() {
+        image = pickedImage;
+      });
+    }
+  }
+
+  Future<String> uploadPic(String uid) async {
+    final ref =
+        FirebaseStorage.instance.ref().child("user_images").child(uid + ".jpg");
+
+    await ref.putFile(image!).whenComplete(() {
+      print("Done");
+    });
+
+    final url = await ref.getDownloadURL();
+
+    return url;
   }
 
   Future<void> _updateProfile() async {
@@ -117,44 +131,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        // appBar: AppBar(
-        //   elevation: 0,
-        //   backgroundColor: Colors.white,
-        //   centerTitle: true,
-        //   title: const Text(
-        //     "Profile",
-        //     style: TextStyle(
-        //       color: Colors.black,
-        //       fontFamily: "Quicksand",
-        //       fontWeight: FontWeight.bold,
-        //       letterSpacing: 1.1,
-        //     ),
-        //   ),
-        //   leading: IconButton(
-        //     onPressed: () {
-        //       Navigator.of(context).pop();
-        //     },
-        //     icon: const Icon(
-        //       CupertinoIcons.arrow_left,
-        //       color: Colors.black,
-        //     ),
-        //   ),
-        //   actions: [
-        //     IconButton(
-        //       onPressed: () async {
-        //         bool correctValuesEntered =
-        //             _editProfileKey.currentState!.validate();
-        //         if (correctValuesEntered) _updateProfile();
-        //       },
-        //       icon: const Icon(
-        //         CupertinoIcons.checkmark_alt,
-        //         color: Colors.black,
-        //       ),
-        //     ),
-        //   ],
-        // ),
         body: user != null
             ? SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 150),
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
@@ -167,54 +146,66 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       key: _editProfileKey,
                       child: Container(
                         padding: const EdgeInsets.only(
-                          top: 10,
                           left: kLeftPadding,
                           right: kRightPadding,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Stack(
-                              children: [
-                                Container(
-                                  height: 130,
-                                  width: 130,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFf0f0f0),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
-                                    child: FadeInImage.assetNetwork(
-                                      placeholder:
-                                          "assets/images/placeholder.jpg",
-                                      image: user.profileURL!,
-                                      fit: BoxFit.cover,
+                            GestureDetector(
+                              onTap: _imagePicker,
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    height: 130,
+                                    width: 130,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFf0f0f0),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    child: SizedBox(
+                                      height: 130,
+                                      width: 130,
+                                      child: image == null
+                                          ? ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                              child: FadeInImage.assetNetwork(
+                                                placeholder:
+                                                    "assets/images/placeholder.jpg",
+                                                image: user.profileURL!,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            )
+                                          : ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                              child: Image.file(image!)),
                                     ),
                                   ),
-                                ),
-                                Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: const Color(0xFF4265ff),
-                                      border: Border.all(
-                                        width: 6,
-                                        color: const Color(0xFFfafbff),
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: const Color(0xFF4265ff),
+                                        border: Border.all(
+                                          width: 6,
+                                          color: const Color(0xFFfafbff),
+                                        ),
+                                      ),
+                                      child: const Icon(
+                                        CupertinoIcons.pen,
+                                        size: 20,
+                                        color: Colors.white,
                                       ),
                                     ),
-                                    child: const Icon(
-                                      CupertinoIcons.pen,
-                                      size: 20,
-                                      color: Colors.white,
-                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             const SizedBox(
                               height: 30,
@@ -226,7 +217,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     editingController: firstNameController,
                                     label: "First Name",
                                     validatorHandler: (val) =>
-                                        Validator.validateTextField(
+                                        Validator.validateAuthFields(
                                             result: val),
                                     inputType: TextInputType.name,
                                     icon: CupertinoIcons.person_alt,
@@ -240,7 +231,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     editingController: lastNameController,
                                     label: "Last Name",
                                     validatorHandler: (val) =>
-                                        Validator.validateTextField(
+                                        Validator.validateAuthFields(
                                             result: val),
                                     inputType: TextInputType.name,
                                     icon: CupertinoIcons.person_alt,
@@ -255,7 +246,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               editingController: usernameController,
                               label: "Username",
                               validatorHandler: (val) =>
-                                  Validator.validateTextField(result: val),
+                                  Validator.validateAuthFields(result: val),
                               inputType: TextInputType.name,
                               icon: CupertinoIcons.at_circle,
                             ),
@@ -297,8 +288,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               editingController: bioController,
                               label: "About me",
                               isBio: true,
-                              validatorHandler: (val) =>
-                                  Validator.validateTextField(result: val),
+                              validatorHandler: (val) {},
                               inputType: TextInputType.text,
                               icon: CupertinoIcons.bold_italic_underline,
                             ),
@@ -330,45 +320,53 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               child: Wrap(
                                 children: user.interests!
                                     .map(
-                                      (e) => Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 14,
-                                          vertical: 8,
-                                        ),
-                                        margin: const EdgeInsets.only(
-                                          right: 8,
-                                          bottom: 8,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          gradient: const LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: [
-                                              Color(0xFF485563),
-                                              Color(0xFF29323c),
+                                      (e) => GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _userInterests.remove(e);
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 8,
+                                          ),
+                                          margin: const EdgeInsets.only(
+                                            right: 8,
+                                            bottom: 8,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            gradient: const LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                              colors: [
+                                                Color(0xFF485563),
+                                                Color(0xFF29323c),
+                                              ],
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Icon(
+                                                CupertinoIcons
+                                                    .xmark_circle_fill,
+                                                color: Colors.white,
+                                                size: 15,
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                e,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
                                             ],
                                           ),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            const Icon(
-                                              CupertinoIcons.xmark_circle_fill,
-                                              color: Colors.white,
-                                              size: 15,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              e,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
                                         ),
                                       ),
                                     )

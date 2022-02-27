@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meetupapp/screens/post/CommentPage.dart';
+import 'package:meetupapp/widgets/tag_widget.dart';
 import 'package:provider/provider.dart';
 
 import '/models/PopupMenuDataset.dart';
@@ -181,7 +182,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
           : isLoading
               ? const GlobalLoader()
               : posts.isEmpty
-                  ? const Text("No Recommendations yet")
+                  ? const Text("No Related Posts Found.")
                   : ListView.builder(
                       padding: const EdgeInsets.only(
                         bottom: 30,
@@ -204,7 +205,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                     ),
                                   );
                                 },
-                                child: RecommededFeedTile(post));
+                                child: RecommededFeedTile(post),
+                              );
                       },
                     ),
     );
@@ -214,14 +216,17 @@ class _ViewPostPageState extends State<ViewPostPage> {
   final PostAPIS _postAPI = PostAPIS();
 
   Future<void> _initialize() async {
-    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context, listen: false);
-    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    final CurrentPostProvider currentPost =
+        Provider.of<CurrentPostProvider>(context, listen: false);
+    final UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
 
-    final relatedPostsData =
-        await _postAPI.getRelatedPosts({
-          "interest": widget.thePost.tag,
-          "userID": userProvider.getUser()!.userID,
-        });
+    currentPost.resetRelatedPosts();
+
+    final relatedPostsData = await _postAPI.getRelatedPosts({
+      "interest": widget.thePost.tag,
+      "userID": userProvider.getUser()!.userID,
+    });
     Map unpackedRelatedPostsData = unPackLocally(relatedPostsData);
 
     if (unpackedRelatedPostsData["success"] == 1) {
@@ -262,8 +267,10 @@ class _ViewPostPageState extends State<ViewPostPage> {
   Widget build(BuildContext context) {
     CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(
       context,
-      listen: false,
     );
+
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
 
     List trendingList = currentPost.relatedPost;
 
@@ -275,21 +282,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
         body: Column(
           children: [
             UpperWidgetOfBottomSheet(
-              tapHandler: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (ctx) => AddPost(
-                      tag: widget.thePost.tag,
-                      title: widget.thePost.title,
-                      description: widget.thePost.desc,
-                    ),
-                  ),
-                );
-              },
-              toShow: Provider.of<UserProvider>(context, listen: false)
-                      .getUser()!
-                      .userID ==
-                  widget.thePost.author!["_id"],
+              tapHandler: () {},
+              toShow: false,
               icon: CupertinoIcons.pen,
             ),
             Expanded(
@@ -320,26 +314,17 @@ class _ViewPostPageState extends State<ViewPostPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                  vertical: 8,
+                              if (widget.thePost.tag != null)
+                                TagWidget(
+                                  tag: widget.thePost.tag!,
+                                  tapHandler: () {
+                                    print("HELLO");
+                                  },
+                                  canAdd: !userProvider
+                                      .getUser()!
+                                      .interests!
+                                      .contains(widget.thePost.tag!),
                                 ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF6b7fff),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Text(
-                                  widget.thePost.tag!,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w900,
-                                    fontFamily: "Raleway",
-                                    letterSpacing: 0.8,
-                                    fontSize: 11,
-                                  ),
-                                ),
-                              ),
                               Text(
                                 "${widget.thePost.timeReadCalc()} mins read",
                                 style: const TextStyle(
@@ -402,9 +387,10 @@ class _ViewPostPageState extends State<ViewPostPage> {
                             height: 10,
                           ),
                           _ReccomendedPostsSection(
-                              posts: trendingList,
-                              wentWrong: wentWrongTrending,
-                              isLoading: !isLoadedTrending)
+                            posts: trendingList,
+                            wentWrong: wentWrongTrending,
+                            isLoading: !isLoadedTrending,
+                          )
                         ],
                       ),
                     ],

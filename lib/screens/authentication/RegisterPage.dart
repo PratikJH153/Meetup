@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meetupapp/helper/GlobalFunctions.dart';
 import 'package:meetupapp/widgets/back_button.dart';
 import '/screens/authentication/Register_1_page.dart';
 import '/screens/authentication/Register_2_page.dart';
@@ -40,6 +41,9 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordTextController = TextEditingController();
   final TextEditingController _bioTextController = TextEditingController();
 
+  final String? googleUserProfileURL =
+      FirebaseAuth.instance.currentUser!.photoURL;
+
   bool _isProcessing = false;
   int step = 1;
 
@@ -57,13 +61,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
-    super.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
     _nameTextController.dispose();
     _emailTextController.dispose();
     _passwordTextController.dispose();
     _bioTextController.dispose();
+    super.dispose();
   }
 
   void _submit() async {
@@ -74,9 +78,18 @@ class _RegisterPageState extends State<RegisterPage> {
     if (step == 1) {
       if (_registerFormKey.currentState!.validate()) {
         print("GO FORWARD");
-        setState(() {
-          step += 1;
-        });
+        final response = await checkUsernameExists(
+          context,
+          _nameTextController.text.trim(),
+        );
+        if (response == 1) {
+          snackBarWidget("Username Exists. Please try different username",
+              const Color(0xFFff2954), context);
+        } else if (response == 2) {
+          setState(() {
+            step += 1;
+          });
+        } else {}
       }
     } else if (step == 2 || step == 3) {
       setState(() {
@@ -106,6 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ? _bioTextController.text.trim()
                 : "A meetup user!",
             "interests": _selectedInterests,
+            "joinedAt": DateTime.now().toIso8601String(),
           };
 
           Map result = await UserAPIS().addUser(userMap);
@@ -204,6 +218,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 onPressed: () {
                                   setState(() {
+                                    if (step == 3) {
+                                      image = null;
+                                    }
                                     step -= 1;
                                   });
                                 },
@@ -266,17 +283,17 @@ class _RegisterPageState extends State<RegisterPage> {
                           color: Color(0xFF757575),
                         ),
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      askUserAccountWidget(
-                        title: "Already have an account?",
-                        label: "Login Now.",
-                        tapHandler: () => Navigator.pushNamed(
-                          context,
-                          LoginPage.routeName,
-                        ),
-                      ),
+                      // const SizedBox(
+                      //   height: 5,
+                      // ),
+                      // askUserAccountWidget(
+                      //   title: "Already have an account?",
+                      //   label: "Login Now.",
+                      //   tapHandler: () => Navigator.pushNamed(
+                      //     context,
+                      //     LoginPage.routeName,
+                      //   ),
+                      // ),
                       const SizedBox(height: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -347,6 +364,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                         ? Register4(
                                             image: image,
                                             tapHandler: _imagePicker,
+                                            profileURL: googleUserProfileURL,
                                           )
                                         : step == 4
                                             ? Register5(

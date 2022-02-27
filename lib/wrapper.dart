@@ -21,10 +21,11 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
+    print("WRAPPER CALLED");
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, AsyncSnapshot snapshot) {
-        print("CALLED AGAIN WRAPPER!");
+        print("STREAM AND FUTURE WRAPPER CALLED");
         if (snapshot.hasData) {
           return FutureBuilder(
             future: checkUserExists(context, snapshot.data!.uid!),
@@ -43,7 +44,9 @@ class _WrapperState extends State<Wrapper> {
                 Fluttertoast.showToast(msg: "Error while Authenticating");
                 return const GetStartedPage();
               }
-              return const GetStartedPage();
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             },
           );
         }

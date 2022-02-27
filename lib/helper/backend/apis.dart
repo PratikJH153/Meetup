@@ -58,6 +58,14 @@ class UserAPIS {
     String endpoint = "users/checkUserExists/$id";
     return GET(endpoint);
   }
+
+  static Future<Map> getCheckUsernameExists(String username) async {
+    if (kDebugMode) {
+      print("CALLING getCheckUsernameExists(String id)");
+    }
+    String endpoint = "users/checkUsername/$username";
+    return GET(endpoint);
+  }
 }
 
 class PostAPIS {
@@ -82,7 +90,7 @@ class PostAPIS {
       print("CALLING getRelatedPosts(String tag)");
     }
     String endpoint = "posts/getRelatedPosts/";
-    return POST(endpoint,body);
+    return POST(endpoint, body);
   }
 
   Future<Map> getTrendingPosts() async {

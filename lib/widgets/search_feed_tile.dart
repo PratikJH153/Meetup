@@ -47,10 +47,11 @@ class SearchFeedTile extends StatelessWidget {
                   image: DecorationImage(
                     image: NetworkImage(
                       profileUrl,
+                    ),
+                    fit: BoxFit.cover,
                   ),
-                    fit: BoxFit.cover
                 ),
-              )),
+              ),
               const SizedBox(
                 width: 15,
               ),
@@ -70,9 +71,9 @@ class SearchFeedTile extends StatelessWidget {
                   const SizedBox(
                     height: 3,
                   ),
-                  const Text(
-                    "5 min read",
-                    style: TextStyle(
+                  Text(
+                    "${post.timeReadCalc()} mins read",
+                    style: const TextStyle(
                       fontSize: 10,
                       color: Colors.grey,
                     ),
@@ -100,7 +101,7 @@ class SearchFeedTile extends StatelessWidget {
           ),
           if (isDes)
             Text(
-              "Hey there! This is a good one and today we are going to start with something good.",
+              post.desc.toString(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -125,9 +126,9 @@ class SearchFeedTile extends StatelessWidget {
                   color: const Color(0xFF6b7fff),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: const Text(
-                  "Business",
-                  style: TextStyle(
+                child: Text(
+                  post.tag.toString(),
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
                     fontFamily: "Raleway",

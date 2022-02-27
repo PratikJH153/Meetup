@@ -8,7 +8,7 @@ const SUCCESS_CODE = 200;
 // INTERNAL SEVER ERROR: 500
 // const endpoint = "http://192.168.0.212:9000/"; /// FOR REAL DEVICE
 
-const endpoint = "http://10.0.2.2:9000/";
+const endpoint = "https://enthem.herokuapp.com/";
 const bool kDebugMode = true;
 
 const ErrorCodesCustom = {
@@ -67,7 +67,7 @@ Map unPackLocally(Map data, {bool toPrint = true}) {
     success = 0;
     dataReceived = localData;
     if (toPrint) {
-      print("Server Reponded! Dio Error Received:");
+      print("Server Responded! Dio Error Received:");
       print(localData);
       print("-----------------\n\n");
     }
