@@ -12,11 +12,14 @@ class BottomNavButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      padding: const EdgeInsets.only(
+        left: 24.0,
+        right: 15,
+      ),
       child: Icon(
         icon,
         color: isSelected ? const Color(0xFF3d3d3d) : const Color(0xFFadadad),
-        size: 25,
+        size: 27,
       ),
     );
   }

@@ -13,6 +13,11 @@ class CurrentPostProvider extends ChangeNotifier {
   bool isRelatedLoaded = false;
   bool wentWrongRelated = false;
 
+  void resetComments() {
+    isCommentsLoaded = false;
+    _postComments = [];
+  }
+
   void setComments(List comments) {
     _postComments = comments;
     isCommentsLoaded = true;
@@ -41,6 +46,11 @@ class CurrentPostProvider extends ChangeNotifier {
   void removeSingleComment(Map comment) {
     _postComments.remove(comment);
     notifyListeners();
+  }
+
+  void resetRelatedPosts() {
+    isRelatedLoaded = false;
+    _getRelated = [];
   }
 
   void setRelatedPosts(List relatedPosts) {

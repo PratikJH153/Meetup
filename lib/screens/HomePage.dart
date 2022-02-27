@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/screens/SearchPage.dart';
 import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -60,7 +59,9 @@ class _HomePageState extends State<HomePage> {
             ),
           )
         : !isLoadingComplete
-            ? const Scaffold(body: GlobalLoader())
+            ? const Scaffold(
+                body: GlobalLoader(),
+              )
             : Scaffold(
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerDocked,
@@ -68,10 +69,7 @@ class _HomePageState extends State<HomePage> {
                 floatingActionButton: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40),
-                    ),
+                    borderRadius: BorderRadius.circular(40),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey[200]!,
@@ -84,6 +82,7 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.symmetric(
                     vertical: 16,
                   ),
+                  margin: const EdgeInsets.only(bottom: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
@@ -99,11 +98,9 @@ class _HomePageState extends State<HomePage> {
                           });
                         },
                       ),
-
                       BottomAddButton(tapHandler: () async {
                         Navigator.of(context).pushNamed(AddPost.routeName);
                       }),
-
                       GestureDetector(
                         onTap: () {
                           setState(() {
@@ -111,7 +108,10 @@ class _HomePageState extends State<HomePage> {
                           });
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25),
+                          padding: const EdgeInsets.only(
+                            right: 24,
+                            left: 15,
+                          ),
                           child: Container(
                             height: 36,
                             width: 36,
@@ -140,30 +140,10 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      // InkWell(
-                      //   child: BottomNavButton(
-                      //     icon: CupertinoIcons.person_alt,
-                      //     isSelected: _selectedIndex == 1,
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
-                body: RefreshIndicator(
-                  child: _widgetOptions[_selectedIndex],
-                  backgroundColor: Colors.red,
-                  color: Colors.white,
-                  onRefresh: () {
-                    return Future.delayed(
-                      const Duration(seconds: 1),
-                      () {
-                        setState(() {
-                          initialize(context);
-                        });
-                      },
-                    );
-                  },
-                ),
+                body: _widgetOptions[_selectedIndex],
               );
   }
 }

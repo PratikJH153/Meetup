@@ -27,7 +27,7 @@ class Register2 extends StatelessWidget {
                   editingController: firstNameController,
                   label: "First Name",
                   validatorHandler: (val) =>
-                      Validator.validateTextField(result: val),
+                      Validator.validateAuthFields(result: val),
                   inputType: TextInputType.name,
                   icon: CupertinoIcons.person_alt,
                 ),
@@ -40,7 +40,7 @@ class Register2 extends StatelessWidget {
                   editingController: lastNameController,
                   label: "Last Name",
                   validatorHandler: (val) =>
-                      Validator.validateTextField(result: val),
+                      Validator.validateAuthFields(result: val),
                   inputType: TextInputType.name,
                   icon: CupertinoIcons.person_alt,
                 ),
@@ -53,7 +53,8 @@ class Register2 extends StatelessWidget {
           TextFieldWidget(
             editingController: nameController,
             label: "Username",
-            validatorHandler: (val) => Validator.validateTextField(result: val),
+            validatorHandler: (val) =>
+                Validator.validateAuthFields(result: val),
             inputType: TextInputType.name,
             icon: CupertinoIcons.at_circle,
           ),

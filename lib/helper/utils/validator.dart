@@ -27,6 +27,19 @@ class Validator {
     }
   }
 
+  static String? validateAuthFields(
+      {required String? result, String? message = "Field can't be empty!"}) {
+    if (result == null) {
+      return null;
+    }
+
+    if (result.isEmpty) {
+      return message;
+    } else if (result.length < 3 || result.length > 30) {
+      return "Limit of characters 3-30";
+    }
+  }
+
   static String? validateTitle(
       {required String? result, String? message = "Field can't be empty!"}) {
     if (result == null) {
@@ -37,6 +50,8 @@ class Validator {
       return message;
     } else if (result.length > 200) {
       return "Limit of characters 0-200";
+    } else if (result.length < 5) {
+      return "Please atleast add 5 characters";
     }
   }
 

@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/screens/SelectFilterPage.dart';
+import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 import '/helper/backend/database.dart';
@@ -11,10 +14,9 @@ import '/models/post.dart';
 import '/widgets/constants.dart';
 
 class AddPost extends StatefulWidget {
-  final Post? post;
   static const routeName = "/addpost";
 
-  AddPost({this.post});
+  const AddPost();
 
   @override
   State<AddPost> createState() => _AddPostState();
@@ -27,7 +29,7 @@ class _AddPostState extends State<AddPost> {
   final TextEditingController _descController = TextEditingController();
 
   bool _isLoading = false;
-  String _selectedTag = "Flutter";
+  String _selectedTag = "Tag";
 
   Future<void> _addPostApi(BuildContext context) async {
     UserProvider userProvider =
@@ -40,7 +42,8 @@ class _AddPostState extends State<AddPost> {
       "title": _titleController.text.trim(),
       "description": _descController.text.trim(),
       "author": userProvider.getUser()!.userID,
-      "tag": _selectedTag
+      "tag": _selectedTag,
+      "createdAt": DateTime.now().toIso8601String(),
     });
     Map requestData = unPackLocally(addPost, toPrint: true);
 
@@ -64,7 +67,6 @@ class _AddPostState extends State<AddPost> {
 
       userProvider.addSingleUserPost(addPostBody);
       Fluttertoast.showToast(msg: "Added Post successfully!");
-      Navigator.of(context).pop();
     } else {
       Fluttertoast.showToast(msg: requestData["unpacked"]);
     }
@@ -80,9 +82,9 @@ class _AddPostState extends State<AddPost> {
   }
 
   static const Map _interests = {
-    "Web development":true,
-    "Flutter":true,
-    "Android":true,
+    "Web development": true,
+    "Flutter": true,
+    "Android": true,
   };
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
@@ -117,116 +119,145 @@ class _AddPostState extends State<AddPost> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => Navigator.of(context).pop(),
-      child: SafeArea(
-        child: Scaffold(
-          body: _isLoading
-              ? const GlobalLoader()
-              : GestureDetector(
-                  onTap: () {},
-                  child: Column(
-                    children: [
-                      Column(
+    return SafeArea(
+      child: Scaffold(
+        body: _isLoading
+            ? const GlobalLoader()
+            : LayoutBuilder(builder: (context, constraint) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints:
+                        BoxConstraints(minHeight: constraint.maxHeight),
+                    child: IntrinsicHeight(
+                      child: Column(
                         children: [
-                          Container(
-                            margin: const EdgeInsets.only(
-                              top: 20,
-                              bottom: 10,
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: kLeftPadding,
-                            ),
-                            color: Colors.transparent,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                GestureDetector(
-                                  onTap: () => Navigator.of(context).pop(),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(5),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(
-                                      Icons.close,
-                                      size: 22,
-                                    ),
-                                  ),
+                          UpperWidgetOfBottomSheet(
+                            tapHandler: () async {
+                              if (_selectedTag == "Tag") {
+                                Fluttertoast.showToast(
+                                    msg: "Select a tag to procced");
+                                return;
+                              }
+                              if (_addPostFormKey.currentState!.validate()) {
+                                _addPostApi(context);
+                              }
+                            },
+                            toShow: true,
+                            icon: CupertinoIcons.checkmark_alt,
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                top: 30,
+                                left: kLeftPadding,
+                                right: kLeftPadding,
+                                bottom: 50,
+                              ),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
                                 ),
-                                IconButton(
-                                    onPressed: () async {
-                                      _addPostApi(context);
-                                    },
-                                    icon: const Icon(Icons.check)
-                                )
-                              ],
+                              ),
+                              child: Form(
+                                key: _addPostFormKey,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // GestureDetector(
+                                    //   onTap: () async {
+                                    //     _selectedTag =
+                                    //         await Navigator.of(context).push(
+                                    //       MaterialPageRoute(
+                                    //         builder: (ctx) =>
+                                    //             ChoiceChipDisplay(_selectedTag),
+                                    //       ),
+                                    //     );
+                                    //     if (_selectedTag == Null) {
+                                    //       _selectedTag = "Tag";
+                                    //     }
+                                    //   },
+                                    //   child: Container(
+                                    //     padding: const EdgeInsets.symmetric(
+                                    //       horizontal: 15,
+                                    //       vertical: 8,
+                                    //     ),
+                                    //     decoration: BoxDecoration(
+                                    //       color: _selectedTag != "Tag"
+                                    //           ? const Color(0xFF6b7fff)
+                                    //           : Colors.grey,
+                                    //       borderRadius:
+                                    //           BorderRadius.circular(15),
+                                    //     ),
+                                    //     child: Text(
+                                    //       _selectedTag,
+                                    //       style: const TextStyle(
+                                    //         color: Colors.white,
+                                    //         fontWeight: FontWeight.w900,
+                                    //         fontFamily: "Raleway",
+                                    //         letterSpacing: 0.8,
+                                    //         fontSize: 11,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    _filterBox(),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    TextFormField(
+                                      maxLines: null,
+                                      controller: _titleController,
+                                      style: TextStyle(
+                                        height: 1.3,
+                                        fontSize: 20,
+                                        color: Colors.grey[800],
+                                      ),
+                                      validator: (value) =>
+                                          Validator.validateTitle(
+                                        result: value,
+                                        message: "Enter a valid Title",
+                                      ),
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: "Add an Title",
+                                        hintStyle: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.grey[800],
+                                        ),
+                                      ),
+                                    ),
+                                    TextFormField(
+                                      maxLines: null,
+                                      controller: _descController,
+                                      style: TextStyle(
+                                        height: 1.5,
+                                        fontSize: 15,
+                                        color: Colors.grey[800],
+                                      ),
+                                      maxLength: 1000,
+                                      decoration: InputDecoration(
+                                        hintText:
+                                            "Give a description (Optional)",
+                                        border: InputBorder.none,
+                                        hintStyle: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.grey[700],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.only(
-                            top: 30,
-                            left: kLeftPadding,
-                            right: kLeftPadding,
-                          ),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            ),
-                          ),
-                          child: Form(
-                            key: _addPostFormKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _filterBox(),
-                                TextFormField(
-                                  maxLines: null,
-                                  controller: _titleController,
-                                  style: const TextStyle(height: 1.3),
-                                  validator: (value) => Validator.validateTitle(
-                                    result: value,
-                                    message: "Enter a valid Title",
-                                  ),
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: "Add an Title",
-                                    hintStyle: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.grey[800],
-                                    ),
-                                  ),
-                                ),
-                                TextFormField(
-                                  maxLines: null,
-                                  controller: _descController,
-                                  style: const TextStyle(height: 1.5),
-                                  maxLength: 1000,
-                                  decoration: InputDecoration(
-                                    hintText: "Give a description (Optional)",
-                                    border: InputBorder.none,
-                                    hintStyle: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-        ),
+                );
+              }),
       ),
     );
   }

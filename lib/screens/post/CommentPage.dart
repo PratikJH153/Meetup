@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/widgets/placeholder_widget.dart';
 import 'package:provider/provider.dart';
 import '/helper/GlobalFunctions.dart';
 import '/helper/backend/database.dart';
@@ -47,7 +48,8 @@ class _CommentPageState extends State<CommentPage> {
 
       Map addCommentBody = {
         "message": _commentController.text,
-        "userID": FirebaseAuth.instance.currentUser!.uid
+        "userID": FirebaseAuth.instance.currentUser!.uid,
+        "timestamp": DateTime.now().toIso8601String(),
       };
 
       final addCommentData =
@@ -70,8 +72,6 @@ class _CommentPageState extends State<CommentPage> {
           "__v": 0
         };
 
-        //! TIME ISSUE SOLVE IT!!!!
-
         _commentController.text = '';
         currentPostProvider.addSingleComment(comment);
       } else {
@@ -86,7 +86,7 @@ class _CommentPageState extends State<CommentPage> {
   Future<void> _initialize() async {
     CurrentPostProvider currentPost =
         Provider.of<CurrentPostProvider>(context, listen: false);
-
+    currentPost.resetComments();
     final commentData =
         await PostAPIS.getComments(widget.post.postID.toString());
     Map unpackedCommentData = unPackLocally(commentData);
@@ -144,7 +144,7 @@ class _CommentPageState extends State<CommentPage> {
             wentWrongComments
                 ? const Text("Couldn't fetch comments")
                 : !isLoadedComments
-                    ? GlobalLoader()
+                    ? const Expanded(child: Center(child: GlobalLoader()))
                     : commentList.isNotEmpty
                         ? Expanded(
                             child: Container(
@@ -222,33 +222,9 @@ class _CommentPageState extends State<CommentPage> {
                               ),
                             ),
                           )
-                        : Center(
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 80),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Image.asset(
-                                    "assets/images/comment.png",
-                                    fit: BoxFit.cover,
-                                    height: 250,
-                                    width: 250,
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "No Comments Yet!\nBe the first to comment.",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      height: 1.5,
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                        : const PlaceholderWidget(
+                            imageURL: "assets/images/comment.png",
+                            label: "No Comments Yet!\nBe the first to comment.",
                           ),
             if (commentList.isEmpty) const Spacer(),
             Container(

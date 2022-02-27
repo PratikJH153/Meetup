@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:meetupapp/providers/UserProvider.dart';
+import 'package:meetupapp/helper/GlobalFunctions.dart';
+import 'package:meetupapp/helper/utils/loader.dart';
+import 'package:meetupapp/widgets/placeholder_widget.dart';
 import 'package:provider/provider.dart';
 import '/providers/PostProvider.dart';
 import '/models/post.dart';
@@ -46,38 +48,40 @@ class FollowingList extends StatelessWidget {
         child: wentWrongAllPosts
             ? const Center(child: Text("Error while fetching posts!"))
             : !isLoadedAllPosts
-                ? const Center(child: Text("Loading posts!"))
-                : ListView.builder(
-                    padding: const EdgeInsets.only(
-                      bottom: 200,
-                      top: 20,
-                    ),
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: postList.length,
-                    itemBuilder: (ctx, index) {
-                      Post currPost = Post.fromJson(postList.values.toList()[index]);
-
-                      return GestureDetector(
-                        onTap: () {
-                          // showModalBottomSheet(
-                          //   context: context,
-                          //   isScrollControlled: true,
-                          //   backgroundColor: Colors.transparent,
-                          //   barrierColor: const Color(0xFF383838),
-                          //   builder: (ctx) {
-                          //     return ViewPostPage(currPost);
-                          //   },
-                          // );
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (ctx) => ViewPostPage(currPost),
-                            ),
-                          );
+                ? const Center(child: GlobalLoader())
+                : postList.isEmpty
+                    ? const PlaceholderWidget(
+                        imageURL: "assets/images/home.png",
+                        label: "No Posts Yet!\nBe the first to Post.",
+                      )
+                    : RefreshIndicator(
+                        onRefresh: () async {
+                          await initializeFollowingPosts(context);
                         },
-                        child: FeedTile(currPost),
-                      );
-                    },
-                  ),
+                        child: ListView.builder(
+                          padding: const EdgeInsets.only(
+                            bottom: 200,
+                            top: 20,
+                          ),
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: postList.length,
+                          itemBuilder: (ctx, index) {
+                            Post currPost =
+                                Post.fromJson(postList.values.toList()[index]);
+
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => ViewPostPage(currPost),
+                                  ),
+                                );
+                              },
+                              child: FeedTile(currPost),
+                            );
+                          },
+                        ),
+                      ),
       ),
     );
   }

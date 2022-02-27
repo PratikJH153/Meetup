@@ -4,9 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Register4 extends StatelessWidget {
+  final String? profileURL;
   final File? image;
   final VoidCallback tapHandler;
   const Register4({
+    this.profileURL,
     required this.image,
     required this.tapHandler,
     Key? key,
@@ -29,41 +31,56 @@ class Register4 extends StatelessWidget {
                   color: const Color(0xFFf0f0f0),
                   borderRadius: BorderRadius.circular(60),
                 ),
-                child: image != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(60),
-                        child: Image.file(
-                          image!,
-                          fit: BoxFit.cover,
+                child: profileURL != null && image == null
+                    ? SizedBox(
+                        height: 160,
+                        width: 160,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(60),
+                          child: Image.network(
+                            profileURL!,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       )
-                    : const Icon(
-                        CupertinoIcons.person_circle_fill,
-                        size: 40,
-                        color: Color(0xFF636363),
-                      ),
+                    : image != null
+                        ? SizedBox(
+                            height: 160,
+                            width: 160,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(60),
+                              child: Image.file(
+                                image!,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )
+                        : const Icon(
+                            CupertinoIcons.person_circle_fill,
+                            size: 40,
+                            color: Color(0xFF636363),
+                          ),
               ),
-              if (image == null)
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFF4265ff),
-                      border: Border.all(
-                        width: 6,
-                        color: const Color(0xFFfafbff),
-                      ),
-                    ),
-                    child: const Icon(
-                      CupertinoIcons.add,
-                      size: 20,
-                      color: Colors.white,
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFF4265ff),
+                    border: Border.all(
+                      width: 6,
+                      color: const Color(0xFFfafbff),
                     ),
                   ),
+                  child: const Icon(
+                    CupertinoIcons.add,
+                    size: 20,
+                    color: Colors.white,
+                  ),
                 ),
+              ),
             ],
           ),
         ),

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '/screens/post/CommentPage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/screens/post/CommentPage.dart';
+import 'package:meetupapp/widgets/tag_widget.dart';
 import 'package:provider/provider.dart';
 
 import '/helper/GlobalFunctions.dart';
@@ -26,130 +28,133 @@ class ViewPostPage extends StatefulWidget {
 }
 
 class _ViewPostPageState extends State<ViewPostPage> {
-
-  _ProfileRow(double w) => Row(
-      children: [
-        SizedBox(
-          height: 40,
-          width: 40,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(100),
-            child: FadeInImage.assetNetwork(
-              placeholder: "assets/images/placeholder.jpg",
-              image: widget.thePost.author!["profileURL"],
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        const SizedBox(
-          width: 15,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.thePost.author!["username"],
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                fontFamily: "Quicksand",
-              ),
-            ),
-            const SizedBox(
-              height: 3,
-            ),
-            Text(
-              timeago.format(
-                DateTime.parse(widget.thePost.createdAt!),
-              ),
-              style: const TextStyle(
-                fontSize: 13,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-
-  _TitleDescriptionSection(double w) => Container(
-      constraints: BoxConstraints(
-        maxWidth: w*0.8
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  _ProfileRow() => Row(
         children: [
-          SelectableText(
-            widget.thePost.title!.toString(),
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              height: 1.5,
-              fontFamily: "Ubuntu",
+          SizedBox(
+            height: 40,
+            width: 40,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: FadeInImage.assetNetwork(
+                placeholder: "assets/images/placeholder.jpg",
+                image: widget.thePost.author!["profileURL"],
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           const SizedBox(
-            height: 10,
+            width: 15,
           ),
-          if (widget.thePost.desc != "")
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.thePost.author!["username"],
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: "Quicksand",
+                ),
+              ),
+              const SizedBox(
+                height: 3,
+              ),
+              Text(
+                timeago.format(
+                  DateTime.parse(widget.thePost.createdAt!),
+                ),
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+
+  _TitleDescriptionSection() => Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             SelectableText(
-              widget.thePost.desc!,
-              style: TextStyle(
-                fontSize: 16,
+              widget.thePost.title!.toString(),
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
                 height: 1.5,
-                color: Colors.grey[800],
-                fontFamily: "Raleway",
+                fontFamily: "Ubuntu",
               ),
             ),
-        ],
-      ),
-    );
+            const SizedBox(
+              height: 10,
+            ),
+            if (widget.thePost.desc != "")
+              SelectableText(
+                widget.thePost.desc!,
+                style: TextStyle(
+                  fontSize: 16,
+                  height: 1.5,
+                  color: Colors.grey[800],
+                  fontFamily: "Raleway",
+                ),
+              ),
+          ],
+        ),
+      );
 
   _ReccomendedPostsSection(
-      {required List posts, required bool wentWrong, required bool isLoading}) => SizedBox(
-      height: 230,
-      child: wentWrong
-          ? const Text("Couldn't fetch Posts")
-          : isLoading
-              ? const GlobalLoader()
-              : posts.isEmpty
-                  ? const Text("No Recommendations yet")
-                  : ListView.builder(
-                      padding: const EdgeInsets.only(
-                        bottom: 30,
-                      ),
-                      physics: const BouncingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: posts.length,
-                      itemBuilder: (ctx, index) {
-                        Post post = Post.fromJson(posts[index]);
-                        bool isTheSamePostAsCurrent =
-                            post.postID == widget.thePost.postID;
+          {required List posts,
+          required bool wentWrong,
+          required bool isLoading}) =>
+      SizedBox(
+        height: 230,
+        child: wentWrong
+            ? const Text("Couldn't fetch Posts")
+            : isLoading
+                ? const GlobalLoader()
+                : posts.isEmpty
+                    ? const Text("No Related Posts Found.")
+                    : ListView.builder(
+                        padding: const EdgeInsets.only(
+                          bottom: 30,
+                        ),
+                        physics: const BouncingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: posts.length,
+                        itemBuilder: (ctx, index) {
+                          Post post = Post.fromJson(posts[index]);
+                          bool isTheSamePostAsCurrent =
+                              post.postID == widget.thePost.postID;
 
-                        return isTheSamePostAsCurrent
-                            ? const SizedBox()
-                            : GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (ctx) => ViewPostPage(post),
-                                    ),
-                                  );
-                                },
-                                child: RecommededFeedTile(post));
-                      },
-                    ),
-    );
+                          return isTheSamePostAsCurrent
+                              ? const SizedBox()
+                              : GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (ctx) => ViewPostPage(post),
+                                      ),
+                                    );
+                                  },
+                                  child: RecommededFeedTile(post),
+                                );
+                        },
+                      ),
+      );
 
   Future<void> _initialize() async {
-    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context, listen: false);
-    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    final CurrentPostProvider currentPost =
+        Provider.of<CurrentPostProvider>(context, listen: false);
+    final UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
 
-    final relatedPostsData =
-        await PostAPIS.getRelatedPosts({
-          "interest": widget.thePost.tag,
-          "userID": userProvider.getUser()!.userID,
-        });
+    currentPost.resetRelatedPosts();
+
+    final relatedPostsData = await PostAPIS.getRelatedPosts({
+      "interest": widget.thePost.tag,
+      "userID": userProvider.getUser()!.userID,
+    });
     Map unpackedRelatedPostsData = unPackLocally(relatedPostsData);
 
     if (unpackedRelatedPostsData["success"] == 1) {
@@ -171,11 +176,10 @@ class _ViewPostPageState extends State<ViewPostPage> {
   Widget build(BuildContext context) {
     CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(
       context,
-      listen: false,
     );
 
-    Size s = MediaQuery.of(context).size;
-    double w = s.width;
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
 
     List trendingList = currentPost.relatedPost;
 
@@ -187,19 +191,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
         body: Column(
           children: [
             UpperWidgetOfBottomSheet(
-              tapHandler: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (ctx) => AddPost(
-                      post: widget.thePost,
-                    ),
-                  ),
-                );
-              },
-              toEdit: Provider.of<UserProvider>(context, listen: false)
-                      .getUser()!
-                      .userID ==
-                  widget.thePost.author!["_id"],
+              tapHandler: () {},
+              toShow: false,
               icon: CupertinoIcons.pen,
             ),
             Expanded(
@@ -230,37 +223,22 @@ class _ViewPostPageState extends State<ViewPostPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                constraints: BoxConstraints(maxWidth: w * 0.6),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                  vertical: 8,
+                              if (widget.thePost.tag != null)
+                                TagWidget(
+                                  tag: widget.thePost.tag!,
+                                  tapHandler: () {
+                                    print("HELLO");
+                                  },
+                                  canAdd: !userProvider
+                                      .getUser()!
+                                      .interests!
+                                      .contains(widget.thePost.tag!),
                                 ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF6b7fff),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Text(
-                                  widget.thePost.tag!,
-                                  maxLines: 1,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w900,
-                                    fontFamily: "Raleway",
-                                    letterSpacing: 0.8,
-                                    fontSize: 11,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                constraints: BoxConstraints(maxWidth: w * 0.3),
-                                child: Text(
-                                  "${widget.thePost.timeReadCalc()} mins read",
-                                  maxLines: 1,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey,
-                                  ),
+                              Text(
+                                "${widget.thePost.timeReadCalc()} mins read",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ],
@@ -268,11 +246,11 @@ class _ViewPostPageState extends State<ViewPostPage> {
                           const SizedBox(
                             height: 15,
                           ),
-                          _ProfileRow(w),
+                          _ProfileRow(),
                           const SizedBox(
                             height: 15,
                           ),
-                          _TitleDescriptionSection(w),
+                          _TitleDescriptionSection(),
                           const SizedBox(
                             height: 30,
                           ),
@@ -318,9 +296,10 @@ class _ViewPostPageState extends State<ViewPostPage> {
                             height: 10,
                           ),
                           _ReccomendedPostsSection(
-                              posts: trendingList,
-                              wentWrong: wentWrongTrending,
-                              isLoading: !isLoadedTrending)
+                            posts: trendingList,
+                            wentWrong: wentWrongTrending,
+                            isLoading: !isLoadedTrending,
+                          )
                         ],
                       ),
                     ],

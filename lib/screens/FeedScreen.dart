@@ -121,6 +121,7 @@ class _FeedPageState extends State<FeedPage>
 
   Widget buildPageView() {
     return PageView(
+      physics: const BouncingScrollPhysics(),
       controller: _pageController,
       onPageChanged: (index) {
         pageChanged(index);
@@ -170,28 +171,13 @@ class _FeedPageState extends State<FeedPage>
                       right: 8,
                       top: 10,
                     ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            const Text(
-                              "Explore Now 👋",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: "DMSans",
-                                fontSize: 18,
-                              ),
-                            ),
-                            const Spacer(),
-                            ButtonWidget(
-                              icon: CupertinoIcons.search,
-                              tapHandler: () {
-                                //
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
+                    child: const Text(
+                      "Explore Now 👋",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: "DMSans",
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -241,18 +227,10 @@ class _FeedPageState extends State<FeedPage>
                             width: 10,
                           ),
                           ButtonWidget(
-                            icon: CupertinoIcons.slider_horizontal_3,
+                            icon: CupertinoIcons.search,
                             tapHandler: () {
-                              setState(() {
-                                // _isOpened = !_isOpened;
-                                // showModalBottomSheet(
-                                //   context: context,
-                                //   builder: (ctx) {
-                                //     return _filterBox();
-                                //   },
-                                // );
-                                print("FILTER IS DONE JUST UI REMAINING!");
-                              });
+                              Navigator.of(context)
+                                  .pushNamed(SearchPage.routeName);
                             },
                           ),
                         ],
