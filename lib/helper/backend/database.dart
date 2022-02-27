@@ -6,9 +6,9 @@ const SUCCESS_CODE = 200;
 // BAD REQUEST: 401
 // NOT FOUND: 404
 // INTERNAL SEVER ERROR: 500
-// const endpoint = "http://192.168.0.212:9000/"; /// FOR REAL DEVICE
+const endpoint = "https://enthem.herokuapp.com/"; /// FOR REAL DEVICE
+// const endpoint = "http://10.0.2.2:9000/";
 
-const endpoint = "http://10.0.2.2:9000/";
 const bool kDebugMode = true;
 
 const ErrorCodesCustom = {

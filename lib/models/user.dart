@@ -13,6 +13,7 @@ class UserClass {
   final String? joinedAt;
   final List? posts;
   final int? cupcakes;
+  final int? postCount;
   final Map? votes;
 
   UserClass({
@@ -20,6 +21,7 @@ class UserClass {
     required this.username,
     required this.firstname,
     required this.lastname,
+    required this.postCount,
     required this.email,
     required this.profileURL,
     required this.gender,
@@ -36,6 +38,7 @@ class UserClass {
 
     return UserClass(
         userID: userData["_id"],
+        postCount: userData["posts"].length,
         firstname: userData["firstname"],
         lastname: userData["lastname"],
         username: userData["username"] ?? "null",
@@ -56,6 +59,7 @@ class UserClass {
       "joinedAt": user.joinedAt,
       "_id": user.userID,
       "firstname": user.firstname,
+      "postCount": user.postCount,
       "lastname": user.lastname,
       "username": user.username,
       "profileURL": user.profileURL,

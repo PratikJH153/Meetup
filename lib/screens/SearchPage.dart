@@ -1,19 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:lottie/lottie.dart';
-import 'package:meetupapp/helper/backend/apis.dart';
-import 'package:meetupapp/helper/utils/loader.dart';
-import 'package:meetupapp/widgets/snackBar_widget.dart';
-import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
+import '/helper/backend/apis.dart';
+import '/helper/utils/loader.dart';
+import '/widgets/snackBar_widget.dart';
 import '/models/post.dart';
-import '/providers/UserProvider.dart';
 import '/screens/post/ViewPostPage.dart';
 import '/widgets/button_widget.dart';
-import '/widgets/close_button.dart';
 import '/widgets/constants.dart';
 import '/widgets/search_feed_tile.dart';
-import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
   static const routeName = "/searchpage";
@@ -25,7 +20,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final _post = PostAPIS();
 
   bool _isLoading = false;
   List postList = [];
@@ -33,9 +27,8 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
 
   Future<Map> unPackLocally() async {
-    print("CALLING /searchQuery");
     final data =
-        await _post.searchPost({"searchQuery": _searchController.text});
+        await PostAPIS.searchPost({"searchQuery": _searchController.text});
 
     bool receivedResponseFromServer = data["local_status"] == 200;
     Map localData = data["local_result"];

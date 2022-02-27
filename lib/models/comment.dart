@@ -16,11 +16,25 @@ class Comment {
   });
 
   factory Comment.fromJson(Map data) {
+    print("COMMENT DATA");
+    print(data);
+
+    var user = data["userID"];
+    var profile;
+    var username;
+    var uid;
+
+    if(user != null){
+      uid = data["userID"]["_id"];
+      profile = data["userID"]["profileURL"];
+      username = data["userID"]["username"];
+    }
+
     return Comment(
       commentID: data["_id"],
-      userID: data["userID"]["_id"],
-      userProfile: data["userID"]["profileURL"],
-      username: data["userID"]["username"],
+      userID: uid,
+      userProfile: profile,
+      username: username,
       timeStamp: data["timestamp"],
       message: data["message"],
     );

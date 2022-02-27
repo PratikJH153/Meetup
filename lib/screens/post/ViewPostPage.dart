@@ -27,8 +27,7 @@ class ViewPostPage extends StatefulWidget {
 
 class _ViewPostPageState extends State<ViewPostPage> {
 
-  _ProfileRow(double w) {
-    return Row(
+  _ProfileRow(double w) => Row(
       children: [
         SizedBox(
           height: 40,
@@ -72,10 +71,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
         ),
       ],
     );
-  }
 
-  _TitleDescriptionSection(double w) {
-    return Container(
+  _TitleDescriptionSection(double w) => Container(
       constraints: BoxConstraints(
         maxWidth: w*0.8
       ),
@@ -107,11 +104,9 @@ class _ViewPostPageState extends State<ViewPostPage> {
         ],
       ),
     );
-  }
 
   _ReccomendedPostsSection(
-      {required List posts, required bool wentWrong, required bool isLoading}) {
-    return SizedBox(
+      {required List posts, required bool wentWrong, required bool isLoading}) => SizedBox(
       height: 230,
       child: wentWrong
           ? const Text("Couldn't fetch Posts")
@@ -145,17 +140,13 @@ class _ViewPostPageState extends State<ViewPostPage> {
                       },
                     ),
     );
-  }
-
-  /// DEPENDENCIES
-  final PostAPIS _postAPI = PostAPIS();
 
   Future<void> _initialize() async {
     CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context, listen: false);
     UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
 
     final relatedPostsData =
-        await _postAPI.getRelatedPosts({
+        await PostAPIS.getRelatedPosts({
           "interest": widget.thePost.tag,
           "userID": userProvider.getUser()!.userID,
         });
@@ -173,6 +164,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
     _initialize();
     super.initState();
   }
+
+  /// DEPENDENCIES
 
   @override
   Widget build(BuildContext context) {
@@ -198,14 +191,12 @@ class _ViewPostPageState extends State<ViewPostPage> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (ctx) => AddPost(
-                      tag: widget.thePost.tag,
-                      title: widget.thePost.title,
-                      description: widget.thePost.desc,
+                      post: widget.thePost,
                     ),
                   ),
                 );
               },
-              toShow: Provider.of<UserProvider>(context, listen: false)
+              toEdit: Provider.of<UserProvider>(context, listen: false)
                       .getUser()!
                       .userID ==
                   widget.thePost.author!["_id"],

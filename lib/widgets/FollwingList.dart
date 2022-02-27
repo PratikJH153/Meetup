@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meetupapp/providers/UserProvider.dart';
 import 'package:provider/provider.dart';
 import '/providers/PostProvider.dart';
 import '/models/post.dart';

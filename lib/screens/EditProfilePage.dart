@@ -42,8 +42,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   final _editProfileKey = GlobalKey<FormState>();
 
-  final _user = UserAPIS();
-
   String gendervalue = 'Male';
   int age = 20;
 
@@ -81,7 +79,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       // "username": ,
     };
 
-    final updateResult = await _user.patchUser(id, updateBody);
+    final updateResult = await UserAPIS.patchUser(id, updateBody);
     Map updateResultUnpacked = unPackLocally(updateResult);
 
     if (updateResultUnpacked["success"] == 1) {
@@ -161,7 +159,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     UpperWidgetOfBottomSheet(
                       tapHandler: () {},
                       icon: Icons.check,
-                      toShow: true,
+                      toEdit: true,
                     ),
                     Form(
                       key: _editProfileKey,

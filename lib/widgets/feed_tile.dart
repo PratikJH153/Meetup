@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '/providers/UserProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+import '/providers/PostProvider.dart';
+import '/providers/UserProvider.dart';
 import '/helper/GlobalFunctions.dart';
 import '/screens/post/CommentPage.dart';
 import '/models/post.dart';
@@ -108,17 +110,8 @@ class _FeedTileState extends State<FeedTile> {
                         ),
                         onTap: () async {
                           deletePost(context, widget.thePost);
-                        },
-                      ),
-                      PopupMenuItem(
-                        child: Row(
-                          children: const [
-                            Icon(Icons.edit),
-                            Text("Edit"),
-                          ],
-                        ),
-                        onTap: () {
-                          print("Hey");
+                          Provider.of<PostProvider>(context, listen: false)
+                              .removeSinglePost(postId: widget.thePost.postID!);
                         },
                       ),
                     ];

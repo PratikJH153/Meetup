@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:meetupapp/widgets/constants.dart';
+import '/widgets/constants.dart';
 
 class UpperWidgetOfBottomSheet extends StatelessWidget {
   final VoidCallback tapHandler;
   final IconData icon;
-  final bool toShow;
+  final bool toEdit;
+
   const UpperWidgetOfBottomSheet({
     required this.tapHandler,
     required this.icon,
-    this.toShow = true,
+    this.toEdit = false,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: [
         Container(
@@ -42,21 +44,25 @@ class UpperWidgetOfBottomSheet extends StatelessWidget {
                   ),
                 ),
               ),
-              if (toShow)
-                GestureDetector(
-                  onTap: tapHandler,
-                  child: Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      icon,
-                      size: 22,
+              if(toEdit)
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: tapHandler,
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.delete,
+                        size: 22,
+                      ),
                     ),
                   ),
-                ),
+                ],
+              ),
             ],
           ),
         ),

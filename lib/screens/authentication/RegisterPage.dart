@@ -2,11 +2,9 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:meetupapp/widgets/back_button.dart';
-import '/screens/authentication/Register_1_page.dart';
+import '/widgets/back_button.dart';
 import '/screens/authentication/Register_2_page.dart';
 import '/screens/authentication/Register_3_page.dart';
 import '/screens/authentication/Register_4_page.dart';
@@ -16,7 +14,6 @@ import '/widgets/authentication_button.dart';
 import '/widgets/snackBar_widget.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-import '/helper/utils/fire_auth.dart';
 import '/helper/backend/apis.dart';
 import '/screens/HomePage.dart';
 import 'LoginPage.dart';
@@ -108,7 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
             "interests": _selectedInterests,
           };
 
-          Map result = await UserAPIS().addUser(userMap);
+          Map result = await UserAPIS.addUser(userMap);
           print(result);
           if (result["local_status"] != 200) {
             snackBarWidget("Sorry couldn't create your profile",

@@ -40,7 +40,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
     };
 
     final addCommentData =
-        await _post.addComment(widget.post!.postID!, addCommentBody);
+        await PostAPIS.addComment(widget.post!.postID!, addCommentBody);
     Map unpackedAddCommentData = unPackLocally(addCommentData);
 
     if (unpackedAddCommentData["success"] == 1) {

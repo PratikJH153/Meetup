@@ -2,21 +2,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+
 import '/models/comment.dart';
 import '/providers/CurrentPostProvider.dart';
 import '/widgets/snackBar_widget.dart';
 import '/models/PopupMenuDataset.dart';
 import '/models/post.dart';
 import '/widgets/feed_interact_button.dart';
-import 'package:provider/provider.dart';
 import '/helper/backend/database.dart';
 import '/providers/PostProvider.dart';
 import '/helper/backend/apis.dart';
 import '/providers/UserProvider.dart';
 import 'package:flutter/services.dart';
-
-final UserAPIS _userAPI = UserAPIS();
-final PostAPIS _postAPI = PostAPIS();
 
 const String extra = ""
     "aosiduiaduiaduiahgdiuahdihasdiasdoa"
@@ -89,16 +87,6 @@ Widget CustomPopupMenu(
         {required PopupMenuDataset dataset, required showOther}) =>
     PopupMenuButton(itemBuilder: (BuildContext context) {
       return [
-        // PopupMenuItem(
-        //   child: Row(
-        //     children: [
-        //       Icon(dataset.primaryIcon),
-        //       Text(dataset.primary),
-        //     ],
-        //   ),
-        //   onTap: () {},
-        // ),
-        // if(showOther)
         PopupMenuItem(
           child: Row(
             children: [
@@ -112,7 +100,7 @@ Widget CustomPopupMenu(
     });
 
 Future<void> deletePost(BuildContext context, Post post) async {
-  final deleteData = await _postAPI.deletePost(post.postID!);
+  final deleteData = await PostAPIS.deletePost(post.postID!);
 
   UserProvider u = Provider.of<UserProvider>(context, listen: false);
   PostProvider p = Provider.of<PostProvider>(context, listen: false);
@@ -137,11 +125,12 @@ Future<void> deleteComment(
 
   Map deleteBody = {"commentID": comment.commentID, "postID": post.postID};
 
-  final deleteCommentResult = await _postAPI.deleteComment(deleteBody);
+  final deleteCommentResult = await PostAPIS.deleteComment(deleteBody);
   Map deleteData = unPackLocally(deleteCommentResult);
 
   if (deleteData["success"] == 1) {
     currentPost.removeSingleComment(commentMap);
+    Fluttertoast.showToast(msg: "Post deleted successfully!");
   } else {
     Fluttertoast.showToast(msg: "Couldn't delete comment!");
   }
@@ -153,7 +142,6 @@ Future<int> checkUserExists(BuildContext context, String uid) async {
   Map responseData = unPackLocally(response);
 
   if (responseData["success"] == 1) {
-    // print(responseData);
     return 1;
   } else {
     if (responseData["status"] == 404) {
@@ -161,7 +149,7 @@ Future<int> checkUserExists(BuildContext context, String uid) async {
     } else {
       snackBarWidget(
         "Error while authentication",
-        const Color(0xFFff2954),
+        const Color(0xffff2954),
         context,
       );
       return 0;
@@ -177,7 +165,7 @@ Future<void> initialize(BuildContext context) async {
   UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
 
   if (user != null) {
-    Map userData = await _userAPI.getSingleUserData(user.uid);
+    Map userData = await UserAPIS.getSingleUserData(user.uid);
     Map unpackedUserData = unPackLocally(userData);
 
     if (unpackedUserData["success"] == 1) {
@@ -202,7 +190,7 @@ Future<void> initializeFollowingPosts(BuildContext context,
 
   List userInterests = interests ?? userProvider.getUser()!.interests ?? [];
 
-  Map getPostsData = await _postAPI.getPosts({
+  Map getPostsData = await PostAPIS.getPosts({
     "interests": userInterests.isEmpty ? ["Flutter"] : userInterests
   });
   Map unpackedPostData = unPackLocally(getPostsData);
@@ -223,14 +211,14 @@ void initializeTrendingPosts(BuildContext context) async {
   UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
   PostProvider postProvider = Provider.of<PostProvider>(context, listen: false);
 
-  Map getTrendingData = await _postAPI.getTrendingPosts();
+  Map getTrendingData = await PostAPIS.getTrendingPosts();
   Map unpackedTrendingData = unPackLocally(getTrendingData);
 
   if (unpackedTrendingData["success"] == 1) {
     List loadedTrendingList = unpackedTrendingData["unpacked"];
 
-    userProvider.updateRatingMap(loadedTrendingList);
     postProvider.setTrendingPosts(loadedTrendingList);
+    userProvider.updateRatingMap(loadedTrendingList);
   } else {
     postProvider.toggleTrendingWentWrong(didGoWrong: true);
   }
@@ -276,6 +264,7 @@ Container VoteSection(BuildContext context, Post post) {
           color: upvoteColor,
           tapHandler: () async {
             if (userProvider.isProcessing(post.postID!)) {
+              print("Ello");
               Fluttertoast.showToast(msg: "Ruko jara sabar karo!");
               return;
             }
@@ -347,7 +336,7 @@ Future<void> vote(BuildContext context,
   UserProvider userProvider = Provider.of(context, listen: false);
   userProvider.addVoteToProcessing(postID);
 
-  Function func = isUpvote ? _postAPI.upVote : _postAPI.downVote;
+  Function func = isUpvote ? PostAPIS.upVote : PostAPIS.downVote;
 
   User? curruser = FirebaseAuth.instance.currentUser;
   Map requestBody = {"postID": postID, "userID": curruser!.uid};
@@ -358,7 +347,6 @@ Future<void> vote(BuildContext context,
   final res = await func(requestBody);
   Map unpackedVote = unPackLocally(res, toPrint: false);
 
-  await Future.delayed(const Duration(seconds: 5));
   userProvider.removeVoteFromProcess(postID);
   if (unpackedVote["success"] == 1) {
     print("${isUpvote ? "UPVOTE" : "DOWNVOTE"} SUCCESSFUL!");
@@ -372,7 +360,7 @@ Future<void> cancelVote(BuildContext context,
   UserProvider userProvider = Provider.of(context, listen: false);
   userProvider.addVoteToProcessing(postID);
   Function func =
-      !isCancelUpvote ? _postAPI.cancelDownVote : _postAPI.cancelUpVote;
+      !isCancelUpvote ? PostAPIS.cancelDownVote : PostAPIS.cancelUpVote;
   User? curruser = FirebaseAuth.instance.currentUser;
   Map requestBody = {"postID": postID, "userID": curruser!.uid};
 
@@ -382,7 +370,6 @@ Future<void> cancelVote(BuildContext context,
   final res = await func(requestBody);
   Map unpackedVote = unPackLocally(res, toPrint: false);
 
-  await Future.delayed(const Duration(seconds: 5));
   userProvider.removeVoteFromProcess(postID);
   if (unpackedVote["success"] == 1) {
     print("CANCEL ${isCancelUpvote ? "UPVOTE" : "DOWNVOTE"} SUCCESSFUL!");

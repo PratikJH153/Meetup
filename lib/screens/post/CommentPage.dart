@@ -30,7 +30,6 @@ class CommentPage extends StatefulWidget {
 }
 
 class _CommentPageState extends State<CommentPage> {
-  final _post = PostAPIS();
   final TextEditingController _commentController = TextEditingController();
 
   bool _isAdding = false;
@@ -52,7 +51,7 @@ class _CommentPageState extends State<CommentPage> {
       };
 
       final addCommentData =
-          await _post.addComment(widget.post.postID!, addCommentBody);
+          await PostAPIS.addComment(widget.post.postID!, addCommentBody);
       Map unpackedAddCommentData = unPackLocally(addCommentData);
 
       if (unpackedAddCommentData["success"] == 1) {
@@ -89,7 +88,7 @@ class _CommentPageState extends State<CommentPage> {
         Provider.of<CurrentPostProvider>(context, listen: false);
 
     final commentData =
-        await _postAPI.getComments(widget.post.postID.toString());
+        await PostAPIS.getComments(widget.post.postID.toString());
     Map unpackedCommentData = unPackLocally(commentData);
 
     if (unpackedCommentData["success"] == 1) {
@@ -121,7 +120,7 @@ class _CommentPageState extends State<CommentPage> {
       ),
       onTap: () {
         if (!isCopy) {
-          deleteComment(context,comment!,widget.post);
+          deleteComment(context, comment!, widget.post);
         }
       },
     );
@@ -141,7 +140,6 @@ class _CommentPageState extends State<CommentPage> {
             UpperWidgetOfBottomSheet(
               tapHandler: () {},
               icon: Icons.stop,
-              toShow: false,
             ),
             wentWrongComments
                 ? const Text("Couldn't fetch comments")
@@ -337,73 +335,74 @@ class _CommentPageState extends State<CommentPage> {
       padding: const EdgeInsets.only(bottom: 100),
       itemCount: commentList.length,
       itemBuilder: (ctx, index) {
-        UserProvider userProvider =
-            Provider.of<UserProvider>(context, listen: false);
-        bool isTheSamePerson = Comment.fromJson(commentList[index]).userID ==
-            userProvider.getUser()!.userID;
-        return Container(
-          margin: const EdgeInsets.only(bottom: 25),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 35,
-                width: 35,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      commentList[index]["userID"]["profileURL"],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: Column(
+        bool corruptComment =
+            Comment.fromJson(commentList[index]).userID == null;
+
+        return corruptComment
+            ? const SizedBox()
+            : Container(
+                margin: const EdgeInsets.only(bottom: 25),
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      commentList[index]["userID"]["username"]
-                          .toString()
-                          .capitalize(),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey,
+                    Container(
+                      height: 35,
+                      width: 35,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            commentList[index]["userID"]["profileURL"],
+                          ),
+                        ),
                       ),
                     ),
-                    SelectableText(
-                      commentList[index]["message"],
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.black,
-                        height: 1.3,
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            commentList[index]["userID"]["username"]
+                                .toString()
+                                .capitalize(),
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          SelectableText(
+                            commentList[index]["message"],
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                              height: 1.3,
+                            ),
+                          ),
+                        ],
                       ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // CustomPopupMenu(
+                        //     dataset: commentDataset, showOther: isTheSamePerson),
+                        Text(
+                          timeago.format(
+                            DateTime.parse(commentList[index]["timestamp"]),
+                          ),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // CustomPopupMenu(
-                  //     dataset: commentDataset, showOther: isTheSamePerson),
-                  Text(
-                    timeago.format(
-                      DateTime.parse(commentList[index]["timestamp"]),
-                    ),
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
+              );
       },
     );
   }

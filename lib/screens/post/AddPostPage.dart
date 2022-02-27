@@ -1,44 +1,33 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/models/post.dart';
 import 'package:provider/provider.dart';
+
 import '/helper/backend/database.dart';
 import '/providers/UserProvider.dart';
 import '/helper/utils/loader.dart';
 import '/helper/utils/validator.dart';
 import '/helper/backend/apis.dart';
-import '/screens/post/AddInterestTagPage.dart';
+import '/models/post.dart';
 import '/widgets/constants.dart';
-import '/widgets/upper_widget_bottom_sheet.dart';
 
 class AddPost extends StatefulWidget {
-  final String? title;
-  final String? description;
-  final String? tag;
-  final bool isEdit;
   final Post? post;
   static const routeName = "/addpost";
 
-  AddPost(
-      {this.isEdit = false, this.post, this.title, this.description, this.tag});
+  AddPost({this.post});
 
   @override
   State<AddPost> createState() => _AddPostState();
 }
 
 class _AddPostState extends State<AddPost> {
-  final _post = PostAPIS();
   final _addPostFormKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
 
   bool _isLoading = false;
-  String _selectedTag = "Tag";
-
-  bool isEdit = false;
-  bool _toOpen = false;
+  String _selectedTag = "Flutter";
 
   Future<void> _addPostApi(BuildContext context) async {
     UserProvider userProvider =
@@ -47,7 +36,7 @@ class _AddPostState extends State<AddPost> {
       _isLoading = true;
     });
 
-    final addPost = await _post.addPost({
+    final addPost = await PostAPIS.addPost({
       "title": _titleController.text.trim(),
       "description": _descController.text.trim(),
       "author": userProvider.getUser()!.userID,
@@ -85,39 +74,49 @@ class _AddPostState extends State<AddPost> {
     });
   }
 
-  //! NOT DONE YET
-  Future<void> _updatePostAPI(Map body) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    final Map requestData = await unPackLocally(body);
-
-    if (requestData["success"] == 1) {
-      Navigator.of(context).pop();
-    } else {
-      Fluttertoast.showToast(msg: requestData["unpacked"]);
-    }
-
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   @override
   void initState() {
-    if (widget.post!=null) {
-      _titleController.text = widget.post!.title!;
-      _descController.text = widget.post!.desc??"";
-      _selectedTag = widget.tag!;
-    }
     super.initState();
+  }
+
+  static const Map _interests = {
+    "Web development":true,
+    "Flutter":true,
+    "Android":true,
+  };
+
+  List<DropdownMenuItem<String>> getDropDownMenuItems() {
+    List<DropdownMenuItem<String>> items = [];
+    setState(() {
+      for (String city in _interests.keys.toList()) {
+        items.add(DropdownMenuItem(value: city, child: Text(city)));
+      }
+    });
+    return items;
+  }
+
+  Widget _filterBox() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(children: [
+          DropdownButton(
+            hint: Text(_selectedTag),
+            items: getDropDownMenuItems(),
+            onChanged: (String? s) {
+              setState(() {
+                _selectedTag = s!;
+              });
+            },
+          ),
+        ]),
+        const SizedBox(height: 10),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final interests =
-        Provider.of<UserProvider>(context, listen: false).getUser()!.interests;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => Navigator.of(context).pop(),
@@ -129,27 +128,44 @@ class _AddPostState extends State<AddPost> {
                   onTap: () {},
                   child: Column(
                     children: [
-                      UpperWidgetOfBottomSheet(
-                        tapHandler: () async {
-                          if (_selectedTag == "Tag") {
-                            Fluttertoast.showToast(
-                                msg: "Select a tag to procced");
-                            return;
-                          }
-                          if (_addPostFormKey.currentState!.validate()) {
-                            if (!isEdit) {
-                              _addPostApi(context);
-                            } else {
-                              Map data = {
-                                "title": _titleController.text.trim(),
-                                "description": _descController.text.trim(),
-                                "tag": _selectedTag
-                              };
-                              _updatePostAPI(data);
-                            }
-                          }
-                        },
-                        icon: CupertinoIcons.checkmark_alt,
+                      Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(
+                              top: 20,
+                              bottom: 10,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: kLeftPadding,
+                            ),
+                            color: Colors.transparent,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () => Navigator.of(context).pop(),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.close,
+                                      size: 22,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () async {
+                                      _addPostApi(context);
+                                    },
+                                    icon: const Icon(Icons.check)
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                       Expanded(
                         child: Container(
@@ -170,73 +186,7 @@ class _AddPostState extends State<AddPost> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    // showModalBottomSheet(
-                                    //   context: context,
-                                    //   backgroundColor: Colors.transparent,
-                                    //   builder: (ctx) {
-                                    //     return AddInterestTagPage(
-                                    //       selectedTag: _selectedTag,
-                                    //       tapHandler: (val) {
-                                    //         setState(() {
-                                    //           _selectedTag = val;
-                                    //         });
-                                    //       },
-                                    //     );
-                                    //   },
-                                    // );
-                                    setState(() {
-                                      _toOpen = !_toOpen;
-                                    });
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 15,
-                                      vertical: 8,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: _selectedTag != "Tag"
-                                          ? const Color(0xFF6b7fff)
-                                          : Colors.grey,
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: Text(
-                                      _selectedTag,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w900,
-                                        fontFamily: "Raleway",
-                                        letterSpacing: 0.8,
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                if (_toOpen)
-                                  SizedBox(
-                                    height: 50,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      physics: const BouncingScrollPhysics(),
-                                      itemCount: interests!.length,
-                                      itemBuilder: (ctx, index) {
-                                        return ChoiceChip(
-                                          selected: true,
-
-                                          // onSelected: (val) {
-                                          //   setState(() {
-                                          //     _selectedTag = val;
-                                          //   });
-                                          // },
-                                          label: Text(interests[index]),
-                                        );
-                                      },
-                                    ),
-                                  ),
+                                _filterBox(),
                                 TextFormField(
                                   maxLines: null,
                                   controller: _titleController,
