@@ -14,7 +14,7 @@ GestureDetector profileNumberWidget(
         Text(
           title,
           style: const TextStyle(
-            fontSize: 23,
+            fontSize: 20,
             fontWeight: FontWeight.w500,
             fontFamily: "DMSans",
           ),

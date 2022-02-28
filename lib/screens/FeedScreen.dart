@@ -160,6 +160,7 @@ class _FeedPageState extends State<FeedPage>
         body: Container(
           margin: const EdgeInsets.only(top: 15),
           child: NestedScrollView(
+            physics: const BouncingScrollPhysics(),
             controller: _scrollController,
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
