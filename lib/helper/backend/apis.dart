@@ -34,6 +34,13 @@ class UserAPIS {
     String endpoint = "users/addUser/";
     return POST(endpoint, body);
   }
+  static Future<Map> addInterest(Map body) async {
+    if (kDebugMode) {
+      print("CALLING addInterest(Map body)");
+    }
+    String endpoint = "users/addInterest/";
+    return POST(endpoint, body);
+  }
 
   static Future<Map> deleteUser(String id) async {
     if (kDebugMode) {

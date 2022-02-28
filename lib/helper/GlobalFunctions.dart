@@ -355,7 +355,7 @@ Container VoteSection(BuildContext context, Post post) {
 
 Future<void> vote(BuildContext context,
     {required bool isUpvote, required String postID}) async {
-  UserProvider userProvider = Provider.of(context, listen: false);
+  UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
   userProvider.addVoteToProcessing(postID);
 
   Function func = isUpvote ? PostAPIS.upVote : PostAPIS.downVote;

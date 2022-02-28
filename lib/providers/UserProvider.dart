@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/models/post.dart';
-import '/models/user.dart';
+import '/models/UserClass.dart';
 
 class UserProvider with ChangeNotifier {
   bool isUserDataLoaded = false;
@@ -11,15 +11,15 @@ class UserProvider with ChangeNotifier {
 
   Map _processingVotePosts = {};
 
-  void addVoteToProcessing(String postId){
+  void addVoteToProcessing(String postId) {
     _processingVotePosts[postId] = true;
-    print("ADD:"+_processingVotePosts.keys.toString());
+    print("ADD:" + _processingVotePosts.keys.toString());
     notifyListeners();
   }
 
-  void removeVoteFromProcess(String postId){
+  void removeVoteFromProcess(String postId) {
     _processingVotePosts.remove(postId);
-    print("REMOVE:"+_processingVotePosts.keys.toString());
+    print("REMOVE:" + _processingVotePosts.keys.toString());
     notifyListeners();
   }
 
@@ -37,7 +37,7 @@ class UserProvider with ChangeNotifier {
 
   Map get userPosts => {..._userPosts};
 
-  void initializeUserPosts(List posts){
+  void initializeUserPosts(List posts) {
     for (var element in posts) {
       _userPosts[element["_id"]] = element;
     }
@@ -47,11 +47,52 @@ class UserProvider with ChangeNotifier {
 
   void addSingleUserPost(Map newPost) {
     _userPosts[newPost["_id"]] = newPost;
+    _user!.posts!.add({newPost["_id"]:null});
     notifyListeners();
   }
 
-  void deleteSingleUserPost(String postId){
+  void deleteSingleUserPost(String postId) {
     _userPosts.remove(postId);
+    notifyListeners();
+  }
+
+  void updateUserInfo(
+      {String? firstname,
+      String? lastname,
+      String? username,
+      String? email,
+      String? profileURL,
+      String? gender,
+      List? interests,
+      int? age,
+      String? bio}) {
+    if (firstname != null) {
+      _user!.firstname = firstname;
+    }
+    if (interests != null) {
+      _user!.interests = interests;
+    }
+    if (lastname != null) {
+      _user!.lastname = lastname;
+    }
+    if (username != null) {
+      _user!.username = username;
+    }
+    if (email != null) {
+      _user!.email = email;
+    }
+    if (profileURL != null) {
+      _user!.profileURL = profileURL;
+    }
+    if (gender != null) {
+      _user!.gender = gender;
+    }
+    if (age != null) {
+      _user!.age = age;
+    }
+    if (bio != null) {
+      _user!.bio = bio;
+    }
     notifyListeners();
   }
 
@@ -67,7 +108,6 @@ class UserProvider with ChangeNotifier {
         "downvotes": !upvoteClick ? currentDownvotes + 1 : currentDownvotes,
         "vote": null
       };
-
     } else {
       currentUpvotes = _voteMap[post.postID]["upvotes"];
       currentDownvotes = _voteMap[post.postID]["downvotes"];

@@ -1,20 +1,20 @@
 class UserClass {
-  final String? userID;
-  final String? firstname;
-  final String? lastname;
-  final String? username;
-  final String? email;
-  final String? profileURL;
-  final String? gender;
-  final int? age;
-  final String? bio;
-  final List? interests;
+  String? userID;
+  String? firstname;
+  String? lastname;
+  String? username;
+  String? email;
+  String? profileURL;
+  String? gender;
+  int? age;
+  String? bio;
+  List? interests;
 
-  final String? joinedAt;
-  final List? posts;
-  final int? cupcakes;
-  final int? postCount;
-  final Map? votes;
+  String? joinedAt;
+  List? posts;
+  int? cupcakes;
+  int? postCount;
+  Map? votes;
 
   UserClass({
     this.userID,

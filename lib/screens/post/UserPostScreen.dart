@@ -86,69 +86,71 @@ class _UserPostsState extends State<UserPosts> {
                           topRight: Radius.circular(40),
                         ),
                       ),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              const Text(
-                                "Posts",
-                                style: TextStyle(
-                                  fontFamily: "Quicksand",
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 17,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(0xFFdedede),
-                                      blurRadius: 1,
-                                      spreadRadius: 0.5,
-                                      offset: Offset(0, 1),
-                                    )
-                                  ],
-                                ),
-                                padding: const EdgeInsets.all(7),
-                                child: Text(
-                                  userPosts.length.toString(),
-                                  style: const TextStyle(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                const Text(
+                                  "Posts",
+                                  style: TextStyle(
+                                    fontFamily: "Quicksand",
                                     fontWeight: FontWeight.w500,
-                                    fontSize: 15,
+                                    fontSize: 17,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.only(
-                              bottom: 200,
-                              top: 20,
-                            ),
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: userPosts.length,
-                            itemBuilder: (ctx, index) {
-                              Post currPost = Post.fromJson(userPosts[index]);
-
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (ctx) => ViewPostPage(currPost),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Container(
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0xFFdedede),
+                                        blurRadius: 1,
+                                        spreadRadius: 0.5,
+                                        offset: Offset(0, 1),
+                                      )
+                                    ],
+                                  ),
+                                  padding: const EdgeInsets.all(7),
+                                  child: Text(
+                                    userPosts.length.toString(),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15,
                                     ),
-                                  );
-                                },
-                                child: FeedTile(currPost),
-                              );
-                            },
-                          ),
-                        ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              padding: const EdgeInsets.only(
+                                bottom: 200,
+                                top: 20,
+                              ),
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: userPosts.length,
+                              itemBuilder: (ctx, index) {
+                                Post currPost = Post.fromJson(userPosts[index]);
+
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (ctx) => ViewPostPage(currPost),
+                                      ),
+                                    );
+                                  },
+                                  child: FeedTile(currPost),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

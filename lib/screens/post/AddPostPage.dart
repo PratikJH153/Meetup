@@ -1,16 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/screens/SelectFilterPage.dart';
-import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
+import '/widgets/upper_widget_bottom_sheet.dart';
 import '/helper/backend/database.dart';
 import '/providers/UserProvider.dart';
 import '/helper/utils/loader.dart';
 import '/helper/utils/validator.dart';
 import '/helper/backend/apis.dart';
-import '/models/post.dart';
 import '/widgets/constants.dart';
 
 class AddPost extends StatefulWidget {

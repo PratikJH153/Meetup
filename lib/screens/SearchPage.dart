@@ -104,7 +104,7 @@ class _SearchPageState extends State<SearchPage> {
           children: [
             UpperWidgetOfBottomSheet(
               tapHandler: () {},
-              icon: Icons.abc,
+              icon: Icons.search,
               toShow: false,
             ),
             Expanded(

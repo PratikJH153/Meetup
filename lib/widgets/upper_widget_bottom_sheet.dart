@@ -5,11 +5,13 @@ class UpperWidgetOfBottomSheet extends StatelessWidget {
   final VoidCallback tapHandler;
   final IconData icon;
   final bool toShow;
+  final Color? color;
 
   const UpperWidgetOfBottomSheet({
     required this.tapHandler,
     required this.icon,
     this.toShow = false,
+    this.color,
     Key? key,
   }) : super(key: key);
 
@@ -56,6 +58,7 @@ class UpperWidgetOfBottomSheet extends StatelessWidget {
                         ),
                         child: Icon(
                           icon,
+                          color: color,
                           size: 22,
                         ),
                       ),
