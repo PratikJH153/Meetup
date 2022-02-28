@@ -54,8 +54,8 @@ class UpperWidgetOfBottomSheet extends StatelessWidget {
                           color: Colors.white,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
-                          Icons.delete,
+                        child: Icon(
+                          icon,
                           size: 22,
                         ),
                       ),

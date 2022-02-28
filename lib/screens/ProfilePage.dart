@@ -30,8 +30,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    List userPosts = userProvider.userPosts.values.toList();
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
     UserClass? user = userProvider.getUser();
 
     bool userLoaded = user != null;
@@ -123,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       profileNumberWidget(
                                         context,
                                         "Posts",
-                                        userPosts.length.toString(),
+                                        user.posts!.length.toString(),
                                       ),
                                       const Spacer(),
                                       GestureDetector(

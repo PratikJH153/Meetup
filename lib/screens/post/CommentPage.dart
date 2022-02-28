@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/models/user.dart';
 import 'package:meetupapp/widgets/placeholder_widget.dart';
 import 'package:provider/provider.dart';
 import '/helper/GlobalFunctions.dart';
@@ -33,54 +34,47 @@ class CommentPage extends StatefulWidget {
 class _CommentPageState extends State<CommentPage> {
   final TextEditingController _commentController = TextEditingController();
 
-  bool _isAdding = false;
   final PostAPIS _postAPI = PostAPIS();
 
   Future<void> _addComment() async {
     if (_commentController.text.trim().isNotEmpty) {
-      setState(() {
-        _isAdding = true;
-      });
       UserProvider userProvider =
           Provider.of<UserProvider>(context, listen: false);
       CurrentPostProvider currentPostProvider =
           Provider.of<CurrentPostProvider>(context, listen: false);
 
-      Map addCommentBody = {
-        "message": _commentController.text,
-        "userID": FirebaseAuth.instance.currentUser!.uid,
+      UserClass? user = userProvider.getUser();
+
+      Map comment = {
+        "message": _commentController.text.trim(),
+        "userID": {
+          "_id": user!.userID,
+          "username": user.username,
+          "profileURL": user.profileURL,
+        },
         "timestamp": DateTime.now().toIso8601String(),
       };
+
+      currentPostProvider.addSingleComment(comment);
+
+      Map addCommentBody = {
+        "message": _commentController.text.trim(),
+        "userID": user.userID,
+        "timestamp": DateTime.now().toIso8601String(),
+      };
+
+      _commentController.text = '';
 
       final addCommentData =
           await PostAPIS.addComment(widget.post.postID!, addCommentBody);
       Map unpackedAddCommentData = unPackLocally(addCommentData);
 
       if (unpackedAddCommentData["success"] == 1) {
-        Map receivedData = unpackedAddCommentData["unpacked"];
         Fluttertoast.showToast(msg: "Added Comment Successfully!");
-
-        Map comment = {
-          "_id": receivedData["_id"],
-          "message": receivedData["message"],
-          "userID": {
-            "_id": receivedData["userID"],
-            "username": userProvider.getUser()!.username,
-            "profileURL": userProvider.getUser()!.profileURL,
-          },
-          "timestamp": receivedData["timestamp"],
-          "__v": 0
-        };
-
-        _commentController.text = '';
-        currentPostProvider.addSingleComment(comment);
       } else {
         Fluttertoast.showToast(msg: "Something went wrong!");
       }
     }
-    setState(() {
-      _isAdding = false;
-    });
   }
 
   Future<void> _initialize() async {
@@ -233,72 +227,68 @@ class _CommentPageState extends State<CommentPage> {
                 right: 24,
                 bottom: 20,
               ),
-              child: _isAdding
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.only(
-                              top: 3,
-                              bottom: 3,
-                            ),
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFf5f5fc),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(15),
-                                bottomLeft: Radius.circular(15),
-                              ),
-                            ),
-                            child: TextFormField(
-                              controller: _commentController,
-                              cursorColor: Colors.black,
-                              autofocus: false,
-                              decoration: const InputDecoration(
-                                hintText: "Comment Here...",
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(left: 20),
-                                hintStyle: TextStyle(
-                                  color: Color(0xFF404040),
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.only(
+                        top: 3,
+                        bottom: 3,
+                      ),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFf5f5fc),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          bottomLeft: Radius.circular(15),
+                        ),
+                      ),
+                      child: TextFormField(
+                        controller: _commentController,
+                        cursorColor: Colors.black,
+                        autofocus: false,
+                        decoration: const InputDecoration(
+                          hintText: "Comment Here...",
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(left: 20),
+                          hintStyle: TextStyle(
+                            color: Color(0xFF404040),
+                            fontSize: 16,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: _addComment,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 15,
-                            ),
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(15),
-                                bottomRight: Radius.circular(15),
-                              ),
-                              gradient: LinearGradient(
-                                colors: [
-                                  Color(0xFF4776E6),
-                                  Color(0xFF8E54E9),
-                                ],
-                                begin: Alignment.bottomLeft,
-                                end: Alignment.topRight,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: const Icon(
-                              CupertinoIcons.location_fill,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
+                  ),
+                  GestureDetector(
+                    onTap: _addComment,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 15,
+                      ),
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(15),
+                          bottomRight: Radius.circular(15),
+                        ),
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFF4776E6),
+                            Color(0xFF8E54E9),
+                          ],
+                          begin: Alignment.bottomLeft,
+                          end: Alignment.topRight,
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        CupertinoIcons.location_fill,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             )
           ],
         ),

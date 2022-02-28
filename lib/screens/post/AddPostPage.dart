@@ -19,7 +19,7 @@ class AddPost extends StatefulWidget {
   const AddPost();
 
   @override
-  State<AddPost> createState() => _AddPostState();
+  _AddPostState createState() => _AddPostState();
 }
 
 class _AddPostState extends State<AddPost> {
@@ -76,11 +76,6 @@ class _AddPostState extends State<AddPost> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   static const Map _interests = {
     "Web development": true,
     "Flutter": true,
@@ -89,11 +84,9 @@ class _AddPostState extends State<AddPost> {
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = [];
-    setState(() {
-      for (String city in _interests.keys.toList()) {
-        items.add(DropdownMenuItem(value: city, child: Text(city)));
-      }
-    });
+    for (String city in _interests.keys.toList()) {
+      items.add(DropdownMenuItem(value: city, child: Text(city)));
+    }
     return items;
   }
 
@@ -105,6 +98,7 @@ class _AddPostState extends State<AddPost> {
           DropdownButton(
             hint: Text(_selectedTag),
             items: getDropDownMenuItems(),
+            underline: const SizedBox(),
             onChanged: (String? s) {
               setState(() {
                 _selectedTag = s!;
@@ -123,9 +117,9 @@ class _AddPostState extends State<AddPost> {
       child: Scaffold(
         body: _isLoading
             ? const GlobalLoader()
-            : LayoutBuilder(builder: (context, constraint) {
-                return SingleChildScrollView(
-                  child: ConstrainedBox(
+            : LayoutBuilder(
+                builder: (context, constraint) {
+                  return ConstrainedBox(
                     constraints:
                         BoxConstraints(minHeight: constraint.maxHeight),
                     child: IntrinsicHeight(
@@ -255,9 +249,9 @@ class _AddPostState extends State<AddPost> {
                         ],
                       ),
                     ),
-                  ),
-                );
-              }),
+                  );
+                },
+              ),
       ),
     );
   }
