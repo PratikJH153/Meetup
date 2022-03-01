@@ -140,9 +140,6 @@ class _FeedPageState extends State<FeedPage>
       keepPage: true,
     );
     _scrollController = ScrollController();
-    // for (String city in _interests.keys.toList()) {
-    //   items.add(DropdownMenuItem(value: city, child: Text(city)));
-    // }
     super.initState();
   }
 
@@ -166,12 +163,11 @@ class _FeedPageState extends State<FeedPage>
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 SliverAppBar(
-                  expandedHeight: MediaQuery.of(context).size.height * 0.14,
+                  expandedHeight: MediaQuery.of(context).size.height * 0.13,
                   title: Container(
                     margin: const EdgeInsets.only(
                       left: 8,
                       right: 8,
-                      top: 10,
                     ),
                     child: const Text(
                       "Explore Now 👋",

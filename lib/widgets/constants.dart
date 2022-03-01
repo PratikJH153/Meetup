@@ -18,6 +18,7 @@ const Map<String, List<String>> interests = {
     "AI and ML",
     "Share Market",
     "Internet",
+    "Techonology News",
   ],
   "Lifestyle": [
     "Youtube",
@@ -32,6 +33,23 @@ const Map<String, List<String>> interests = {
     "Yoga",
     "Camping",
     "Bucket List",
+    "Literature",
+    "Politics",
+  ],
+  "Education": [
+    "General Knowlegdge",
+    "Physics",
+    "Mathematics",
+    "History",
+    "World War",
+    "JEE",
+    "UPSC",
+  ],
+  "Business": [
+    "Startup",
+    "Entreprenuership",
+    "Finance",
+    "Money Management",
   ],
   "Sports and Games": [
     "Football",

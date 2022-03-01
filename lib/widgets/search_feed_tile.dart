@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:meetupapp/helper/utils/loader.dart';
+import 'package:meetupapp/providers/UserProvider.dart';
+import 'package:meetupapp/widgets/tag_widget.dart';
+import 'package:provider/provider.dart';
 import '/helper/GlobalFunctions.dart';
 import '/models/post.dart';
 
-class SearchFeedTile extends StatelessWidget {
+class SearchFeedTile extends StatefulWidget {
   final bool isDes;
   final Post post;
 
@@ -13,8 +17,27 @@ class SearchFeedTile extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<SearchFeedTile> createState() => _SearchFeedTileState();
+}
+
+class _SearchFeedTileState extends State<SearchFeedTile> {
+  bool isAddingInterests = false;
+
+  void addInterest(BuildContext context, String id, String tag) async {
+    setState(() {
+      isAddingInterests = true;
+    });
+    await addInterests(context, id, tag);
+    setState(() {
+      isAddingInterests = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Map authorMap = post.author ?? {};
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
+    Map authorMap = widget.post.author ?? {};
 
     String profileUrl = authorMap["profileURL"] ?? placeholder;
     String username = authorMap["username"] ?? "Unnamed";
@@ -72,7 +95,7 @@ class SearchFeedTile extends StatelessWidget {
                     height: 3,
                   ),
                   Text(
-                    "${post.timeReadCalc()} mins read",
+                    "${widget.post.timeReadCalc()} mins read",
                     style: const TextStyle(
                       fontSize: 10,
                       color: Colors.grey,
@@ -86,7 +109,7 @@ class SearchFeedTile extends StatelessWidget {
             height: 10,
           ),
           Text(
-            post.title.toString(),
+            widget.post.title.toString(),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
@@ -99,9 +122,9 @@ class SearchFeedTile extends StatelessWidget {
           const SizedBox(
             height: 5,
           ),
-          if (isDes)
+          if (widget.isDes)
             Text(
-              post.desc.toString(),
+              widget.post.desc.toString(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -117,26 +140,22 @@ class SearchFeedTile extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF6b7fff),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Text(
-                  post.tag.toString(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: "Raleway",
-                    letterSpacing: 0.8,
-                    fontSize: 10,
-                  ),
-                ),
-              ),
+              isAddingInterests
+                  ? const GlobalLoader()
+                  : TagWidget(
+                      tag: widget.post.tag.toString(),
+                      tapHandler: () {
+                        addInterest(
+                          context,
+                          userProvider.getUser()!.userID!,
+                          widget.post.tag!,
+                        );
+                      },
+                      canAdd: !userProvider
+                          .getUser()!
+                          .interests!
+                          .contains(widget.post.tag!),
+                    ),
             ],
           ),
         ],

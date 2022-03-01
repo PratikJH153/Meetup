@@ -54,7 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
     'Prefer not to say',
   ];
 
-  List<String> _selectedInterests = [];
+  Map _selectedInterests = {};
 
   @override
   void dispose() {
@@ -115,7 +115,7 @@ class _RegisterPageState extends State<RegisterPage> {
             "bio": _bioTextController.text.trim() != ""
                 ? _bioTextController.text.trim()
                 : "A meetup user!",
-            "interests": _selectedInterests,
+            "interests": _selectedInterests.keys.toList(),
             "joinedAt": DateTime.now().toIso8601String(),
           };
 
@@ -372,20 +372,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                             ? Register5(
                                                 selectedInterests:
                                                     _selectedInterests,
-                                                tapHandler: (val) {
-                                                  if (_selectedInterests
-                                                      .contains(val)) {
-                                                    setState(() {
-                                                      _selectedInterests
-                                                          .remove(val);
-                                                    });
-                                                  } else {
-                                                    setState(() {
-                                                      _selectedInterests
-                                                          .add(val);
-                                                    });
-                                                  }
-                                                },
                                               )
                                             : const SizedBox()
                           ],

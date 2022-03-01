@@ -25,9 +25,14 @@ class FeedTile extends StatefulWidget {
 class _FeedTileState extends State<FeedTile> {
   bool isAddingInterests = false;
 
-  @override
-  void initState() {
-    super.initState();
+  void addInterest(BuildContext context, String id, String tag) async {
+    setState(() {
+      isAddingInterests = true;
+    });
+    await addInterests(context, id, tag);
+    setState(() {
+      isAddingInterests = false;
+    });
   }
 
   @override
@@ -145,7 +150,7 @@ class _FeedTileState extends State<FeedTile> {
                         tapHandler: () {
                           UserProvider userProvider =
                               Provider.of<UserProvider>(context, listen: false);
-                          _addInterest(context, userProvider.getUser()!.userID!,
+                          addInterest(context, userProvider.getUser()!.userID!,
                               widget.thePost.tag!);
                         },
                         canAdd: !userProvider
@@ -176,32 +181,5 @@ class _FeedTileState extends State<FeedTile> {
             )
           ],
         ));
-  }
-
-  void _addInterest(BuildContext context, String id, String interest) async {
-    setState(() {
-      isAddingInterests = true;
-    });
-
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
-    final addInterest = await UserAPIS.addInterest({
-      "userID": id,
-      "interest": interest,
-    });
-    Map unpackedData = unPackLocally(addInterest);
-
-    if (unpackedData["success"] == 1) {
-      Fluttertoast.showToast(msg: "Added Interest successfully!");
-      List new_interests = userProvider.getUser()!.interests ?? [];
-      new_interests.add(interest);
-      userProvider.updateUserInfo(interests: new_interests);
-    } else {
-      Fluttertoast.showToast(msg: "Couldn't add Interest");
-    }
-
-    setState(() {
-      isAddingInterests = false;
-    });
   }
 }

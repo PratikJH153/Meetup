@@ -102,6 +102,25 @@ void copyToClipboard(String text) {
 //       ];
 //     });
 
+Future<void> addInterests(
+    BuildContext context, String id, String interest) async {
+  UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+  final addInterest = await UserAPIS.addInterest({
+    "userID": id,
+    "interest": interest,
+  });
+  Map unpackedData = unPackLocally(addInterest);
+
+  if (unpackedData["success"] == 1) {
+    Fluttertoast.showToast(msg: "Added Interest successfully!");
+    List new_interests = userProvider.getUser()!.interests ?? [];
+    new_interests.add(interest);
+    userProvider.updateUserInfo(interests: new_interests);
+  } else {
+    Fluttertoast.showToast(msg: "Couldn't add Interest");
+  }
+}
+
 Future<void> deletePost(BuildContext context, Post post) async {
   final deleteData = await PostAPIS.deletePost(post.postID!);
 

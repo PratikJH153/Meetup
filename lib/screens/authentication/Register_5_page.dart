@@ -4,11 +4,9 @@ import 'package:meetupapp/widgets/constants.dart';
 import 'package:meetupapp/widgets/interest_tag_widget.dart';
 
 class Register5 extends StatefulWidget {
-  final List<String> selectedInterests;
-  final Function tapHandler;
+  final Map selectedInterests;
   const Register5({
     required this.selectedInterests,
-    required this.tapHandler,
     Key? key,
   }) : super(key: key);
 
@@ -17,8 +15,6 @@ class Register5 extends StatefulWidget {
 }
 
 class _Register5State extends State<Register5> {
-  List<String> _selectedInterests = [];
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (
@@ -41,13 +37,60 @@ class _Register5State extends State<Register5> {
           const SizedBox(
             height: 15,
           ),
-          Container(
-            height: 100,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.45,
             child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: interests.length,
+              padding: const EdgeInsets.only(
+                bottom: 100,
+              ),
               itemBuilder: (ctx, index) {
-                return Text("");
+                final category = interests.keys.toList()[index];
+                final interestList = interests[category];
+                return Container(
+                  margin: const EdgeInsets.only(top: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        category,
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontFamily: "DMSans",
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Wrap(
+                        children: (interestList as List<String>)
+                            .map(
+                              (e) => GestureDetector(
+                                onTap: () {
+                                  if (widget.selectedInterests[e] != null) {
+                                    setState(() {
+                                      widget.selectedInterests.remove(e);
+                                    });
+                                  } else {
+                                    setState(() {
+                                      widget.selectedInterests[e] = true;
+                                    });
+                                  }
+                                },
+                                child: InterestTag(
+                                  label: e,
+                                  isTap: widget.selectedInterests[e] != null,
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      )
+                    ],
+                  ),
+                );
               },
-              itemCount: 5,
             ),
           )
         ],
