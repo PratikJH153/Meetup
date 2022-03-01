@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/widgets/placeholder_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '/widgets/placeholder_widget.dart';
 import '/helper/GlobalFunctions.dart';
 import '/helper/utils/loader.dart';
 import '/screens/post/AddPostPage.dart';

@@ -1,16 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/helper/GlobalFunctions.dart';
-import 'package:meetupapp/helper/backend/apis.dart';
-import 'package:meetupapp/helper/backend/database.dart';
-import 'package:meetupapp/helper/backend/rest_apis.dart';
-import 'package:meetupapp/helper/utils/fire_auth.dart';
-import 'package:meetupapp/helper/utils/loader.dart';
-import 'package:meetupapp/screens/HomePage.dart';
-import 'package:meetupapp/widgets/google_signin_button.dart';
-import 'package:meetupapp/widgets/snackBar_widget.dart';
+import '/helper/GlobalFunctions.dart';
+import '/helper/utils/fire_auth.dart';
+import '/helper/utils/loader.dart';
+import '/screens/HomePage.dart';
+import '/widgets/google_signin_button.dart';
+import '/widgets/snackBar_widget.dart';
 import 'RegisterPage.dart';
-import '/widgets/ask_account_widget.dart';
 
 class GetStartedPage extends StatefulWidget {
   static const routeName = "/getstarted";

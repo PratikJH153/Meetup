@@ -17,11 +17,13 @@ class PlaceholderWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Image.asset(
-              imageURL,
-              fit: BoxFit.cover,
-              height: 280,
-              width: 280,
+            FittedBox(
+              child: Image.asset(
+                imageURL,
+                fit: BoxFit.cover,
+                height: 280,
+                width: 280,
+              ),
             ),
             const SizedBox(
               height: 20,

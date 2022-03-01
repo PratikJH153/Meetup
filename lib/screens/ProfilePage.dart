@@ -334,48 +334,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   );
                                 },
                               ),
-
-                              // const SizedBox(
-                              //   height: 35,
-                              // ),
-                              // const Text(
-                              //   "My interests",
-                              //   style: TextStyle(
-                              //     fontSize: 15,
-                              //     height: 1.5,
-                              //     color: Colors.black87,
-                              //     fontWeight: FontWeight.w700,
-                              //     fontFamily: "Nunito",
-                              //   ),
-                              // ),
-                              // const SizedBox(
-                              //   height: 12,
-                              // ),
-
-                              // const SizedBox(
-                              //   height: 30,
-                              // ),
-                              // ProfileButton(
-                              //   label: "Help",
-                              //   icon: CupertinoIcons.question_circle_fill,
-                              //   tapHandler: () {},
-                              //   isExtra: true,
-                              // ),
                             ],
                           ),
                         ),
-                        // InkWell(
-                        //   onTap: () async {
-                        //     await FireAuth.signOut(context);
-                        //   },
-                        //   child: Container(
-                        //     color: Colors.blue,
-                        //     padding: const EdgeInsets.symmetric(
-                        //         vertical: 10, horizontal: 20),
-                        //     child: const Text("Sign Out",
-                        //         style: TextStyle(color: Colors.white)),
-                        //   ),
-                        // )
                       ],
                     ),
                   ),

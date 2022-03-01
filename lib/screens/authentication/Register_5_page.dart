@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meetupapp/screens/authentication/SelectInterestPage.dart';
-import 'package:meetupapp/widgets/constants.dart';
-import 'package:meetupapp/widgets/interest_tag_widget.dart';
 
 class Register5 extends StatefulWidget {
   final List<String> selectedInterests;
