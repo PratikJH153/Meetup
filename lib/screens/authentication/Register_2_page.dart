@@ -28,7 +28,7 @@ class Register2 extends StatelessWidget {
                   textCapitalization: TextCapitalization.words,
                   label: "First Name",
                   validatorHandler: (val) =>
-                      Validator.validateAuthFields(result: val),
+                      Validator.validateAuthFields(result: val.trim()),
                   inputType: TextInputType.name,
                   icon: CupertinoIcons.person_alt,
                 ),
@@ -42,7 +42,7 @@ class Register2 extends StatelessWidget {
                   textCapitalization: TextCapitalization.words,
                   label: "Last Name",
                   validatorHandler: (val) =>
-                      Validator.validateAuthFields(result: val),
+                      Validator.validateAuthFields(result: val.trim()),
                   inputType: TextInputType.name,
                   icon: CupertinoIcons.person_alt,
                 ),
@@ -57,7 +57,7 @@ class Register2 extends StatelessWidget {
             textCapitalization: TextCapitalization.none,
             label: "Username",
             validatorHandler: (val) =>
-                Validator.validateAuthFields(result: val),
+                Validator.validateAuthFields(result: val.trim()),
             inputType: TextInputType.name,
             icon: CupertinoIcons.at_circle,
           ),

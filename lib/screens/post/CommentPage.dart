@@ -334,9 +334,7 @@ class _CommentPageState extends State<CommentPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            commentList[index]["userID"]["username"]
-                                .toString()
-                                .capitalize(),
+                            commentList[index]["userID"]["username"].toString(),
                             style: const TextStyle(
                               fontSize: 13,
                               color: Colors.grey,
@@ -375,15 +373,4 @@ class _CommentPageState extends State<CommentPage> {
       },
     );
   }
-
-// void _addComment(String comment) async {
-//   PostAPIS _post = PostAPIS();
-//   User? user = FirebaseAuth.instance.currentUser;
-//   if (user == null) return;
-//   final message = await _post.addComment(widget.post.postID!, {
-//     "message": comment,
-//     "userID": user.uid,
-//   });
-//   print("ADD COMMENT:$message");
-// }
 }

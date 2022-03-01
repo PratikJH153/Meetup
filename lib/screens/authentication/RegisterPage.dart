@@ -48,7 +48,6 @@ class _RegisterPageState extends State<RegisterPage> {
     'Male',
     'Female',
     'Other',
-    'Prefer not to say',
   ];
 
   Map _selectedInterests = {};

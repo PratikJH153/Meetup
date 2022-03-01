@@ -68,42 +68,55 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _updateProfile() async {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
-    String id = userProvider.getUser()!.userID!;
+    final form = _editProfileKey.currentState;
+    if (form!.validate()) {
+      form.save();
+      UserProvider userProvider =
+          Provider.of<UserProvider>(context, listen: false);
+      String id = userProvider.getUser()!.userID!;
 
-    setState(() {
-      updatingNow = true;
-    });
+      setState(() {
+        updatingNow = true;
+      });
 
-    if (userProvider.getUser()!.username!.trim().toLowerCase() !=
-        usernameController.text.trim().toLowerCase()) {
-      int isExists = await checkUsernameExists(
-          context, usernameController.text.trim().toLowerCase());
+      if (userProvider.getUser()!.username!.trim().toLowerCase() !=
+          usernameController.text.trim().toLowerCase()) {
+        int isExists = await checkUsernameExists(
+            context, usernameController.text.trim().toLowerCase());
 
-      if (isExists == 1) {
-        snackBarWidget(
-          "Username Exists. Please try different username",
-          const Color(0xFFff2954),
-          context,
-        );
-        return;
+        if (isExists == 1) {
+          snackBarWidget(
+            "Username Exists. Please try different username",
+            const Color(0xFFff2954),
+            context,
+          );
+          return;
+        }
       }
-    }
-    Map updateBody = {};
-    String? url;
-    if (image != null) {
-      url = await uploadPic(id);
-      if (url != null) {
-        updateBody = {
-          "firstname": firstNameController.text.trim(),
-          "lastname": lastNameController.text.trim(),
-          "gender": gendervalue,
-          "age": age,
-          "bio": bioController.text.trim(),
-          "username": usernameController.text.trim(),
-          "profileURL": url,
-        };
+      Map updateBody = {};
+      String? url;
+      if (image != null) {
+        url = await uploadPic(id);
+        if (url != null) {
+          updateBody = {
+            "firstname": firstNameController.text.trim(),
+            "lastname": lastNameController.text.trim(),
+            "gender": gendervalue,
+            "age": age,
+            "bio": bioController.text.trim(),
+            "username": usernameController.text.trim(),
+            "profileURL": url,
+          };
+        } else {
+          updateBody = {
+            "firstname": firstNameController.text.trim(),
+            "lastname": lastNameController.text.trim(),
+            "gender": gendervalue,
+            "age": age,
+            "bio": bioController.text.trim(),
+            "username": usernameController.text.trim(),
+          };
+        }
       } else {
         updateBody = {
           "firstname": firstNameController.text.trim(),
@@ -114,48 +127,42 @@ class _EditProfilePageState extends State<EditProfilePage> {
           "username": usernameController.text.trim(),
         };
       }
-    } else {
-      updateBody = {
-        "firstname": firstNameController.text.trim(),
-        "lastname": lastNameController.text.trim(),
-        "gender": gendervalue,
-        "age": age,
-        "bio": bioController.text.trim(),
-        "username": usernameController.text.trim(),
-      };
-    }
 
-    final updateResult = await UserAPIS.patchUser(id, updateBody);
-    Map updateResultUnpacked = unPackLocally(updateResult);
+      final updateResult = await UserAPIS.patchUser(id, updateBody);
+      Map updateResultUnpacked = unPackLocally(updateResult);
 
-    if (updateResultUnpacked["success"] == 1) {
-      userProvider.updateUserInfo(
-        firstname: firstNameController.text.trim(),
-        lastname: lastNameController.text.trim(),
-        username: usernameController.text.trim(),
-        bio: bioController.text.trim(),
-        age: age,
-        gender: gendervalue,
-        profileURL: updateBody.containsKey("profileURL")
-            ? url ?? userProvider.getUser()!.profileURL
-            : userProvider.getUser()!.profileURL,
-      );
-      Fluttertoast.showToast(msg: "Updated Profile successfully!");
-      Navigator.of(context).pop();
-    } else {
-      Fluttertoast.showToast(msg: "Couldn't update Profile!");
+      if (updateResultUnpacked["success"] == 1) {
+        userProvider.updateUserInfo(
+          firstname: firstNameController.text.trim(),
+          lastname: lastNameController.text.trim(),
+          username: usernameController.text.trim(),
+          bio: bioController.text.trim(),
+          age: age,
+          gender: gendervalue,
+          profileURL: updateBody.containsKey("profileURL")
+              ? url ?? userProvider.getUser()!.profileURL
+              : userProvider.getUser()!.profileURL,
+        );
+        Fluttertoast.showToast(msg: "Updated Profile successfully!");
+      } else {
+        Fluttertoast.showToast(msg: "Couldn't update Profile!");
+        setState(() {
+          updatingNow = false;
+        });
+        return;
+      }
     }
 
     setState(() {
       updatingNow = false;
     });
+    Navigator.of(context).pop();
   }
 
   final genders = const [
     'Male',
     'Female',
     'Other',
-    'Prefer not to say',
   ];
 
   bool updatingNow = false;
@@ -319,7 +326,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         label: "First Name",
                                         validatorHandler: (val) =>
                                             Validator.validateAuthFields(
-                                                result: val),
+                                                result: val.trim()),
                                         inputType: TextInputType.name,
                                         icon: CupertinoIcons.person_alt,
                                       ),
@@ -335,7 +342,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         label: "Last Name",
                                         validatorHandler: (val) =>
                                             Validator.validateAuthFields(
-                                                result: val),
+                                                result: val.trim()),
                                         inputType: TextInputType.name,
                                         icon: CupertinoIcons.person_alt,
                                       ),
@@ -350,7 +357,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   textCapitalization: TextCapitalization.words,
                                   label: "Username",
                                   validatorHandler: (val) =>
-                                      Validator.validateAuthFields(result: val),
+                                      Validator.validateAuthFields(
+                                          result: val.trim()),
                                   inputType: TextInputType.name,
                                   icon: CupertinoIcons.at_circle,
                                 ),

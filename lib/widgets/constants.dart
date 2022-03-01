@@ -19,6 +19,8 @@ const Map<String, List<String>> interests = {
     "Share Market",
     "Internet",
     "Techonology News",
+    "Flutter",
+    "Web Development"
   ],
   "Lifestyle": [
     "Youtube",

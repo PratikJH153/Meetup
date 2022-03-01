@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       InkWell(
                         child: BottomNavButton(
-                          icon: CupertinoIcons.bolt_horizontal_fill,
+                          icon: Icons.home_filled,
                           isSelected: _selectedIndex == 0,
                         ),
                         onTap: () {

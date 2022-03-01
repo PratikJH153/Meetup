@@ -65,7 +65,6 @@ class _AddPostState extends State<AddPost> {
 
       userProvider.addSingleUserPost(addPostBody);
       Fluttertoast.showToast(msg: "Added Post successfully!");
-      Navigator.of(context).pop();
     } else {
       Fluttertoast.showToast(msg: requestData["unpacked"]);
     }
@@ -73,6 +72,7 @@ class _AddPostState extends State<AddPost> {
     setState(() {
       _isLoading = false;
     });
+    Navigator.of(context).pop();
   }
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
@@ -178,7 +178,7 @@ class _AddPostState extends State<AddPost> {
                                           TextCapitalization.sentences,
                                       validator: (value) =>
                                           Validator.validateTitle(
-                                        result: value,
+                                        result: value!.trim(),
                                         message: "Enter a valid Title",
                                       ),
                                       decoration: InputDecoration(

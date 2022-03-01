@@ -23,7 +23,7 @@ class _Register5State extends State<Register5> {
           height: 10,
         ),
         const Text(
-          "Choose any 5",
+          "Choose atleast 5",
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,

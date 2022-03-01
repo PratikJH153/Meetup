@@ -125,18 +125,17 @@ class _FeedTileState extends State<FeedTile> {
             const SizedBox(
               height: 5,
             ),
-            if (widget.thePost.desc != "")
-              Text(
-                widget.thePost.desc ?? "",
-                maxLines: 4,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 14,
-                  height: 1.4,
-                  fontFamily: "Raleway",
-                  color: Color(0xFF5c5c5c),
-                ),
-              ),
+            // Text(
+            //   widget.thePost.desc ?? "",
+            //   maxLines: 4,
+            //   overflow: TextOverflow.ellipsis,
+            //   style: const TextStyle(
+            //     fontSize: 14,
+            //     height: 1.4,
+            //     fontFamily: "Raleway",
+            //     color: Color(0xFF5c5c5c),
+            //   ),
+            // ),
             const SizedBox(
               height: 28,
             ),

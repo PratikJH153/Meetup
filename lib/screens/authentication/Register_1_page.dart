@@ -23,7 +23,7 @@ class Register1 extends StatelessWidget {
             textCapitalization: TextCapitalization.none,
             label: "Email",
             validatorHandler: (val) => Validator.validateEmail(
-              email: val,
+              email: val.trim(),
             ),
             icon: CupertinoIcons.mail_solid,
             inputType: TextInputType.emailAddress,
@@ -36,7 +36,7 @@ class Register1 extends StatelessWidget {
             textCapitalization: TextCapitalization.none,
             label: "Password",
             validatorHandler: (val) => Validator.validatePassword(
-              result: val,
+              result: val.trim(),
             ),
             icon: CupertinoIcons.lock,
             inputType: TextInputType.visiblePassword,

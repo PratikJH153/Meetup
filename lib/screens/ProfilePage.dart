@@ -208,7 +208,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   user.bio.toString() != ""
                                       ? user.bio.toString()
                                       : "A meetup user!",
-                                  maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     height: 1.5,
@@ -222,7 +221,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   });
                                 },
                               ),
-
                               ProfileButton(
                                 label: "My Interests",
                                 icon: CupertinoIcons.heart,
