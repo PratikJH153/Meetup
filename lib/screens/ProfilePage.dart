@@ -2,18 +2,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/helper/backend/apis.dart';
+import 'package:meetupapp/helper/backend/database.dart';
 import 'package:meetupapp/helper/utils/fire_auth.dart';
+import 'package:meetupapp/screens/AboutPage.dart';
 import 'package:meetupapp/screens/EditProfilePage.dart';
 import 'package:meetupapp/screens/authentication/get_started_page.dart';
 import 'package:meetupapp/widgets/ask_dialog_widget.dart';
 import 'package:meetupapp/widgets/profile_button.dart';
 import 'package:provider/provider.dart';
-import '/helper/backend/apis.dart';
-import '/helper/backend/database.dart';
-import '/helper/utils/loader.dart';
 
+import '/helper/utils/fire_auth.dart';
+import '/screens/EditProfilePage.dart';
+import '/widgets/profile_button.dart';
+import '/helper/utils/loader.dart';
 import '/widgets/profile_number_widget.dart';
-import '/models/user.dart';
+import '/models/UserClass.dart';
 import '/providers/UserProvider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -28,6 +32,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   bool openAbout = false;
   bool openInterests = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return SafeArea(
       child: Scaffold(
-          body: !userLoaded
+          body: !userLoaded || isLoading
               ? const GlobalLoader()
               : SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
@@ -248,7 +253,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ],
                                           ),
                                           child: Text(
-                                            e,
+                                            e.toString(),
                                             style: const TextStyle(
                                               color: Colors.black,
                                             ),
@@ -282,7 +287,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               ProfileButton(
                                 label: "About & Help",
                                 icon: CupertinoIcons.question_circle_fill,
-                                tapHandler: () {},
+                                tapHandler: () {
+                                  Navigator.of(context).push(CupertinoPageRoute(
+                                      builder: (_) =>
+                                          const AboutAndHelpPage()));
+                                },
                                 isOpen: false,
                                 widget: const SizedBox(),
                               ),
@@ -316,7 +325,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     builder: (ctx) => AskDialogWidget(
                                       tapHandler: () async {
                                         Navigator.of(context).pop();
-                                        await FireAuth.signOut(context);
+                                        _deleteUser(context);
                                       },
                                       title: "Delete Account",
                                       des:
@@ -372,5 +381,28 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 )),
     );
+  }
+
+  void _deleteUser(BuildContext context) async {
+    setState(() {
+      isLoading = true;
+    });
+    final deleteResult =
+        await UserAPIS.deleteUser(FirebaseAuth.instance.currentUser!.uid);
+    Map result = unPackLocally(deleteResult);
+    print("DELETE USER!!");
+    print(result);
+
+    if (result["success"] == 1) {
+      print("reached");
+      await FireAuth.signOut(context);
+      Fluttertoast.showToast(msg: "Deleted Profile Successfully");
+    } else {
+      Fluttertoast.showToast(msg: "Couldn't delete Profile!");
+    }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 }

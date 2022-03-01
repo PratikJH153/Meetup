@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/screens/post/AddPostPage.dart';
-import 'package:meetupapp/widgets/tag_widget.dart';
-import '/providers/UserProvider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import '/providers/PostProvider.dart';
+import '/helper/backend/apis.dart';
+import '/helper/utils/loader.dart';
+import '/helper/backend/database.dart';
+import '/widgets/tag_widget.dart';
 import '/providers/UserProvider.dart';
 import '/helper/GlobalFunctions.dart';
 import '/screens/post/CommentPage.dart';
@@ -22,6 +23,9 @@ class FeedTile extends StatefulWidget {
 }
 
 class _FeedTileState extends State<FeedTile> {
+
+  bool isAddingInterests = false;
+
   @override
   void initState() {
     super.initState();
@@ -117,9 +121,8 @@ class _FeedTileState extends State<FeedTile> {
             const SizedBox(
               height: 5,
             ),
-            if (widget.thePost.desc != "")
               Text(
-                widget.thePost.desc!,
+                widget.thePost.desc??"",
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -135,11 +138,13 @@ class _FeedTileState extends State<FeedTile> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (widget.thePost.tag != null)
-                  TagWidget(
-                    tag: widget.thePost.tag!,
+                isAddingInterests
+                ? const GlobalLoader()
+                : TagWidget(
+                    tag: widget.thePost.tag??"",
                     tapHandler: () {
-                      print("HELLO");
+                      UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+                      _addInterest(context,userProvider.getUser()!.userID!,widget.thePost.tag!);
                     },
                     canAdd: !userProvider
                         .getUser()!
@@ -169,5 +174,33 @@ class _FeedTileState extends State<FeedTile> {
             )
           ],
         ));
+  }
+
+  void _addInterest(BuildContext context,String id, String interest)async{
+
+    setState(() {
+      isAddingInterests = true;
+    });
+
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    final addInterest = await UserAPIS.addInterest({
+      "userID": id,
+      "interest": interest,
+    });
+    Map unpackedData = unPackLocally(addInterest);
+
+    if(unpackedData["success"] == 1){
+      Fluttertoast.showToast(msg: "Added Interest successfully!");
+      List new_interests = userProvider.getUser()!.interests??[];
+      new_interests.add(interest);
+      userProvider.updateUserInfo(interests: new_interests);
+    }
+    else{
+      Fluttertoast.showToast(msg: "Couldn't add Interest");
+    }
+
+    setState(() {
+      isAddingInterests = false;
+    });
   }
 }

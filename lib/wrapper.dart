@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/helper/GlobalFunctions.dart';
-import 'package:meetupapp/screens/authentication/RegisterPage.dart';
-import 'package:meetupapp/widgets/snackBar_widget.dart';
+import 'helper/GlobalFunctions.dart';
+import 'screens/authentication/RegisterPage.dart';
 import 'screens/authentication/get_started_page.dart';
 import 'screens/HomePage.dart';
 
