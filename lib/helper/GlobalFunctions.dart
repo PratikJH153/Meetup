@@ -75,6 +75,8 @@ String numberParser(int number) {
     String num = (number / 1000000).floor().toString();
     if (num.length == 1) num += "." + number.toString()[1];
     return "$num m";
+  } else if (number < 0) {
+    return "0";
   } else {
     return "1b+";
   }
@@ -84,21 +86,21 @@ void copyToClipboard(String text) {
   Clipboard.setData(ClipboardData(text: text));
 }
 
-Widget CustomPopupMenu(
-        {required PopupMenuDataset dataset, required showOther}) =>
-    PopupMenuButton(itemBuilder: (BuildContext context) {
-      return [
-        PopupMenuItem(
-          child: Row(
-            children: [
-              Icon(dataset.secondaryIcon),
-              Text(dataset.secondary),
-            ],
-          ),
-          onTap: () {},
-        )
-      ];
-    });
+// Widget CustomPopupMenu(
+//         {required PopupMenuDataset dataset, required showOther}) =>
+//     PopupMenuButton(itemBuilder: (BuildContext context) {
+//       return [
+//         PopupMenuItem(
+//           child: Row(
+//             children: [
+//               Icon(dataset.secondaryIcon),
+//               Text(dataset.secondary),
+//             ],
+//           ),
+//           onTap: () {},
+//         )
+//       ];
+//     });
 
 Future<void> deletePost(BuildContext context, Post post) async {
   final deleteData = await PostAPIS.deletePost(post.postID!);

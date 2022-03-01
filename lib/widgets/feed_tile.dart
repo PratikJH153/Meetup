@@ -23,7 +23,6 @@ class FeedTile extends StatefulWidget {
 }
 
 class _FeedTileState extends State<FeedTile> {
-
   bool isAddingInterests = false;
 
   @override
@@ -121,8 +120,9 @@ class _FeedTileState extends State<FeedTile> {
             const SizedBox(
               height: 5,
             ),
+            if (widget.thePost.desc != "")
               Text(
-                widget.thePost.desc??"",
+                widget.thePost.desc ?? "",
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -139,18 +139,20 @@ class _FeedTileState extends State<FeedTile> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 isAddingInterests
-                ? const GlobalLoader()
-                : TagWidget(
-                    tag: widget.thePost.tag??"",
-                    tapHandler: () {
-                      UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
-                      _addInterest(context,userProvider.getUser()!.userID!,widget.thePost.tag!);
-                    },
-                    canAdd: !userProvider
-                        .getUser()!
-                        .interests!
-                        .contains(widget.thePost.tag!),
-                  ),
+                    ? const GlobalLoader()
+                    : TagWidget(
+                        tag: widget.thePost.tag ?? "",
+                        tapHandler: () {
+                          UserProvider userProvider =
+                              Provider.of<UserProvider>(context, listen: false);
+                          _addInterest(context, userProvider.getUser()!.userID!,
+                              widget.thePost.tag!);
+                        },
+                        canAdd: !userProvider
+                            .getUser()!
+                            .interests!
+                            .contains(widget.thePost.tag!),
+                      ),
                 Row(
                   children: [
                     VoteSection(context, widget.thePost),
@@ -176,26 +178,25 @@ class _FeedTileState extends State<FeedTile> {
         ));
   }
 
-  void _addInterest(BuildContext context,String id, String interest)async{
-
+  void _addInterest(BuildContext context, String id, String interest) async {
     setState(() {
       isAddingInterests = true;
     });
 
-    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
     final addInterest = await UserAPIS.addInterest({
       "userID": id,
       "interest": interest,
     });
     Map unpackedData = unPackLocally(addInterest);
 
-    if(unpackedData["success"] == 1){
+    if (unpackedData["success"] == 1) {
       Fluttertoast.showToast(msg: "Added Interest successfully!");
-      List new_interests = userProvider.getUser()!.interests??[];
+      List new_interests = userProvider.getUser()!.interests ?? [];
       new_interests.add(interest);
       userProvider.updateUserInfo(interests: new_interests);
-    }
-    else{
+    } else {
       Fluttertoast.showToast(msg: "Couldn't add Interest");
     }
 

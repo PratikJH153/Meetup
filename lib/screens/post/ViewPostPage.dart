@@ -73,34 +73,32 @@ class _ViewPostPageState extends State<ViewPostPage> {
         ],
       );
 
-  _TitleDescriptionSection() => Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+  _TitleDescriptionSection() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SelectableText(
+            widget.thePost.title!.toString(),
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              height: 1.5,
+              fontFamily: "Ubuntu",
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          if (widget.thePost.desc != "")
             SelectableText(
-              widget.thePost.title!.toString(),
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
+              widget.thePost.desc!,
+              style: TextStyle(
+                fontSize: 16,
                 height: 1.5,
-                fontFamily: "Ubuntu",
+                color: Colors.grey[800],
+                fontFamily: "Raleway",
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            if (widget.thePost.desc != "")
-              SelectableText(
-                widget.thePost.desc!,
-                style: TextStyle(
-                  fontSize: 16,
-                  height: 1.5,
-                  color: Colors.grey[800],
-                  fontFamily: "Raleway",
-                ),
-              ),
-          ],
-        ),
+        ],
       );
 
   _ReccomendedPostsSection(
@@ -195,7 +193,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
             UpperWidgetOfBottomSheet(
               tapHandler: () {},
               toShow: false,
-              icon: CupertinoIcons.pen,
+              icon: CupertinoIcons.delete,
             ),
             Expanded(
               child: Container(

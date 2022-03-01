@@ -15,21 +15,18 @@ class InterestTag extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(right: 10, bottom: 10),
       decoration: BoxDecoration(
-        color: isTap ? const Color(0xFF4776E6) : Colors.white,
-        borderRadius: BorderRadius.circular(6),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey[200]!,
-            blurRadius: 2,
-            spreadRadius: 0.2,
-            offset: const Offset(0, 3),
-          )
-        ],
+        color: isTap
+            ? const Color(0xFF4776E6)
+            : const Color.fromARGB(255, 235, 235, 235),
+        borderRadius: BorderRadius.circular(10),
       ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: isTap ? Colors.white : Colors.black,
+      child: FittedBox(
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isTap ? Colors.white : Colors.black,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

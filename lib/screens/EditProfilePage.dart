@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meetupapp/helper/utils/loader.dart';
 import 'package:meetupapp/screens/authentication/SelectInterestPage.dart';
+import 'package:meetupapp/widgets/snackBar_widget.dart';
 import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '/helper/GlobalFunctions.dart';
@@ -38,8 +39,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   void _imagePicker() async {
     ImagePicker _picker = ImagePicker();
-    PickedFile? pickedFile =
-        await _picker.getImage(source: ImageSource.gallery);
+    PickedFile? pickedFile = await _picker.getImage(
+      source: ImageSource.gallery,
+      maxWidth: 800,
+      maxHeight: 600,
+      imageQuality: 50,
+    );
 
     if (pickedFile != null) {
       File pickedImage = File(pickedFile.path);
@@ -71,25 +76,63 @@ class _EditProfilePageState extends State<EditProfilePage> {
       updatingNow = true;
     });
 
-    Map updateBody = {
-      "firstname": firstNameController.text,
-      "lastname": lastNameController.text,
-      "gender": gendervalue,
-      "age": age,
-      "bio": bioController.text,
-      "interests": interests.keys.toList(),
-      // "username": ,
-    };
+    if (userProvider.getUser()!.username!.trim().toLowerCase() !=
+        usernameController.text.trim().toLowerCase()) {
+      int isExists = await checkUsernameExists(
+          context, usernameController.text.trim().toLowerCase());
+
+      if (isExists == 1) {
+        snackBarWidget(
+          "Username Exists. Please try different username",
+          const Color(0xFFff2954),
+          context,
+        );
+        return;
+      }
+    }
+    Map updateBody = {};
+    if (image != null) {
+      final url = await uploadPic(id);
+      if (url != null) {
+        updateBody = {
+          "firstname": firstNameController.text.trim(),
+          "lastname": lastNameController.text.trim(),
+          "gender": gendervalue,
+          "age": age,
+          "bio": bioController.text.trim(),
+          "username": usernameController.text.trim(),
+          "profileURL": url,
+        };
+      } else {
+        updateBody = {
+          "firstname": firstNameController.text.trim(),
+          "lastname": lastNameController.text.trim(),
+          "gender": gendervalue,
+          "age": age,
+          "bio": bioController.text.trim(),
+          "username": usernameController.text.trim(),
+        };
+      }
+    } else {
+      updateBody = {
+        "firstname": firstNameController.text.trim(),
+        "lastname": lastNameController.text.trim(),
+        "gender": gendervalue,
+        "age": age,
+        "bio": bioController.text.trim(),
+        "username": usernameController.text.trim(),
+      };
+    }
 
     final updateResult = await UserAPIS.patchUser(id, updateBody);
     Map updateResultUnpacked = unPackLocally(updateResult);
 
     if (updateResultUnpacked["success"] == 1) {
       userProvider.updateUserInfo(
-        firstname: firstNameController.text,
-        lastname: lastNameController.text,
-        username: usernameController.text,
-        bio: bioController.text,
+        firstname: firstNameController.text.trim(),
+        lastname: lastNameController.text.trim(),
+        username: usernameController.text.trim(),
+        bio: bioController.text.trim(),
         age: age,
         gender: gendervalue,
       );
@@ -158,6 +201,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    usernameController.dispose();
+    bioController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
@@ -194,8 +246,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   child: Stack(
                                     children: [
                                       Container(
-                                        height: 130,
-                                        width: 130,
+                                        height: 140,
+                                        width: 140,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
                                           color: const Color(0xFFf0f0f0),
@@ -203,12 +255,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                               BorderRadius.circular(50),
                                         ),
                                         child: SizedBox(
-                                          height: 130,
-                                          width: 130,
+                                          height: 140,
+                                          width: 140,
                                           child: image == null
                                               ? ClipRRect(
                                                   borderRadius:
-                                                      BorderRadius.circular(50),
+                                                      BorderRadius.circular(55),
                                                   child:
                                                       FadeInImage.assetNetwork(
                                                     placeholder:
@@ -219,7 +271,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                 )
                                               : ClipRRect(
                                                   borderRadius:
-                                                      BorderRadius.circular(50),
+                                                      BorderRadius.circular(55),
                                                   child: Image.file(image!)),
                                         ),
                                       ),
@@ -265,7 +317,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       ),
                                     ),
                                     const SizedBox(
-                                      height: 30,
+                                      width: 15,
                                     ),
                                     Expanded(
                                       child: TextFieldWidget(
@@ -311,7 +363,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       ),
                                     ),
                                     const SizedBox(
-                                      height: 15,
+                                      width: 15,
                                     ),
                                     Expanded(
                                       child: AgePicker(
@@ -356,7 +408,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
                                             builder: (ctx) =>
-                                                SelectInterestPage(),
+                                                const SelectInterestPage(),
                                           ),
                                         );
                                       },
@@ -364,129 +416,55 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         CupertinoIcons.add,
                                       ),
                                     ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: DropDownWidget(
-                                            items: genders,
-                                            value: gendervalue,
-                                            onChanged: (val) {
-                                              setState(() {
-                                                gendervalue = val;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          child: AgePicker(
-                                            value: age!,
-                                            onChanged: (val) {
-                                              setState(() {
-                                                age = val;
-                                              });
-                                            },
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          "Interests",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                        IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(
-                                            CupertinoIcons.add,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Wrap(
-                                        children: interests.keys
-                                            .toList()
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Consumer<UserProvider>(
+                                    builder: (ctx, userProvider, _) {
+                                      final user = userProvider.getUser();
+                                      return Wrap(
+                                        children: user!.interests!
                                             .map(
-                                              (e) => GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    interests.remove(e);
-                                                  });
-                                                  userProvider.updateUserInfo(
-                                                      interests: interests.keys
-                                                          .toList());
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    horizontal: 14,
-                                                    vertical: 8,
-                                                  ),
-                                                  margin: const EdgeInsets.only(
-                                                    right: 8,
-                                                    bottom: 8,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    gradient:
-                                                        const LinearGradient(
-                                                      begin: Alignment.topLeft,
-                                                      end:
-                                                          Alignment.bottomRight,
-                                                      colors: [
-                                                        Color(0xFF485563),
-                                                        Color(0xFF29323c),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      const Icon(
-                                                        CupertinoIcons
-                                                            .xmark_circle_fill,
-                                                        color: Colors.white,
-                                                        size: 15,
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Text(
-                                                        e.toString(),
-                                                        style: const TextStyle(
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ],
+                                              (e) => Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 14,
+                                                  vertical: 8,
+                                                ),
+                                                margin: const EdgeInsets.only(
+                                                  right: 8,
+                                                  bottom: 8,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Colors.white,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey[200]!,
+                                                      blurRadius: 5,
+                                                      spreadRadius: 0.1,
+                                                      offset:
+                                                          const Offset(0, 2),
+                                                    )
+                                                  ],
+                                                ),
+                                                child: Text(
+                                                  e.toString(),
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
                                                   ),
                                                 ),
                                               ),
                                             )
                                             .toList(),
-                                      ),
-                                    ),
-                                  ],
+                                      );
+                                    },
+                                  ),
                                 ),
                               ],
                             ),

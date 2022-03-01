@@ -74,12 +74,6 @@ class _AddPostState extends State<AddPost> {
     });
   }
 
-  static const Map _interests = {
-    "Web development": true,
-    "Flutter": true,
-    "Android": true,
-  };
-
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
@@ -109,6 +103,13 @@ class _AddPostState extends State<AddPost> {
         });
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descController.dispose();
+    super.dispose();
   }
 
   @override
