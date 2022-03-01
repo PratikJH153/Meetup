@@ -47,7 +47,7 @@ class UserProvider with ChangeNotifier {
 
   void addSingleUserPost(Map newPost) {
     _userPosts[newPost["_id"]] = newPost;
-    _user!.posts!.add({newPost["_id"]:null});
+    _user!.posts!.add({newPost["_id"]: null});
     notifyListeners();
   }
 

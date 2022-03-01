@@ -119,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
           Map result = await UserAPIS.addUser(userMap);
           print(result);
           if (result["local_status"] != 200) {
-            UserSharedPreferences.setLoginStatus();
+            // UserSharedPreferences.setLoginStatus();
             snackBarWidget("Sorry couldn't create your profile",
                 const Color(0xFFff2954), context);
           } else {

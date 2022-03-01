@@ -159,10 +159,10 @@ Future<void> deleteComment(
 }
 
 Future<int> checkUserExists(BuildContext context, String uid) async {
-  final existingUser = await UserSharedPreferences.getUser();
-  if (existingUser != "null") {
-    return 1;
-  }
+  // final existingUser = await UserSharedPreferences.getUser();
+  // if (existingUser != "null") {
+  //   return 1;
+  // }
 
   print("CHECK USER EXISTS CALLING");
   final response = await UserAPIS.getCheckUserExists(uid);
@@ -214,10 +214,10 @@ Future<void> initialize(BuildContext context) async {
 
   UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
 
-  if (UserSharedPreferences.getUser() == "null") {
-    print("--11--");
-    await UserSharedPreferences.setLoginStatus(uid: user.uid);
-  }
+  // if (UserSharedPreferences.getUser() == "null") {
+  //   print("--11--");
+  //   await UserSharedPreferences.setLoginStatus(uid: user.uid);
+  // }
   if (user != null) {
     Map userData = await UserAPIS.getSingleUserData(user.uid);
     Map unpackedUserData = unPackLocally(userData);
@@ -234,6 +234,7 @@ Future<void> initialize(BuildContext context) async {
     }
   } else {
     userProvider.setWentWrong();
+    return;
   }
 }
 
