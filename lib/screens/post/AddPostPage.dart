@@ -65,6 +65,7 @@ class _AddPostState extends State<AddPost> {
 
       userProvider.addSingleUserPost(addPostBody);
       Fluttertoast.showToast(msg: "Added Post successfully!");
+      Navigator.of(context).pop();
     } else {
       Fluttertoast.showToast(msg: requestData["unpacked"]);
     }
