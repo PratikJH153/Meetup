@@ -2,16 +2,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/widgets/constants.dart';
 import 'package:provider/provider.dart';
 
 import '/models/comment.dart';
 import '/providers/CurrentPostProvider.dart';
+import '/widgets/constants.dart';
 import '/widgets/snackBar_widget.dart';
-import '/models/PopupMenuDataset.dart';
 import '/models/post.dart';
 import '/widgets/feed_interact_button.dart';
 import '/helper/backend/database.dart';
+import '/helper/backend/UserSharedPreferences.dart';
 import '/providers/PostProvider.dart';
 import '/helper/backend/apis.dart';
 import '/providers/UserProvider.dart';
@@ -159,6 +159,12 @@ Future<void> deleteComment(
 }
 
 Future<int> checkUserExists(BuildContext context, String uid) async {
+  final existingUser = await UserSharedPreferences.getUser();
+  if (existingUser != "null") {
+    return 1;
+  }
+
+  print("CHECK USER EXISTS CALLING");
   final response = await UserAPIS.getCheckUserExists(uid);
 
   Map responseData = unPackLocally(response);
@@ -208,6 +214,10 @@ Future<void> initialize(BuildContext context) async {
 
   UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
 
+  if (UserSharedPreferences.getUser() == "null") {
+    print("--11--");
+    await UserSharedPreferences.setLoginStatus(uid: user.uid);
+  }
   if (user != null) {
     Map userData = await UserAPIS.getSingleUserData(user.uid);
     Map unpackedUserData = unPackLocally(userData);
