@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meetupapp/widgets/interest_tag_widget.dart';
 
 class Register5 extends StatefulWidget {
   final Map selectedInterests;
@@ -38,13 +39,13 @@ class _Register5State extends State<Register5> {
             height: MediaQuery.of(context).size.height * 0.45,
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
-              itemCount: interests.length,
+              itemCount: widget.selectedInterests.length,
               padding: const EdgeInsets.only(
                 bottom: 100,
               ),
               itemBuilder: (ctx, index) {
-                final category = interests.keys.toList()[index];
-                final interestList = interests[category];
+                final category = widget.selectedInterests.keys.toList()[index];
+                final interestList = widget.selectedInterests[category];
                 return Container(
                   margin: const EdgeInsets.only(top: 15),
                   child: Column(

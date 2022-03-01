@@ -91,8 +91,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
     }
     Map updateBody = {};
+    String? url;
     if (image != null) {
-      final url = await uploadPic(id);
+      url = await uploadPic(id);
       if (url != null) {
         updateBody = {
           "firstname": firstNameController.text.trim(),
@@ -135,8 +136,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
         bio: bioController.text.trim(),
         age: age,
         gender: gendervalue,
+        profileURL: updateBody.containsKey("profileURL")
+            ? url ?? userProvider.getUser()!.profileURL
+            : userProvider.getUser()!.profileURL,
       );
       Fluttertoast.showToast(msg: "Updated Profile successfully!");
+      Navigator.of(context).pop();
     } else {
       Fluttertoast.showToast(msg: "Couldn't update Profile!");
     }
@@ -272,7 +277,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                               : ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(55),
-                                                  child: Image.file(image!)),
+                                                  child: Image.file(
+                                                    image!,
+                                                    fit: BoxFit.cover,
+                                                  )),
                                         ),
                                       ),
                                       Positioned(

@@ -6,7 +6,7 @@ const double kRightPadding = 22;
 
 const kPrimaryColor = Color(0xFF7586ff);
 const kUpvoteColor = kPrimaryColor;
-const kDownVoteColor = Color(0xFFff4a80);
+const kDownVoteColor = Color.fromARGB(255, 124, 124, 124);
 
 const Map<String, List<String>> interests = {
   "Technology": [
