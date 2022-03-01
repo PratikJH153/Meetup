@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meetupapp/screens/authentication/SelectInterestPage.dart';
 import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '/helper/backend/apis.dart';
@@ -127,6 +128,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("EDIT PROFILE PAGE BUILD");
     return SafeArea(
       child: Scaffold(
         body: user != null
@@ -213,6 +215,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 Expanded(
                                   child: TextFieldWidget(
                                     editingController: firstNameController,
+                                    textCapitalization:
+                                        TextCapitalization.words,
                                     label: "First Name",
                                     validatorHandler: (val) =>
                                         Validator.validateAuthFields(
@@ -227,6 +231,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 Expanded(
                                   child: TextFieldWidget(
                                     editingController: lastNameController,
+                                    textCapitalization:
+                                        TextCapitalization.words,
                                     label: "Last Name",
                                     validatorHandler: (val) =>
                                         Validator.validateAuthFields(
@@ -242,6 +248,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                             TextFieldWidget(
                               editingController: usernameController,
+                              textCapitalization: TextCapitalization.words,
                               label: "Username",
                               validatorHandler: (val) =>
                                   Validator.validateAuthFields(result: val),
@@ -284,6 +291,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                             TextFieldWidget(
                               editingController: bioController,
+                              textCapitalization: TextCapitalization.sentences,
                               label: "About me",
                               isBio: true,
                               validatorHandler: (val) {},
@@ -303,7 +311,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   ),
                                 ),
                                 IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (ctx) => SelectInterestPage(),
+                                      ),
+                                    );
+                                  },
                                   icon: const Icon(
                                     CupertinoIcons.add,
                                   ),

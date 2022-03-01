@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:meetupapp/widgets/constants.dart';
 import 'providers/CurrentPostProvider.dart';
 import 'screens/EditProfilePage.dart';
 import 'screens/post/UserPostScreen.dart';
@@ -9,7 +10,6 @@ import 'providers/PostProvider.dart';
 import 'providers/UserProvider.dart';
 import 'screens/FeedScreen.dart';
 import 'screens/HomePage.dart';
-import 'screens/authentication/LoginPage.dart';
 import 'screens/ProfilePage.dart';
 import 'screens/authentication/RegisterPage.dart';
 import 'screens/SearchPage.dart';
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
           primaryColor: const Color(0xFFee0979),
           colorScheme: const ColorScheme.light(
-            primary: Color(0xFFee0979),
+            primary: kPrimaryColor,
           ),
           pageTransitionsTheme: PageTransitionsTheme(
             builders: {
@@ -89,15 +89,14 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: Wrapper.routeName,
         routes: {
-          Wrapper.routeName: (ctx) => Wrapper(),
+          Wrapper.routeName: (ctx) => const Wrapper(),
           UserPosts.routeName: (ctx) => const UserPosts(),
           HomePage.routeName: (ctx) => const HomePage(),
-          LoginPage.routeName: (ctx) => const LoginPage(),
           RegisterPage.routeName: (ctx) => const RegisterPage(),
           GetStartedPage.routeName: (ctx) => const GetStartedPage(),
           ProfilePage.routeName: (ctx) => const ProfilePage(),
           FeedPage.routeName: (ctx) => const FeedPage(),
-          AddPost.routeName: (ctx) => AddPost(),
+          AddPost.routeName: (ctx) => const AddPost(),
           SearchPage.routeName: (ctx) => const SearchPage(),
           EditProfilePage.routeName: (ctx) => const EditProfilePage(),
         },

@@ -52,6 +52,7 @@ class Register3 extends StatelessWidget {
           ),
           TextFieldWidget(
             editingController: bioController,
+            textCapitalization: TextCapitalization.sentences,
             label: "About me",
             isBio: true,
             validatorHandler: (val) {},

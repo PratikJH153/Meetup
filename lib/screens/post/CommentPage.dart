@@ -122,6 +122,7 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("COMMENT PAGE BUILD");
     CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context);
     List commentList = currentPost.comments;
 
@@ -199,6 +200,8 @@ class _CommentPageState extends State<CommentPage> {
                                   ),
                                   Expanded(
                                     child: RefreshIndicator(
+                                      backgroundColor: Colors.white,
+                                      color: const Color(0xFF4776E6),
                                       onRefresh: () {
                                         return Future.delayed(
                                           const Duration(seconds: 1),

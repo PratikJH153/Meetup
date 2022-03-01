@@ -55,6 +55,8 @@ class FollowingList extends StatelessWidget {
                         label: "No Posts Yet!\nBe the first to Post.",
                       )
                     : RefreshIndicator(
+                        backgroundColor: Colors.white,
+                        color: const Color(0xFF4776E6),
                         onRefresh: () async {
                           await initializeFollowingPosts(context);
                         },

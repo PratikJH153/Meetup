@@ -18,7 +18,6 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '/helper/backend/apis.dart';
 import '/screens/HomePage.dart';
-import 'LoginPage.dart';
 
 class RegisterPage extends StatefulWidget {
   static const routeName = "/registerPage";
@@ -78,7 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
         print("GO FORWARD");
         final response = await checkUsernameExists(
           context,
-          _nameTextController.text.trim(),
+          _nameTextController.text.trim().toLowerCase(),
         );
         if (response == 1) {
           snackBarWidget("Username Exists. Please try different username",
@@ -148,8 +147,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _imagePicker() async {
     ImagePicker _picker = ImagePicker();
-    PickedFile? pickedFile =
-        await _picker.getImage(source: ImageSource.gallery);
+    PickedFile? pickedFile = await _picker.getImage(
+      source: ImageSource.gallery,
+      maxWidth: 800,
+      maxHeight: 600,
+      imageQuality: 50,
+    );
 
     if (pickedFile != null) {
       File pickedImage = File(pickedFile.path);
@@ -174,6 +177,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("REGISTER PAGE BUILD");
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -189,12 +193,9 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: _isProcessing
                 ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 30),
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(
-                          Color(0xFF4776E6),
-                        ),
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(
+                        Color(0xFF4776E6),
                       ),
                     ),
                   )
@@ -233,7 +234,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                             )
                           : const SizedBox(),
-                      if (step != 2)
+                      if (step != 1)
                         const SizedBox(
                           width: 10,
                         ),
@@ -262,7 +263,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     children: [
                       backButton(context),
                       const SizedBox(
-                        height: 25,
+                        height: 10,
                       ),
                       const Text(
                         "Welcome,",
@@ -281,18 +282,21 @@ class _RegisterPageState extends State<RegisterPage> {
                           color: Color(0xFF757575),
                         ),
                       ),
-                      // const SizedBox(
-                      //   height: 5,
-                      // ),
-                      // askUserAccountWidget(
-                      //   title: "Already have an account?",
-                      //   label: "Login Now.",
-                      //   tapHandler: () => Navigator.pushNamed(
-                      //     context,
-                      //     LoginPage.routeName,
-                      //   ),
-                      // ),
-                      const SizedBox(height: 10),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      const Text(
+                        "Please fill the details to continue.",
+                        style: TextStyle(
+                          fontSize: 15,
+                          height: 1.5,
+                          wordSpacing: 2,
+                          color: Color(0xFF707070),
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Quicksand",
+                        ),
+                      ),
+                      const SizedBox(height: 20),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -383,7 +387,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                                   }
                                                 },
                                               )
-                                            : SizedBox()
+                                            : const SizedBox()
                           ],
                         ),
                       ),

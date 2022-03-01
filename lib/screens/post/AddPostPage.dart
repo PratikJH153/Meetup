@@ -83,36 +83,39 @@ class _AddPostState extends State<AddPost> {
   };
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
     List<DropdownMenuItem<String>> items = [];
-    for (String city in _interests.keys.toList()) {
-      items.add(DropdownMenuItem(value: city, child: Text(city)));
+    for (String city in userProvider.getUser()!.interests!) {
+      items.add(
+        DropdownMenuItem(
+          value: city,
+          child: Text(city),
+        ),
+      );
     }
     return items;
   }
 
   Widget _filterBox() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(children: [
-          DropdownButton(
-            hint: Text(_selectedTag),
-            items: getDropDownMenuItems(),
-            underline: const SizedBox(),
-            onChanged: (String? s) {
-              setState(() {
-                _selectedTag = s!;
-              });
-            },
-          ),
-        ]),
-        const SizedBox(height: 10),
-      ],
+    return DropdownButton(
+      hint: Text(_selectedTag),
+      elevation: 1,
+      borderRadius: BorderRadius.circular(15),
+      dropdownColor: Colors.white,
+      items: getDropDownMenuItems(),
+      underline: const SizedBox(),
+      onChanged: (String? s) {
+        setState(() {
+          _selectedTag = s!;
+        });
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    print("ADD POST PAGE BUILD");
     return SafeArea(
       child: Scaffold(
         body: _isLoading
@@ -159,43 +162,6 @@ class _AddPostState extends State<AddPost> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // GestureDetector(
-                                    //   onTap: () async {
-                                    //     _selectedTag =
-                                    //         await Navigator.of(context).push(
-                                    //       MaterialPageRoute(
-                                    //         builder: (ctx) =>
-                                    //             ChoiceChipDisplay(_selectedTag),
-                                    //       ),
-                                    //     );
-                                    //     if (_selectedTag == Null) {
-                                    //       _selectedTag = "Tag";
-                                    //     }
-                                    //   },
-                                    //   child: Container(
-                                    //     padding: const EdgeInsets.symmetric(
-                                    //       horizontal: 15,
-                                    //       vertical: 8,
-                                    //     ),
-                                    //     decoration: BoxDecoration(
-                                    //       color: _selectedTag != "Tag"
-                                    //           ? const Color(0xFF6b7fff)
-                                    //           : Colors.grey,
-                                    //       borderRadius:
-                                    //           BorderRadius.circular(15),
-                                    //     ),
-                                    //     child: Text(
-                                    //       _selectedTag,
-                                    //       style: const TextStyle(
-                                    //         color: Colors.white,
-                                    //         fontWeight: FontWeight.w900,
-                                    //         fontFamily: "Raleway",
-                                    //         letterSpacing: 0.8,
-                                    //         fontSize: 11,
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    // ),
                                     _filterBox(),
                                     const SizedBox(
                                       height: 10,
@@ -208,6 +174,8 @@ class _AddPostState extends State<AddPost> {
                                         fontSize: 20,
                                         color: Colors.grey[800],
                                       ),
+                                      textCapitalization:
+                                          TextCapitalization.sentences,
                                       validator: (value) =>
                                           Validator.validateTitle(
                                         result: value,
@@ -231,6 +199,8 @@ class _AddPostState extends State<AddPost> {
                                         color: Colors.grey[800],
                                       ),
                                       maxLength: 1000,
+                                      textCapitalization:
+                                          TextCapitalization.sentences,
                                       decoration: InputDecoration(
                                         hintText:
                                             "Give a description (Optional)",

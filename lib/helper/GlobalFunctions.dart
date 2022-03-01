@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/widgets/constants.dart';
 import 'package:provider/provider.dart';
 
 import '/models/comment.dart';
@@ -268,11 +269,11 @@ Container VoteSection(BuildContext context, Post post) {
   }
 
   if (userVote == true) {
-    upvoteColor = Colors.teal;
+    upvoteColor = kUpvoteColor;
     downvoteColor = Colors.white;
   } else if (userVote == false) {
     upvoteColor = Colors.white;
-    downvoteColor = Colors.pink;
+    downvoteColor = kDownVoteColor;
   }
 
   return Container(
@@ -353,9 +354,12 @@ Container VoteSection(BuildContext context, Post post) {
   );
 }
 
-Future<void> vote(BuildContext context,
-    {required bool isUpvote, required String postID}) async {
-  UserProvider userProvider = Provider.of(context, listen: false);
+Future<void> vote(
+  BuildContext context, {
+  required bool isUpvote,
+  required String postID,
+}) async {
+  UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
   userProvider.addVoteToProcessing(postID);
 
   Function func = isUpvote ? PostAPIS.upVote : PostAPIS.downVote;

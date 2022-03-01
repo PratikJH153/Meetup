@@ -7,6 +7,7 @@ class TextFieldWidget extends StatelessWidget {
   final String label;
   final bool isBio;
   final TextInputType inputType;
+  final TextCapitalization textCapitalization;
   final Function(String value) validatorHandler;
   const TextFieldWidget({
     required this.icon,
@@ -14,6 +15,7 @@ class TextFieldWidget extends StatelessWidget {
     required this.label,
     required this.validatorHandler,
     required this.inputType,
+    required this.textCapitalization,
     this.isBio = false,
     Key? key,
   }) : super(key: key);
@@ -39,6 +41,7 @@ class TextFieldWidget extends StatelessWidget {
           Expanded(
             child: TextFormField(
               controller: editingController,
+              textCapitalization: textCapitalization,
               cursorColor: Colors.black,
               autofocus: false,
               maxLines: isBio ? null : 1,

@@ -174,6 +174,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("VIEW POST PAGE BUILD");
+
     CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(
       context,
     );

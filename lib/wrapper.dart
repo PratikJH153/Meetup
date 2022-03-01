@@ -34,18 +34,18 @@ class _WrapperState extends State<Wrapper> {
                 final data = snap.data;
                 if (data == 1) {
                   return const HomePage();
-                } else if (data == 2) {
-                  return const RegisterPage();
                 } else {
-                  Fluttertoast.showToast(msg: "Error while Authenticating");
+                  // Fluttertoast.showToast(msg: "Error while Authenticating");
                   return const GetStartedPage();
                 }
               } else if (snap.hasError) {
                 Fluttertoast.showToast(msg: "Error while Authenticating");
                 return const GetStartedPage();
               }
-              return const Center(
-                child: CircularProgressIndicator(),
+              return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
               );
             },
           );

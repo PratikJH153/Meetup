@@ -9,28 +9,31 @@ GestureDetector profileNumberWidget(
         Navigator.of(context).pushNamed(UserPosts.routeName);
       }
     },
-    child: Column(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-            fontFamily: "DMSans",
+    child: Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Column(
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              fontFamily: "DMSans",
+            ),
           ),
-        ),
-        const SizedBox(
-          height: 4,
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            letterSpacing: 1.2,
-            fontSize: 15,
-            color: Colors.grey[600],
+          const SizedBox(
+            height: 4,
           ),
-        )
-      ],
+          Text(
+            label,
+            style: TextStyle(
+              letterSpacing: 1.2,
+              fontSize: 15,
+              color: Colors.grey[600],
+            ),
+          )
+        ],
+      ),
     ),
   );
 }

@@ -33,10 +33,8 @@ class _FeedTileState extends State<FeedTile> {
         Provider.of<UserProvider>(context, listen: false);
 
     Map authorMap = widget.thePost.author ?? {};
-    String id = authorMap["_id"];
     String username = authorMap["username"];
     String profileUrl = authorMap["profileURL"];
-    bool isTheSameUser = id == userProvider.getUser()!.userID;
 
     return Container(
         margin: const EdgeInsets.only(bottom: 26),

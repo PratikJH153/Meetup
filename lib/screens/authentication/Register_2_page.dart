@@ -25,6 +25,7 @@ class Register2 extends StatelessWidget {
               Expanded(
                 child: TextFieldWidget(
                   editingController: firstNameController,
+                  textCapitalization: TextCapitalization.words,
                   label: "First Name",
                   validatorHandler: (val) =>
                       Validator.validateAuthFields(result: val),
@@ -38,6 +39,7 @@ class Register2 extends StatelessWidget {
               Expanded(
                 child: TextFieldWidget(
                   editingController: lastNameController,
+                  textCapitalization: TextCapitalization.words,
                   label: "Last Name",
                   validatorHandler: (val) =>
                       Validator.validateAuthFields(result: val),
@@ -52,6 +54,7 @@ class Register2 extends StatelessWidget {
           ),
           TextFieldWidget(
             editingController: nameController,
+            textCapitalization: TextCapitalization.none,
             label: "Username",
             validatorHandler: (val) =>
                 Validator.validateAuthFields(result: val),

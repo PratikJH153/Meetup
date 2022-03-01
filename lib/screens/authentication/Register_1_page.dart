@@ -20,6 +20,7 @@ class Register1 extends StatelessWidget {
         children: [
           TextFieldWidget(
             editingController: emailController,
+            textCapitalization: TextCapitalization.none,
             label: "Email",
             validatorHandler: (val) => Validator.validateEmail(
               email: val,
@@ -32,6 +33,7 @@ class Register1 extends StatelessWidget {
           ),
           TextFieldWidget(
             editingController: passwordController,
+            textCapitalization: TextCapitalization.none,
             label: "Password",
             validatorHandler: (val) => Validator.validatePassword(
               result: val,

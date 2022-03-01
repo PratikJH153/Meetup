@@ -9,7 +9,6 @@ import 'package:meetupapp/helper/utils/loader.dart';
 import 'package:meetupapp/screens/HomePage.dart';
 import 'package:meetupapp/widgets/google_signin_button.dart';
 import 'package:meetupapp/widgets/snackBar_widget.dart';
-import 'LoginPage.dart';
 import 'RegisterPage.dart';
 import '/widgets/ask_account_widget.dart';
 
@@ -106,6 +105,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("GET STARTED BUILD");
     return SafeArea(
       child: Scaffold(
         body: Container(

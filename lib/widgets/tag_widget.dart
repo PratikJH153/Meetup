@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/widgets/constants.dart';
 
 class TagWidget extends StatelessWidget {
   final String tag;
@@ -23,7 +24,7 @@ class TagWidget extends StatelessWidget {
             vertical: 8,
           ),
           decoration: BoxDecoration(
-            color: const Color(0xFF6b7fff),
+            color: const Color(0xFF545454),
             borderRadius: BorderRadius.circular(15),
           ),
           child: Row(

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meetupapp/widgets/placeholder_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -48,6 +49,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("HOME PAGE BUILD");
     UserProvider userProvider = Provider.of<UserProvider>(context);
     bool isLoadingComplete = userProvider.isUserDataLoaded;
     bool wentWrong = userProvider.wentWrongUser;
@@ -55,7 +57,10 @@ class _HomePageState extends State<HomePage> {
     return wentWrong
         ? const Scaffold(
             body: Center(
-              child: Text("Something went wrong!"),
+              child: PlaceholderWidget(
+                imageURL: "assets/images/wentwrong.png",
+                label: "Something went wrong.\nTry again later.",
+              ),
             ),
           )
         : !isLoadingComplete
@@ -93,9 +98,11 @@ class _HomePageState extends State<HomePage> {
                           isSelected: _selectedIndex == 0,
                         ),
                         onTap: () {
-                          setState(() {
-                            _selectedIndex = 0;
-                          });
+                          if (_selectedIndex != 0) {
+                            setState(() {
+                              _selectedIndex = 0;
+                            });
+                          }
                         },
                       ),
                       BottomAddButton(tapHandler: () async {
@@ -103,9 +110,11 @@ class _HomePageState extends State<HomePage> {
                       }),
                       GestureDetector(
                         onTap: () {
-                          setState(() {
-                            _selectedIndex = 1;
-                          });
+                          if (_selectedIndex != 1) {
+                            setState(() {
+                              _selectedIndex = 1;
+                            });
+                          }
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(

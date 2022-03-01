@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meetupapp/helper/utils/fire_auth.dart';
 import 'package:meetupapp/screens/EditProfilePage.dart';
 import 'package:meetupapp/screens/authentication/get_started_page.dart';
+import 'package:meetupapp/widgets/ask_dialog_widget.dart';
 import 'package:meetupapp/widgets/profile_button.dart';
 import 'package:provider/provider.dart';
 import '/helper/backend/apis.dart';
@@ -30,9 +31,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
-    UserClass? user = userProvider.getUser();
+    print("PROFILE PAGE BUILD");
+    UserClass? user =
+        Provider.of<UserProvider>(context, listen: true).getUser();
 
     bool userLoaded = user != null;
 
@@ -79,7 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         boxShadow: const [
                                           BoxShadow(
                                             color: Color.fromARGB(
-                                                255, 175, 175, 175),
+                                                255, 192, 192, 192),
                                             blurRadius: 5,
                                             spreadRadius: 0.2,
                                             offset: Offset(0, 3),
@@ -92,6 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                     Text(
                                       "${user.firstname} ${user.lastname}",
+                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontSize: 19,
                                         fontWeight: FontWeight.w500,
@@ -103,6 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                     Text(
                                       user.username.toString(),
+                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontSize: 14,
                                         color: Colors.grey,
@@ -129,7 +132,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   profileNumberWidget(
                                     context,
                                     "Posts",
-                                    user.posts!.length.toString(),
+                                    user.postCount.toString(),
                                   ),
                                   const Spacer(),
                                   GestureDetector(
@@ -288,8 +291,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                 icon: Icons.exit_to_app,
                                 isOpen: false,
                                 widget: const SizedBox(),
-                                tapHandler: () async {
-                                  await FireAuth.signOut(context);
+                                tapHandler: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => AskDialogWidget(
+                                      tapHandler: () async {
+                                        Navigator.of(context).pop();
+                                        await FireAuth.signOut(context);
+                                      },
+                                      title: "Logout",
+                                      des: "Do you really want to logout?",
+                                    ),
+                                  );
                                 },
                               ),
                               ProfileButton(
@@ -298,7 +311,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                 isOpen: false,
                                 widget: const SizedBox(),
                                 tapHandler: () async {
-                                  await FireAuth.signOut(context);
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => AskDialogWidget(
+                                      tapHandler: () async {
+                                        Navigator.of(context).pop();
+                                        await FireAuth.signOut(context);
+                                      },
+                                      title: "Delete Account",
+                                      des:
+                                          "Do you really want to permanently delete account?",
+                                    ),
+                                  );
                                 },
                               ),
 
