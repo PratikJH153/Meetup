@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '/helper/backend/UserSharedPreferences.dart';
+import 'package:meetupapp/screens/authentication/get_started_page.dart';
+import 'UserSharedPreferences.dart';
 import '/providers/UserProvider.dart';
 import '/widgets/snackBar_widget.dart';
 import 'package:provider/provider.dart';
@@ -160,6 +161,7 @@ class FireAuth {
 
     try {
       userProvider.deleteUserLocalData();
+      Navigator.of(context).pushReplacementNamed(GetStartedPage.routeName);
       await UserSharedPreferences.setLoginStatus();
       await auth.signOut();
     } catch (err) {

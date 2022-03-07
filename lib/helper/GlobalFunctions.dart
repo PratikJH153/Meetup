@@ -11,7 +11,7 @@ import '/widgets/snackBar_widget.dart';
 import '/models/post.dart';
 import '/widgets/feed_interact_button.dart';
 import '/helper/backend/database.dart';
-import '/helper/backend/UserSharedPreferences.dart';
+import 'utils/UserSharedPreferences.dart';
 import '/providers/PostProvider.dart';
 import '/helper/backend/apis.dart';
 import '/providers/UserProvider.dart';
@@ -84,23 +84,6 @@ String numberParser(int number) {
 
 void copyToClipboard(String text) {
   Clipboard.setData(ClipboardData(text: text));
-}
-
-Future<void> deletePost(BuildContext context, Post post) async {
-  final deleteData = await PostAPIS.deletePost(post.postID!);
-
-  UserProvider u = Provider.of<UserProvider>(context, listen: false);
-  PostProvider p = Provider.of<PostProvider>(context, listen: false);
-  p.removeSinglePost(postId: post.postID!);
-  u.deleteSingleUserPost(post.postID!);
-
-  Map deletePost = unPackLocally(deleteData);
-
-  if (deletePost["success"] == 1) {
-    Fluttertoast.showToast(msg: "Deleted Post!");
-  } else {
-    Fluttertoast.showToast(msg: "Couldn't Delete Post!");
-  }
 }
 
 Future<void> deleteComment(

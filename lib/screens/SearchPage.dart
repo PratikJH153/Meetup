@@ -25,6 +25,8 @@ class _SearchPageState extends State<SearchPage> {
   bool _isLoading = false;
   List postList = [];
 
+  // TO COMPLETE
+
   final TextEditingController _searchController = TextEditingController();
 
   Future<Map> unPackLocally() async {

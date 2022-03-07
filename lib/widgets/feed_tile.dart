@@ -23,6 +23,7 @@ class FeedTile extends StatefulWidget {
 }
 
 class _FeedTileState extends State<FeedTile> {
+  bool isLoading = false;
   bool isAddingInterests = false;
 
   @override
@@ -32,12 +33,11 @@ class _FeedTileState extends State<FeedTile> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
 
     Map authorMap = widget.thePost.author ?? {};
-    String username = authorMap["username"];
-    String profileUrl = authorMap["profileURL"];
+    String username = authorMap["username"] ?? "Unnamed";
+    String profileUrl = authorMap["profileURL"] ?? placeholder;
 
     return Container(
         margin: const EdgeInsets.only(bottom: 26),
@@ -101,6 +101,24 @@ class _FeedTileState extends State<FeedTile> {
                     ),
                   ],
                 ),
+                const Spacer(),
+                isLoading
+                    ? const GlobalLoader()
+                    : PopupMenuButton(
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            PopupMenuItem(
+                              child: Row(
+                                children: const [
+                                  Icon(Icons.delete),
+                                  Text("Delete"),
+                                ],
+                              ),
+                              onTap: () async {},
+                            )
+                          ];
+                        },
+                      )
               ],
             ),
             const SizedBox(

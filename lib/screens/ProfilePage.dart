@@ -2,18 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/helper/backend/apis.dart';
-import 'package:meetupapp/helper/backend/database.dart';
-import 'package:meetupapp/helper/utils/fire_auth.dart';
-import 'package:meetupapp/screens/AboutPage.dart';
-import 'package:meetupapp/screens/EditProfilePage.dart';
-import 'package:meetupapp/screens/authentication/get_started_page.dart';
-import 'package:meetupapp/widgets/ask_dialog_widget.dart';
-import 'package:meetupapp/widgets/profile_button.dart';
 import 'package:provider/provider.dart';
 
+import '/helper/backend/apis.dart';
+import '/helper/backend/database.dart';
 import '/helper/utils/fire_auth.dart';
+import '/screens/AboutPage.dart';
 import '/screens/EditProfilePage.dart';
+import '/widgets/ask_dialog_widget.dart';
 import '/widgets/profile_button.dart';
 import '/helper/utils/loader.dart';
 import '/widgets/profile_number_widget.dart';
@@ -37,8 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     print("PROFILE PAGE BUILD");
-    UserClass? user =
-        Provider.of<UserProvider>(context, listen: true).getUser();
+    UserClass? user = Provider.of<UserProvider>(context).getUser();
 
     bool userLoaded = user != null;
 
@@ -328,8 +323,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         _deleteUser(context);
                                       },
                                       title: "Delete Account",
-                                      des:
-                                          "Do you really want to permanently delete account?",
+                                      des: "Do you really want to permanently delete account?",
                                     ),
                                   );
                                 },
