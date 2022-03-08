@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/screens/post/CommentPage.dart';
-import 'package:meetupapp/widgets/tag_widget.dart';
+import '/screens/post/CommentPage.dart';
+import '/widgets/tag_widget.dart';
 import 'package:provider/provider.dart';
 
 import '/helper/GlobalFunctions.dart';
@@ -10,7 +10,6 @@ import '/helper/backend/database.dart';
 import '/helper/backend/apis.dart';
 import '/providers/CurrentPostProvider.dart';
 import '/providers/UserProvider.dart';
-import '/screens/post/AddPostPage.dart';
 import '/helper/utils/loader.dart';
 import '/models/post.dart';
 import '/widgets/constants.dart';
@@ -162,6 +161,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
     }
   }
 
+  bool isLoading = false;
+
   @override
   void initState() {
     _initialize();
@@ -241,6 +242,31 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                   color: Colors.grey,
                                 ),
                               ),
+                              PopupMenuButton(
+                                itemBuilder: (BuildContext context) {
+                                  return [
+                                    PopupMenuItem(
+                                      child: Row(
+                                        children: const [
+                                          Icon(Icons.delete),
+                                          Text("Delete"),
+                                        ],
+                                      ),
+                                      onTap: () async {
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        await deletePost(context, widget.thePost);
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                        Fluttertoast.showToast(msg: "Deleted Post!");
+                                        Navigator.pop(context);
+                                      },
+                                    )
+                                  ];
+                                },
+                              )
                             ],
                           ),
                           const SizedBox(

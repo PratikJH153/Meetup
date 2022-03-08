@@ -102,23 +102,6 @@ class _FeedTileState extends State<FeedTile> {
                   ],
                 ),
                 const Spacer(),
-                isLoading
-                    ? const GlobalLoader()
-                    : PopupMenuButton(
-                        itemBuilder: (BuildContext context) {
-                          return [
-                            PopupMenuItem(
-                              child: Row(
-                                children: const [
-                                  Icon(Icons.delete),
-                                  Text("Delete"),
-                                ],
-                              ),
-                              onTap: () async {},
-                            )
-                          ];
-                        },
-                      )
               ],
             ),
             const SizedBox(
