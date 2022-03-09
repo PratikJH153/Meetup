@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/screens/HomePage.dart';
+import 'package:meetupapp/wrapper.dart';
 import 'package:provider/provider.dart';
 
 import '/widgets/upper_widget_bottom_sheet.dart';
@@ -22,6 +24,7 @@ class AddPost extends StatefulWidget {
 
 class _AddPostState extends State<AddPost> {
   final _addPostFormKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
@@ -29,12 +32,11 @@ class _AddPostState extends State<AddPost> {
   bool _isLoading = false;
   String _selectedTag = "Tag";
 
-  Future<void> _addPostApi(BuildContext context) async {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
+  Future<void> _addPostApi(BuildContext ctx) async {
     setState(() {
       _isLoading = true;
     });
+    UserProvider userProvider = Provider.of<UserProvider>(ctx, listen: false);
 
     final addPost = await PostAPIS.addPost({
       "title": _titleController.text.trim(),
@@ -65,14 +67,16 @@ class _AddPostState extends State<AddPost> {
 
       userProvider.addSingleUserPost(addPostBody);
       Fluttertoast.showToast(msg: "Added Post successfully!");
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.of(_scaffoldKey.currentState!.context).pop();
     } else {
+      setState(() {
+        _isLoading = false;
+      });
       Fluttertoast.showToast(msg: requestData["unpacked"]);
     }
-
-    setState(() {
-      _isLoading = false;
-    });
-    Navigator.of(context).pop();
   }
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
@@ -118,6 +122,7 @@ class _AddPostState extends State<AddPost> {
     print("ADD POST PAGE BUILD");
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         body: _isLoading
             ? const GlobalLoader()
             : LayoutBuilder(
@@ -143,75 +148,78 @@ class _AddPostState extends State<AddPost> {
                             icon: CupertinoIcons.checkmark_alt,
                           ),
                           Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.only(
-                                top: 30,
-                                left: kLeftPadding,
-                                right: kLeftPadding,
-                                bottom: 50,
-                              ),
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
+                            child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              child: Container(
+                                padding: const EdgeInsets.only(
+                                  top: 10,
+                                  left: kLeftPadding + 10,
+                                  right: kLeftPadding + 10,
+                                  bottom: 50,
                                 ),
-                              ),
-                              child: Form(
-                                key: _addPostFormKey,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _filterBox(),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    TextFormField(
-                                      maxLines: null,
-                                      controller: _titleController,
-                                      style: TextStyle(
-                                        height: 1.3,
-                                        fontSize: 20,
-                                        color: Colors.grey[800],
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+                                ),
+                                child: Form(
+                                  key: _addPostFormKey,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _filterBox(),
+                                      const SizedBox(
+                                        height: 10,
                                       ),
-                                      textCapitalization:
-                                          TextCapitalization.sentences,
-                                      validator: (value) =>
-                                          Validator.validateTitle(
-                                        result: value!.trim(),
-                                        message: "Enter a valid Title",
-                                      ),
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Add an Title",
-                                        hintStyle: TextStyle(
+                                      TextFormField(
+                                        maxLines: null,
+                                        controller: _titleController,
+                                        style: TextStyle(
+                                          height: 1.3,
                                           fontSize: 20,
                                           color: Colors.grey[800],
                                         ),
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      maxLines: null,
-                                      controller: _descController,
-                                      style: TextStyle(
-                                        height: 1.5,
-                                        fontSize: 15,
-                                        color: Colors.grey[800],
-                                      ),
-                                      maxLength: 1000,
-                                      textCapitalization:
-                                          TextCapitalization.sentences,
-                                      decoration: InputDecoration(
-                                        hintText:
-                                            "Give a description (Optional)",
-                                        border: InputBorder.none,
-                                        hintStyle: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.grey[700],
+                                        textCapitalization:
+                                            TextCapitalization.sentences,
+                                        validator: (value) =>
+                                            Validator.validateTitle(
+                                          result: value!.trim(),
+                                          message: "Enter a valid Title",
+                                        ),
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: "Add an Title",
+                                          hintStyle: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.grey[800],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      TextFormField(
+                                        maxLines: null,
+                                        controller: _descController,
+                                        style: TextStyle(
+                                          height: 1.5,
+                                          fontSize: 15,
+                                          color: Colors.grey[800],
+                                        ),
+                                        maxLength: 1000,
+                                        textCapitalization:
+                                            TextCapitalization.sentences,
+                                        decoration: InputDecoration(
+                                          hintText:
+                                              "Give a description (Optional)",
+                                          border: InputBorder.none,
+                                          hintStyle: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.grey[700],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

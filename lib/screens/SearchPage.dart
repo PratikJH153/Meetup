@@ -35,7 +35,9 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _isLoading = true;
     });
-    final result = await PostAPIS.searchPost({"searchQuery": _searchString});
+    final result = await PostAPIS.searchPost({
+      "searchQuery": _searchString.trim().toLowerCase(),
+    });
     final Map requestData = unPackLocally(result);
 
     if (requestData["success"] == 1) {
@@ -176,6 +178,7 @@ class _SearchPageState extends State<SearchPage> {
                                                     icon: CupertinoIcons.search,
                                                     tapHandler: () async {
                                                       if (_searchString
+                                                          .trim()
                                                           .isEmpty) {
                                                         snackBarWidget(
                                                           "Seach query can't be empty",

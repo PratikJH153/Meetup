@@ -33,6 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
   bool openAbout = false;
   bool openInterests = false;
   bool isLoading = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +42,8 @@ class _ProfilePageState extends State<ProfilePage> {
         Provider.of<UserProvider>(context, listen: true).getUser();
 
     bool userLoaded = user != null;
+
+    //TODO:POST COUNT NOT UPDATING
 
     return SafeArea(
       child: Scaffold(
@@ -208,7 +211,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   user.bio.toString() != ""
                                       ? user.bio.toString()
                                       : "A meetup user!",
-                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     height: 1.5,
                                     color: Colors.grey[700],
@@ -286,9 +288,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                 label: "About & Help",
                                 icon: CupertinoIcons.question_circle_fill,
                                 tapHandler: () {
-                                  Navigator.of(context).push(CupertinoPageRoute(
-                                      builder: (_) =>
-                                          const AboutAndHelpPage()));
+                                  Navigator.of(context).push(
+                                    CupertinoPageRoute(
+                                      builder: (_) => const AboutAndHelpPage(),
+                                    ),
+                                  );
                                 },
                                 isOpen: false,
                                 widget: const SizedBox(),
@@ -303,8 +307,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     context: context,
                                     builder: (ctx) => AskDialogWidget(
                                       tapHandler: () async {
-                                        Navigator.of(context).pop();
-                                        await FireAuth.signOut(context);
+                                        Navigator.of(ctx).pop();
+                                        await FireAuth.signOut(ctx);
                                       },
                                       title: "Logout",
                                       des: "Do you really want to logout?",
@@ -322,8 +326,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     context: context,
                                     builder: (ctx) => AskDialogWidget(
                                       tapHandler: () async {
-                                        Navigator.of(context).pop();
-                                        _deleteUser(context);
+                                        Navigator.of(ctx).pop();
+                                        _deleteUser(ctx);
                                       },
                                       title: "Delete Account",
                                       des:

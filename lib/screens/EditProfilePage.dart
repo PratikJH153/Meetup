@@ -156,7 +156,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() {
       updatingNow = false;
     });
-    Navigator.of(context).pop();
   }
 
   final genders = const [

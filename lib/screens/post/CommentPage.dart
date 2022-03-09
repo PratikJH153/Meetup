@@ -140,90 +140,88 @@ class _CommentPageState extends State<CommentPage> {
                 ? const Text("Couldn't fetch comments")
                 : !isLoadedComments
                     ? const Expanded(child: Center(child: GlobalLoader()))
-                    : commentList.isNotEmpty
-                        ? Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.only(
-                                top: 20,
-                                left: 24,
-                                right: 24,
-                              ),
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(40),
-                                  topRight: Radius.circular(40),
-                                ),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    : Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.only(
+                            top: 20,
+                            left: 24,
+                            right: 24,
+                          ),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(40),
+                              topRight: Radius.circular(40),
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        "Comments",
-                                        style: TextStyle(
-                                          fontFamily: "Quicksand",
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 17,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Container(
-                                        decoration: const BoxDecoration(
-                                          color: Colors.white,
-                                          shape: BoxShape.circle,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Color(0xFFdedede),
-                                              blurRadius: 1,
-                                              spreadRadius: 0.5,
-                                              offset: Offset(0, 1),
-                                            )
-                                          ],
-                                        ),
-                                        padding: const EdgeInsets.all(7),
-                                        child: Text(
-                                          commentList.length.toString(),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 15,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                  const Text(
+                                    "Comments",
+                                    style: TextStyle(
+                                      fontFamily: "Quicksand",
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 17,
+                                    ),
                                   ),
                                   const SizedBox(
-                                    height: 20,
+                                    width: 8,
                                   ),
-                                  Expanded(
-                                    child: RefreshIndicator(
-                                      backgroundColor: Colors.white,
-                                      color: const Color(0xFF4776E6),
-                                      onRefresh: () {
-                                        return Future.delayed(
-                                          const Duration(seconds: 1),
-                                          () {
-                                            setState(() {
-                                              _initialize();
-                                            });
-                                          },
-                                        );
-                                      },
-                                      child: _CommentList(commentList),
+                                  Container(
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0xFFdedede),
+                                          blurRadius: 1,
+                                          spreadRadius: 0.5,
+                                          offset: Offset(0, 1),
+                                        )
+                                      ],
+                                    ),
+                                    padding: const EdgeInsets.all(7),
+                                    child: Text(
+                                      commentList.length.toString(),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 15,
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                          )
-                        : const PlaceholderWidget(
-                            imageURL: "assets/images/comment.png",
-                            label: "No Comments Yet!\nBe the first to comment.",
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Expanded(
+                                child: RefreshIndicator(
+                                  backgroundColor: Colors.white,
+                                  color: const Color(0xFF4776E6),
+                                  onRefresh: () {
+                                    return Future.delayed(
+                                      const Duration(seconds: 1),
+                                      () {
+                                        setState(() {
+                                          _initialize();
+                                        });
+                                      },
+                                    );
+                                  },
+                                  child: !commentList.isNotEmpty
+                                      ? const Expanded(
+                                          child: SizedBox(),
+                                        )
+                                      : _CommentList(commentList),
+                                ),
+                              ),
+                            ],
                           ),
-            if (commentList.isEmpty) const Spacer(),
+                        ),
+                      ),
             Container(
               margin: const EdgeInsets.only(
                 left: 24,
@@ -320,6 +318,7 @@ class _CommentPageState extends State<CommentPage> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
+                          fit: BoxFit.cover,
                           image: NetworkImage(
                             commentList[index]["userID"]["profileURL"],
                           ),

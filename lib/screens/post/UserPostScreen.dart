@@ -131,12 +131,15 @@ class _UserPostsState extends State<UserPosts> {
                                   ),
                                 ],
                               ),
+                              const SizedBox(
+                                height: 10,
+                              ),
                               Expanded(
                                 child: ListView.builder(
                                   shrinkWrap: true,
                                   padding: const EdgeInsets.only(
                                     bottom: 200,
-                                    top: 20,
+                                    top: 10,
                                   ),
                                   physics: const BouncingScrollPhysics(),
                                   itemCount: userPosts.length,

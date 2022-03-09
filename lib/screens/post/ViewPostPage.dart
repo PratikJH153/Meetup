@@ -28,6 +28,7 @@ class ViewPostPage extends StatefulWidget {
 }
 
 class _ViewPostPageState extends State<ViewPostPage> {
+  bool isAddingInterests = false;
   _ProfileRow() => Row(
         children: [
           SizedBox(
@@ -169,6 +170,17 @@ class _ViewPostPageState extends State<ViewPostPage> {
   }
 
   /// DEPENDENCIES
+  ///
+
+  void addInterest(BuildContext context, String id, String tag) async {
+    setState(() {
+      isAddingInterests = true;
+    });
+    await addInterests(context, id, tag);
+    setState(() {
+      isAddingInterests = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -224,16 +236,24 @@ class _ViewPostPageState extends State<ViewPostPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               if (widget.thePost.tag != null)
-                                TagWidget(
-                                  tag: widget.thePost.tag!,
-                                  tapHandler: () {
-                                    print("HELLO");
-                                  },
-                                  canAdd: !userProvider
-                                      .getUser()!
-                                      .interests!
-                                      .contains(widget.thePost.tag!),
-                                ),
+                                isAddingInterests
+                                    ? const GlobalLoader()
+                                    : TagWidget(
+                                        tag: widget.thePost.tag!,
+                                        tapHandler: () {
+                                          UserProvider userProvider =
+                                              Provider.of<UserProvider>(context,
+                                                  listen: false);
+                                          addInterest(
+                                              context,
+                                              userProvider.getUser()!.userID!,
+                                              widget.thePost.tag!);
+                                        },
+                                        canAdd: !userProvider
+                                            .getUser()!
+                                            .interests!
+                                            .contains(widget.thePost.tag!),
+                                      ),
                               Text(
                                 "${widget.thePost.timeReadCalc()} mins read",
                                 style: const TextStyle(

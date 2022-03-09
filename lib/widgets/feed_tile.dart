@@ -35,6 +35,8 @@ class _FeedTileState extends State<FeedTile> {
     });
   }
 
+  //TODO: REMOVE RUKO JARA SABAR KARO
+
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider =
@@ -125,19 +127,24 @@ class _FeedTileState extends State<FeedTile> {
             const SizedBox(
               height: 5,
             ),
-            // Text(
-            //   widget.thePost.desc ?? "",
-            //   maxLines: 4,
-            //   overflow: TextOverflow.ellipsis,
-            //   style: const TextStyle(
-            //     fontSize: 14,
-            //     height: 1.4,
-            //     fontFamily: "Raleway",
-            //     color: Color(0xFF5c5c5c),
-            //   ),
-            // ),
+            if (widget.thePost.desc != null &&
+                widget.thePost.desc!.trim().isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Text(
+                  widget.thePost.desc!,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.4,
+                    fontFamily: "Raleway",
+                    color: Color(0xFF5c5c5c),
+                  ),
+                ),
+              ),
             const SizedBox(
-              height: 28,
+              height: 20,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

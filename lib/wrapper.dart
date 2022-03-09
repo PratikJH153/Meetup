@@ -17,40 +17,48 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
   late User? user;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     print("WRAPPER CALLED");
-    return StreamBuilder(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, AsyncSnapshot snapshot) {
-        print("STREAM AND FUTURE WRAPPER CALLED");
-        if (snapshot.hasData) {
-          return FutureBuilder(
-            future: checkUserExists(context, snapshot.data!.uid!),
-            builder: (ctx, AsyncSnapshot snap) {
-              if (snap.hasData) {
-                final data = snap.data;
-                if (data == 1) {
-                  return const HomePage();
-                } else {
-                  // Fluttertoast.showToast(msg: "Error while Authenticating");
+    return Scaffold(
+      key: _scaffoldKey,
+      body: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, AsyncSnapshot snapshot) {
+          print("STREAM AND FUTURE WRAPPER CALLED");
+          if (snapshot.hasData) {
+            return FutureBuilder(
+              future: checkUserExists(context, snapshot.data!.uid!),
+              builder: (ctx, AsyncSnapshot snap) {
+                if (snap.hasData) {
+                  final data = snap.data;
+                  if (data == 1) {
+                    return const HomePage();
+                  } else {
+                    // Fluttertoast.showToast(msg: "Error while Authenticating");
+                    return const GetStartedPage();
+                  }
+                } else if (snap.hasError) {
+                  Fluttertoast.showToast(msg: "Error while Authenticating");
+                  // Navigator.of(_scaffoldKey.currentState!.context)
+                  //     .popUntil((route) => false);
+                  //TODO:CHECKING REMANINING
+                  Navigator.of(context).popUntil((route) => false);
                   return const GetStartedPage();
                 }
-              } else if (snap.hasError) {
-                Fluttertoast.showToast(msg: "Error while Authenticating");
-                return const GetStartedPage();
-              }
-              return const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            },
-          );
-        }
-        return const GetStartedPage();
-      },
+                return const Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              },
+            );
+          }
+          return const GetStartedPage();
+        },
+      ),
     );
   }
 }

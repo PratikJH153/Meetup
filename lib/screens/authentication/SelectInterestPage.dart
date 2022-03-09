@@ -6,6 +6,7 @@ import 'package:meetupapp/models/UserClass.dart';
 import 'package:meetupapp/providers/UserProvider.dart';
 import 'package:meetupapp/widgets/constants.dart';
 import 'package:meetupapp/widgets/interest_tag_widget.dart';
+import 'package:meetupapp/widgets/snackBar_widget.dart';
 import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,7 @@ class SelectInterestPage extends StatefulWidget {
 class _SelectInterestPageState extends State<SelectInterestPage> {
   Map interestMap = {};
   bool isLoading = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -38,6 +40,7 @@ class _SelectInterestPageState extends State<SelectInterestPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         body: isLoading
             ? const Center(
                 child: GlobalLoader(),
@@ -46,7 +49,15 @@ class _SelectInterestPageState extends State<SelectInterestPage> {
                 children: [
                   UpperWidgetOfBottomSheet(
                     tapHandler: () async {
-                      _updateInterests(context);
+                      if (interestMap.length >= 5) {
+                        _updateInterests(context);
+                      } else {
+                        snackBarWidget(
+                          "Please select atleast 5 interests",
+                          const Color(0xFFff2954),
+                          context,
+                        );
+                      }
                     },
                     icon: Icons.check,
                     toShow: true,
@@ -144,7 +155,7 @@ class _SelectInterestPageState extends State<SelectInterestPage> {
     if (updateResultUnpacked["success"] == 1) {
       userProvider.updateUserInfo(interests: interestMap.keys.toList());
       Fluttertoast.showToast(msg: "Interest updated successfully!");
-      Navigator.of(context).pop();
+      Navigator.of(_scaffoldKey.currentState!.context).pop();
     } else {
       Fluttertoast.showToast(msg: "Couldn't update interests!");
     }
