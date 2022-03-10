@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/providers/PostProvider.dart';
+import 'package:meetupapp/providers/PostProvider.dart';
 import 'package:provider/provider.dart';
 
 import '/widgets/upper_widget_bottom_sheet.dart';
@@ -30,8 +32,8 @@ class _AddPostState extends State<AddPost> {
   String _selectedTag = "Tag";
 
   Future<void> _addPostApi(BuildContext context) async {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    PostProvider postProvider = Provider.of<PostProvider>(context, listen: false);
     setState(() {
       _isLoading = true;
     });
@@ -63,7 +65,8 @@ class _AddPostState extends State<AddPost> {
         "downvotes": unpacked["downvotes"] ?? 0,
       };
 
-      userProvider.addSingleUserPost(addPostBody);
+      postProvider.addSingleUserPost(addPostBody);
+      userProvider.addPostCount();
       Fluttertoast.showToast(msg: "Added Post successfully!");
     } else {
       Fluttertoast.showToast(msg: requestData["unpacked"]);

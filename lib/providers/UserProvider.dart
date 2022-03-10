@@ -4,12 +4,24 @@ import '/models/UserClass.dart';
 
 class UserProvider with ChangeNotifier {
   bool isUserDataLoaded = false;
-  bool isUserPostsLoaded = false;
 
   bool wentWrongUser = false;
   bool wentWrongPosts = false;
 
   Map _processingVotePosts = {};
+
+  int _userPostCount = 0;
+  int get userPostCount => _userPostCount;
+
+  void addPostCount(){
+    _userPostCount++;
+    notifyListeners();
+  }
+
+  void reducePostCount(){
+    _userPostCount--;
+    notifyListeners();
+  }
 
   void addVoteToProcessing(String postId) {
     _processingVotePosts[postId] = true;
@@ -36,25 +48,6 @@ class UserProvider with ChangeNotifier {
   final Map _userPosts = {};
 
   Map get userPosts => {..._userPosts};
-
-  void initializeUserPosts(List posts) {
-    for (var element in posts) {
-      _userPosts[element["_id"]] = element;
-    }
-    isUserPostsLoaded = true;
-    notifyListeners();
-  }
-
-  void addSingleUserPost(Map newPost) {
-    _userPosts[newPost["_id"]] = newPost;
-    _user!.posts!.add({newPost["_id"]:null});
-    notifyListeners();
-  }
-
-  void deleteSingleUserPost(String postId) {
-    _userPosts.remove(postId);
-    notifyListeners();
-  }
 
   void updateUserInfo(
       {String? firstname,
@@ -203,6 +196,7 @@ class UserProvider with ChangeNotifier {
 
   void setUser(Map<String, dynamic>? userMap) {
     if (userMap != null) {
+      _userPostCount = userMap["posts"].length;
       _user = UserClass.fromJson(userMap);
     }
     isUserDataLoaded = true;

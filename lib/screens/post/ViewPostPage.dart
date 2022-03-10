@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
 import '/screens/post/CommentPage.dart';
 import '/widgets/tag_widget.dart';
-import 'package:provider/provider.dart';
-
 import '/helper/GlobalFunctions.dart';
 import '/helper/backend/database.dart';
 import '/helper/backend/apis.dart';
@@ -15,7 +16,6 @@ import '/models/post.dart';
 import '/widgets/constants.dart';
 import '/widgets/recommended_feed_tile.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class ViewPostPage extends StatefulWidget {
   final Post thePost;
@@ -89,7 +89,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
           ),
           if (widget.thePost.desc != "")
             SelectableText(
-              widget.thePost.desc!,
+              widget.thePost.desc??"",
               style: TextStyle(
                 fontSize: 16,
                 height: 1.5,
@@ -152,6 +152,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
       "interest": widget.thePost.tag,
       "userID": userProvider.getUser()!.userID,
     });
+
     Map unpackedRelatedPostsData = unPackLocally(relatedPostsData);
 
     if (unpackedRelatedPostsData["success"] == 1) {
@@ -161,8 +162,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
     }
   }
 
-  bool isLoading = false;
-
   @override
   void initState() {
     _initialize();
@@ -170,22 +169,20 @@ class _ViewPostPageState extends State<ViewPostPage> {
   }
 
   /// DEPENDENCIES
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     print("VIEW POST PAGE BUILD");
-
-    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(
-      context,
-    );
-
+    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context);
     UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
-
     List trendingList = currentPost.relatedPost;
 
-    bool isLoadedTrending = currentPost.isRelatedLoaded;
-    bool wentWrongTrending = currentPost.wentWrongRelated;
+    bool isLoadedRelated = currentPost.isRelatedLoaded;
+    bool wentWrongRelated = currentPost.wentWrongRelated;
+
+    bool showDelete = userProvider.getUser()!.userID == widget.thePost.author!["_id"];
 
     return SafeArea(
       child: Scaffold(
@@ -242,31 +239,34 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                   color: Colors.grey,
                                 ),
                               ),
-                              PopupMenuButton(
-                                itemBuilder: (BuildContext context) {
-                                  return [
-                                    PopupMenuItem(
-                                      child: Row(
-                                        children: const [
-                                          Icon(Icons.delete),
-                                          Text("Delete"),
-                                        ],
-                                      ),
-                                      onTap: () async {
-                                        setState(() {
-                                          isLoading = true;
-                                        });
-                                        await deletePost(context, widget.thePost);
-                                        setState(() {
-                                          isLoading = false;
-                                        });
-                                        Fluttertoast.showToast(msg: "Deleted Post!");
-                                        Navigator.pop(context);
-                                      },
-                                    )
-                                  ];
-                                },
-                              )
+                              if (showDelete)
+                                PopupMenuButton(
+                                  itemBuilder: (BuildContext context) {
+                                    return [
+                                      PopupMenuItem(
+                                        child: Row(
+                                          children: const [
+                                            Icon(Icons.delete),
+                                            Text("Delete"),
+                                          ],
+                                        ),
+                                        onTap: () async {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          await deletePost(
+                                              context, widget.thePost);
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                          Fluttertoast.showToast(
+                                              msg: "Deleted Post!");
+                                          Navigator.pop(context);
+                                        },
+                                      )
+                                    ];
+                                  },
+                                )
                             ],
                           ),
                           const SizedBox(
@@ -323,8 +323,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
                           ),
                           _ReccomendedPostsSection(
                             posts: trendingList,
-                            wentWrong: wentWrongTrending,
-                            isLoading: !isLoadedTrending,
+                            wentWrong: wentWrongRelated,
+                            isLoading: !isLoadedRelated,
                           )
                         ],
                       ),
