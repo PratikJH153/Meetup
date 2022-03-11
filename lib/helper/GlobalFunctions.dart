@@ -17,8 +17,7 @@ import '/providers/PostProvider.dart';
 import '/helper/backend/apis.dart';
 import '/providers/UserProvider.dart';
 
-const String extra =
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
+const String extra = "aosiduiaduiaduiahgdiuahdihasdiasdoa"
     "aosiduiaduiaduiahgdiuahdihasdiasdoa"
     "aosiduiaduiaduiahgdiuahdihasdiasdoa"
     "aosiduiaduiaduiahgdiuahdihasdiasdoa"
@@ -122,7 +121,10 @@ Future<void> addInterests(
 }
 
 Future<void> deletePost(BuildContext context, Post post) async {
-  final deleteData = await PostAPIS.deletePost(post.postID!,post.author!["_id"]);
+  final deleteData = await PostAPIS.deletePost({
+    "id": post.postID!,
+    "userID": post.author!["_id"],
+  });
 
   UserProvider u = Provider.of<UserProvider>(context, listen: false);
   PostProvider p = Provider.of<PostProvider>(context, listen: false);
@@ -210,11 +212,10 @@ Future<int> checkUsernameExists(BuildContext context, String username) async {
 }
 
 Future<void> initializeUserPosts(BuildContext context) async {
-
   UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
   PostProvider postProvider = Provider.of<PostProvider>(context, listen: false);
 
-  if(postProvider.isLoadedUserPosts){
+  if (postProvider.isLoadedUserPosts) {
     return;
   }
 
@@ -226,7 +227,8 @@ Future<void> initializeUserPosts(BuildContext context) async {
   }
 
   // postProvider.toggleUserPostsLoaded(false);
-  final initResult = await PostAPIS.getUserPosts(FirebaseAuth.instance.currentUser!.uid);
+  final initResult =
+      await PostAPIS.getUserPosts(FirebaseAuth.instance.currentUser!.uid);
   Map unpackedData = unPackLocally(initResult);
   postProvider.toggleUserPostsLoaded(true);
 
@@ -241,7 +243,6 @@ Future<void> initializeUserPosts(BuildContext context) async {
     Fluttertoast.showToast(msg: "Something went wrong!");
   }
 }
-
 
 Future<void> initialize(BuildContext context) async {
   User? user = FirebaseAuth.instance.currentUser;

@@ -141,15 +141,12 @@ class PostAPIS {
     return GET(endpoint);
   }
 
-  static Future<Map> deletePost(String id, String userID) async {
+  static Future<Map> deletePost(Map body) async {
     if (kDebugMode) {
       print("CALLING deletePost(String id)");
     }
     String endpoint = "posts/deletePost";
-    return POST(endpoint, {
-      "id": id,
-      "userID": userID,
-    });
+    return POST(endpoint, body);
   }
 
   static Future<Map> searchPost(Map body) async {
