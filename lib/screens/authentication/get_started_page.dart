@@ -27,13 +27,13 @@ class GetStartedPage extends StatefulWidget {
 class _GetStartedPageState extends State<GetStartedPage> {
   bool _isProcessing = false;
 
-  void _signInGoogle() async {
+  void _signInGoogle(BuildContext ctx) async {
     setState(() {
       _isProcessing = true;
     });
 
     User? user = await FireAuth.signInWithGoogle(
-      context: context,
+      context: ctx,
       label: "Error while Google sign in",
     );
     if (user != null) {
@@ -42,18 +42,18 @@ class _GetStartedPageState extends State<GetStartedPage> {
         user.uid.toString(),
       );
       if (status == 1) {
-        Navigator.of(context, rootNavigator: true)
+        Navigator.of(ctx, rootNavigator: true)
             .pushReplacementNamed(HomePage.routeName);
         return;
       } else if (status == 2) {
-        Navigator.of(context, rootNavigator: true)
+        Navigator.of(ctx, rootNavigator: true)
             .pushReplacementNamed(RegisterPage.routeName);
         return;
       } else {
         snackBarWidget(
           "Error while Authenticating",
           const Color(0xFFff2954),
-          context,
+          ctx,
         );
         return;
       }
@@ -63,33 +63,33 @@ class _GetStartedPageState extends State<GetStartedPage> {
     });
   }
 
-  void _signUpGoogle() async {
+  void _signUpGoogle(BuildContext ctx) async {
     setState(() {
       _isProcessing = true;
     });
 
     User? user = await FireAuth.signInWithGoogle(
-      context: context,
+      context: ctx,
       label: "Error while Google sign up",
     );
     if (user != null) {
       final status = await checkUserExists(
-        context,
+        ctx,
         user.uid.toString(),
       );
       if (status == 1) {
-        Navigator.of(context, rootNavigator: true)
+        Navigator.of(ctx, rootNavigator: true)
             .pushReplacementNamed(HomePage.routeName);
         return;
       } else if (status == 2) {
-        Navigator.of(context, rootNavigator: true)
+        Navigator.of(ctx, rootNavigator: true)
             .pushReplacementNamed(RegisterPage.routeName);
         return;
       } else {
         snackBarWidget(
           "Error while Authenticating",
           const Color(0xFFff2954),
-          context,
+          ctx,
         );
         return;
       }
@@ -162,7 +162,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                       vertical: 15,
                                     ),
                                   ),
-                                  onPressed: _signUpGoogle,
+                                  onPressed: () => _signUpGoogle(context),
                                   child: const Text(
                                     GetStartedPage._getStarted,
                                     style: TextStyle(
@@ -172,7 +172,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
                                 ),
                               ),
                               GoogleSignInButton(
-                                _signInGoogle,
+                                () => _signInGoogle(context),
                               ),
                             ],
                           )
