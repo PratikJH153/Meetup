@@ -44,6 +44,7 @@ Future<Map> REQUEST(Function function, String url, {Map? body}) async {
           options: Options(
               headers: {Headers.acceptHeader: Headers.jsonContentType}));
     }
+
     var decodedResult = Map.castFrom(response.data);
 
     status = response.data["status"];
