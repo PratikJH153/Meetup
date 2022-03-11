@@ -34,6 +34,7 @@ class UserAPIS {
     String endpoint = "users/addUser/";
     return POST(endpoint, body);
   }
+
   static Future<Map> addInterest(Map body) async {
     if (kDebugMode) {
       print("CALLING addInterest(Map body)");
@@ -140,12 +141,15 @@ class PostAPIS {
     return GET(endpoint);
   }
 
-  static Future<Map> deletePost(String id) async {
+  static Future<Map> deletePost(String id, String userID) async {
     if (kDebugMode) {
       print("CALLING deletePost(String id)");
     }
-    String endpoint = "posts/deletePost/$id";
-    return DELETE(endpoint);
+    String endpoint = "posts/deletePost";
+    return POST(endpoint, {
+      "id": id,
+      "userID": userID,
+    });
   }
 
   static Future<Map> searchPost(Map body) async {

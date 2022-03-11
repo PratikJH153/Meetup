@@ -122,7 +122,7 @@ Future<void> addInterests(
 }
 
 Future<void> deletePost(BuildContext context, Post post) async {
-  final deleteData = await PostAPIS.deletePost(post.postID!);
+  final deleteData = await PostAPIS.deletePost(post.postID!,post.author!["_id"]);
 
   UserProvider u = Provider.of<UserProvider>(context, listen: false);
   PostProvider p = Provider.of<PostProvider>(context, listen: false);
