@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:meetupapp/helper/backend/UserSharedPreferences.dart';
+import 'package:meetupapp/helper/utils/UserSharedPreferences.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';

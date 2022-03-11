@@ -51,6 +51,7 @@ class CurrentPostProvider extends ChangeNotifier {
   void resetRelatedPosts() {
     isRelatedLoaded = false;
     _getRelated = [];
+    // notifyListeners();
   }
 
   void setRelatedPosts(List relatedPosts) {

@@ -1,16 +1,16 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/widgets/constants.dart';
-import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
+import 'package:meetupapp/providers/PostProvider.dart';
+import 'package:provider/provider.dart';
+
+import '/helper/GlobalFunctions.dart';
 import '/helper/utils/loader.dart';
-import '/helper/backend/apis.dart';
 import '/helper/backend/database.dart';
 import '/models/post.dart';
 import '/providers/UserProvider.dart';
 import '/screens/post/ViewPostPage.dart';
+import '/widgets/constants.dart';
+import '/widgets/upper_widget_bottom_sheet.dart';
 import '/widgets/feed_tile.dart';
-import 'package:provider/provider.dart';
 
 class UserPosts extends StatefulWidget {
   static const String routeName = "UserPosts";
@@ -22,30 +22,6 @@ class UserPosts extends StatefulWidget {
 }
 
 class _UserPostsState extends State<UserPosts> {
-  Future<void> initializeUserPosts(BuildContext context) async {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      userProvider.setWentWrongPosts();
-
-      return;
-    }
-
-    final initResult =
-        await PostAPIS.getUserPosts(FirebaseAuth.instance.currentUser!.uid);
-    Map unpackedData = unPackLocally(initResult);
-
-    if (unpackedData["success"] == 1) {
-      final data = unpackedData["unpacked"];
-      userProvider.initializeUserPosts(data["posts"]);
-      userProvider.updateRatingMap(
-          data["posts"]); // ADD UPVOTE/DOWNVOTE COUNT TO INITIALIZED POSTS
-    } else {
-      userProvider.setWentWrongPosts();
-      Fluttertoast.showToast(msg: "Something went wrong!");
-    }
-  }
 
   @override
   void initState() {
@@ -53,23 +29,25 @@ class _UserPostsState extends State<UserPosts> {
     super.initState();
   }
 
+  bool isLoadingDependency = false;
+
   @override
   Widget build(BuildContext context) {
-    print("USER POSTS PAGE BUILD");
+    if (kDebugMode) {
+      print("USER POSTS PAGE BUILD");
+    }
+    PostProvider postProvider = Provider.of<PostProvider>(context);
+    bool isLoadedUserPosts = postProvider.isLoadedUserPosts;
+    bool wentWrongUserPosts = postProvider.wentWrongUserPosts;
 
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: true);
-    bool wentWrongPosts = userProvider.wentWrongPosts;
-    bool isLoadedPosts = userProvider.isUserPostsLoaded;
-
-    Map userPostMap = userProvider.userPosts;
+    Map userPostMap = postProvider.userPosts;
     List userPosts = userPostMap.values.toList();
 
     return SafeArea(
       child: Scaffold(
-        body: !isLoadedPosts
+        body: !isLoadedUserPosts || isLoadingDependency
             ? const GlobalLoader()
-            : wentWrongPosts
+            : wentWrongUserPosts
                 ? const Center(child: Text("Couldn't load posts!"))
                 : Column(
                     children: [

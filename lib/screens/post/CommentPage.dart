@@ -1,10 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/models/UserClass.dart';
-import 'package:meetupapp/widgets/placeholder_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
+import '/models/UserClass.dart';
+import '/widgets/placeholder_widget.dart';
 import '/helper/GlobalFunctions.dart';
 import '/helper/backend/database.dart';
 import '/helper/utils/loader.dart';
@@ -15,7 +16,6 @@ import '/models/post.dart';
 import '/models/comment.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
 import '../../helper/utils/string_extension.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class CommentPage extends StatefulWidget {
   final Post post;
@@ -33,8 +33,6 @@ class CommentPage extends StatefulWidget {
 
 class _CommentPageState extends State<CommentPage> {
   final TextEditingController _commentController = TextEditingController();
-
-  final PostAPIS _postAPI = PostAPIS();
 
   Future<void> _addComment() async {
     if (_commentController.text.trim().isNotEmpty) {
@@ -103,6 +101,11 @@ class _CommentPageState extends State<CommentPage> {
     _commentController.clear();
     super.dispose();
   }
+
+  Widget NoCommentsPlaceholder() => const PlaceholderWidget(
+        imageURL: "assets/images/comment.png",
+        label: "No Comments Yet!\nBe the first to comment.",
+      );
 
   PopupMenuItem commentMenuOption({required bool isCopy, Map? comment}) {
     return PopupMenuItem(
@@ -318,7 +321,6 @@ class _CommentPageState extends State<CommentPage> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          fit: BoxFit.cover,
                           image: NetworkImage(
                             commentList[index]["userID"]["profileURL"],
                           ),
@@ -332,19 +334,43 @@ class _CommentPageState extends State<CommentPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            commentList[index]["userID"]["username"].toString(),
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey,
+                          Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(
+                                  commentList[index]["userID"]["profileURL"],
+                                ),
+                              ),
                             ),
                           ),
-                          SelectableText(
-                            commentList[index]["message"],
-                            style: const TextStyle(
-                              fontSize: 15,
-                              color: Colors.black,
-                              height: 1.3,
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  commentList[index]["userID"]["username"]
+                                      .toString(),
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                SelectableText(
+                                  commentList[index]["message"],
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                    height: 1.3,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],

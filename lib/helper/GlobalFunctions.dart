@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '/models/comment.dart';
@@ -11,13 +12,12 @@ import '/widgets/snackBar_widget.dart';
 import '/models/post.dart';
 import '/widgets/feed_interact_button.dart';
 import '/helper/backend/database.dart';
-import '/helper/backend/UserSharedPreferences.dart';
+import 'utils/UserSharedPreferences.dart';
 import '/providers/PostProvider.dart';
 import '/helper/backend/apis.dart';
 import '/providers/UserProvider.dart';
-import 'package:flutter/services.dart';
 
-const String extra = ""
+const String extra =
     "aosiduiaduiaduiahgdiuahdihasdiasdoa"
     "aosiduiaduiaduiahgdiuahdihasdiasdoa"
     "aosiduiaduiaduiahgdiuahdihasdiasdoa"
@@ -126,8 +126,10 @@ Future<void> deletePost(BuildContext context, Post post) async {
 
   UserProvider u = Provider.of<UserProvider>(context, listen: false);
   PostProvider p = Provider.of<PostProvider>(context, listen: false);
+
+  u.reducePostCount();
   p.removeSinglePost(postId: post.postID!);
-  u.deleteSingleUserPost(post.postID!);
+  p.deleteSingleUserPost(post.postID!);
 
   Map deletePost = unPackLocally(deleteData);
 
@@ -206,6 +208,40 @@ Future<int> checkUsernameExists(BuildContext context, String username) async {
     }
   }
 }
+
+Future<void> initializeUserPosts(BuildContext context) async {
+
+  UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+  PostProvider postProvider = Provider.of<PostProvider>(context, listen: false);
+
+  if(postProvider.isLoadedUserPosts){
+    return;
+  }
+
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user == null) {
+    userProvider.setWentWrongPosts();
+    postProvider.toggleUserPostsWentWrong(didGoWrong: true);
+    return;
+  }
+
+  // postProvider.toggleUserPostsLoaded(false);
+  final initResult = await PostAPIS.getUserPosts(FirebaseAuth.instance.currentUser!.uid);
+  Map unpackedData = unPackLocally(initResult);
+  postProvider.toggleUserPostsLoaded(true);
+
+  if (unpackedData["success"] == 1) {
+    final data = unpackedData["unpacked"];
+
+    postProvider.setUserPosts(data["posts"]);
+    userProvider.updateRatingMap(
+        data["posts"]); // ADD UPVOTE/DOWNVOTE COUNT TO INITIALIZED POSTS
+  } else {
+    userProvider.setWentWrongPosts();
+    Fluttertoast.showToast(msg: "Something went wrong!");
+  }
+}
+
 
 Future<void> initialize(BuildContext context) async {
   User? user = FirebaseAuth.instance.currentUser;
