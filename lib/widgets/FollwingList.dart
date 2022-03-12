@@ -21,6 +21,8 @@ class FollowingList extends StatelessWidget {
     bool isLoadedAllPosts = postProvider.isLoadedPosts;
     bool wentWrongAllPosts = postProvider.wentWrongAllPosts;
 
+    // ca-app-pub-9642025607553033/6867963976
+
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: kLeftPadding,
