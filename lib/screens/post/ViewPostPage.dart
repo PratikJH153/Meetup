@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/helper/ad_helper.dart';
 import 'package:meetupapp/screens/HomePage.dart';
 import 'package:meetupapp/screens/post/CommentPage.dart';
 import 'package:meetupapp/widgets/ask_dialog_widget.dart';
@@ -32,6 +35,8 @@ class ViewPostPage extends StatefulWidget {
 class _ViewPostPageState extends State<ViewPostPage> {
   bool isAddingInterests = false;
   bool isDeleting = false;
+
+  final AdmobHelper admobHelper = AdmobHelper();
 
   _ProfileRow() => Row(
         children: [
@@ -134,11 +139,24 @@ class _ViewPostPageState extends State<ViewPostPage> {
                               ? const Text("No Related Posts Found.")
                               : GestureDetector(
                                   onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewPostPage(post),
-                                      ),
-                                    );
+                                    var rng = Random();
+
+                                    if (rng.nextInt(3) == 1) {
+                                      admobHelper.showInterad(() {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                ViewPostPage(post),
+                                          ),
+                                        );
+                                      });
+                                    } else {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (ctx) => ViewPostPage(post),
+                                        ),
+                                      );
+                                    }
                                   },
                                   child: RecommededFeedTile(post),
                                 );
@@ -211,9 +229,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
           children: [
             UpperWidgetOfBottomSheet(
               tapHandler: () async {
-                setState(() {
-                  isDeleting = true;
-                });
                 await showDialog(
                   context: context,
                   builder: (ctx) => AskDialogWidget(
@@ -254,105 +269,114 @@ class _ViewPostPageState extends State<ViewPostPage> {
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
                   ),
-                  child: ListView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.only(top: 30),
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              if (widget.thePost.tag != null)
-                                isAddingInterests
-                                    ? const GlobalLoader()
-                                    : TagWidget(
-                                        tag: widget.thePost.tag!,
-                                        tapHandler: () {
-                                          UserProvider userProvider =
-                                              Provider.of<UserProvider>(context,
-                                                  listen: false);
-                                          addInterest(
-                                              context,
-                                              userProvider.getUser()!.userID!,
-                                              widget.thePost.tag!);
-                                        },
-                                        canAdd: !userProvider
-                                            .getUser()!
-                                            .interests!
-                                            .contains(widget.thePost.tag!),
-                                      ),
-                              Text(
-                                "${widget.thePost.timeReadCalc()} mins read",
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          _ProfileRow(),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          _TitleDescriptionSection(),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              VoteSection(context, widget.thePost),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (ctx) => CommentPage(
-                                        post: widget.thePost,
+                  child: isDeleting
+                      ? const Center(
+                          child: GlobalLoader(),
+                        )
+                      : ListView(
+                          physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.only(top: 30),
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    if (widget.thePost.tag != null)
+                                      isAddingInterests
+                                          ? const GlobalLoader()
+                                          : TagWidget(
+                                              tag: widget.thePost.tag!,
+                                              tapHandler: () {
+                                                UserProvider userProvider =
+                                                    Provider.of<UserProvider>(
+                                                        context,
+                                                        listen: false);
+                                                addInterest(
+                                                    context,
+                                                    userProvider
+                                                        .getUser()!
+                                                        .userID!,
+                                                    widget.thePost.tag!);
+                                              },
+                                              canAdd: !userProvider
+                                                  .getUser()!
+                                                  .interests!
+                                                  .contains(
+                                                      widget.thePost.tag!),
+                                            ),
+                                    Text(
+                                      "${widget.thePost.timeReadCalc()} mins read",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey,
                                       ),
                                     ),
-                                  );
-                                },
-                                child: const Icon(
-                                  CupertinoIcons.chat_bubble_2,
-                                  color: Colors.grey,
-                                  size: 22,
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          const Text(
-                            "Related Posts",
-                            style: TextStyle(
-                              fontSize: 15,
-                              height: 1.5,
-                              color: Colors.black38,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: "Nunito",
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                _ProfileRow(),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                _TitleDescriptionSection(),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    VoteSection(context, widget.thePost),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) => CommentPage(
+                                              post: widget.thePost,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: const Icon(
+                                        CupertinoIcons.chat_bubble_2,
+                                        color: Colors.grey,
+                                        size: 22,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                const Text(
+                                  "Related Posts",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    height: 1.5,
+                                    color: Colors.black38,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Nunito",
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                _ReccomendedPostsSection(
+                                  posts: trendingList,
+                                  wentWrong: wentWrongTrending,
+                                  isLoading: !isLoadedTrending,
+                                )
+                              ],
                             ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          _ReccomendedPostsSection(
-                            posts: trendingList,
-                            wentWrong: wentWrongTrending,
-                            isLoading: !isLoadedTrending,
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
+                          ],
+                        ),
                 ),
               ),
             ),
