@@ -102,27 +102,6 @@ class _CommentPageState extends State<CommentPage> {
     super.dispose();
   }
 
-  Widget NoCommentsPlaceholder() => const PlaceholderWidget(
-        imageURL: "assets/images/comment.png",
-        label: "No Comments Yet!\nBe the first to comment.",
-      );
-
-  PopupMenuItem commentMenuOption({required bool isCopy, Map? comment}) {
-    return PopupMenuItem(
-      child: Row(
-        children: [
-          Icon(isCopy ? Icons.copy : Icons.delete),
-          Text(isCopy ? "Copy Text" : "Delete"),
-        ],
-      ),
-      onTap: () {
-        if (!isCopy) {
-          deleteComment(context, comment!, widget.post);
-        }
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     print("COMMENT PAGE BUILD");
@@ -142,7 +121,9 @@ class _CommentPageState extends State<CommentPage> {
             wentWrongComments
                 ? const Text("Couldn't fetch comments")
                 : !isLoadedComments
-                    ? const Expanded(child: Center(child: GlobalLoader()))
+                    ? const Expanded(
+                        child: GlobalLoader(),
+                      )
                     : Expanded(
                         child: Container(
                           padding: const EdgeInsets.only(
@@ -215,9 +196,7 @@ class _CommentPageState extends State<CommentPage> {
                                     );
                                   },
                                   child: !commentList.isNotEmpty
-                                      ? const Expanded(
-                                          child: SizedBox(),
-                                        )
+                                      ? const SizedBox()
                                       : _CommentList(commentList),
                                 ),
                               ),
