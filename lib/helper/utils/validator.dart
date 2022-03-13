@@ -36,7 +36,7 @@ class Validator {
     if (result.isEmpty) {
       return message;
     } else if (result.length < 3 || result.length > 30) {
-      return "Limit of characters 3-30";
+      return "Limit (3-30)";
     }
   }
 
@@ -49,9 +49,9 @@ class Validator {
     if (result.isEmpty) {
       return message;
     } else if (result.length > 200) {
-      return "Limit of characters 0-200";
+      return "Limit (0-200)";
     } else if (result.length < 5) {
-      return "Please atleast add 5 characters";
+      return "Atleast 5 characters needed";
     }
   }
 

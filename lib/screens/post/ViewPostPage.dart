@@ -2,21 +2,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meetupapp/screens/HomePage.dart';
+import 'package:meetupapp/screens/post/CommentPage.dart';
 import 'package:meetupapp/widgets/ask_dialog_widget.dart';
+import 'package:meetupapp/widgets/tag_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:timeago/timeago.dart' as timeago;
-import '/screens/post/CommentPage.dart';
-import '/widgets/tag_widget.dart';
+
 import '/helper/GlobalFunctions.dart';
 import '/helper/backend/database.dart';
 import '/helper/backend/apis.dart';
 import '/providers/CurrentPostProvider.dart';
 import '/providers/UserProvider.dart';
+import '/screens/post/AddPostPage.dart';
 import '/helper/utils/loader.dart';
 import '/models/post.dart';
 import '/widgets/constants.dart';
 import '/widgets/recommended_feed_tile.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class ViewPostPage extends StatefulWidget {
   final Post thePost;
@@ -91,9 +93,9 @@ class _ViewPostPageState extends State<ViewPostPage> {
           const SizedBox(
             height: 10,
           ),
-          if (widget.thePost.desc != "")
+          if (widget.thePost.desc != null && widget.thePost.desc!.trim() != "")
             SelectableText(
-              widget.thePost.desc ?? "",
+              widget.thePost.desc!,
               style: TextStyle(
                 fontSize: 16,
                 height: 1.5,
@@ -156,7 +158,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
       "interest": widget.thePost.tag,
       "userID": userProvider.getUser()!.userID,
     });
-
     Map unpackedRelatedPostsData = unPackLocally(relatedPostsData);
 
     if (unpackedRelatedPostsData["success"] == 1) {
@@ -188,13 +189,18 @@ class _ViewPostPageState extends State<ViewPostPage> {
   @override
   Widget build(BuildContext context) {
     print("VIEW POST PAGE BUILD");
-    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context);
+
+    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(
+      context,
+    );
+
     UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
+
     List trendingList = currentPost.relatedPost;
 
-    bool isLoadedRelated = currentPost.isRelatedLoaded;
-    bool wentWrongRelated = currentPost.wentWrongRelated;
+    bool isLoadedTrending = currentPost.isRelatedLoaded;
+    bool wentWrongTrending = currentPost.wentWrongRelated;
 
     bool showDelete =
         userProvider.getUser()!.userID == widget.thePost.author!["_id"];
@@ -214,7 +220,9 @@ class _ViewPostPageState extends State<ViewPostPage> {
                     tapHandler: () async {
                       await deletePost(context, widget.thePost);
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                          HomePage.routeName, (route) => false);
+                        HomePage.routeName,
+                        (route) => false,
+                      );
                     },
                     title: "Delete Post",
                     des: "Do you really want to delete your post?",
@@ -227,7 +235,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
               toShow: showDelete,
               icon: Icons.delete,
               color: Colors.red[400],
-              isTap: !isDeleting,
             ),
             Expanded(
               child: Container(
@@ -339,8 +346,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
                           ),
                           _ReccomendedPostsSection(
                             posts: trendingList,
-                            wentWrong: wentWrongRelated,
-                            isLoading: !isLoadedRelated,
+                            wentWrong: wentWrongTrending,
+                            isLoading: !isLoadedTrending,
                           )
                         ],
                       ),

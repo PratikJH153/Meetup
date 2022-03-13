@@ -161,7 +161,6 @@ class FireAuth {
 
     try {
       userProvider.deleteUserLocalData();
-      // await UserSharedPreferences.setLoginStatus();
       await auth.signOut();
     } catch (err) {
       print(err.toString());
