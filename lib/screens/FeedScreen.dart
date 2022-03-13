@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:meetupapp/helper/ad_helper.dart';
 import 'package:meetupapp/widgets/tab_button.dart';
 import '/widgets/FollwingList.dart';
 import '/widgets/TrendingList.dart';
@@ -126,9 +128,9 @@ class _FeedPageState extends State<FeedPage>
       onPageChanged: (index) {
         pageChanged(index);
       },
-      children: const <Widget>[
+      children: <Widget>[
         FollowingList(),
-        TrendingList(),
+        const TrendingList(),
       ],
     );
   }

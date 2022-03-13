@@ -23,7 +23,7 @@ import 'wrapper.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await UserSharedPreferences.init();
-  MobileAds.instance.initialize();
+
   await Firebase.initializeApp();
 
   SystemChrome.setPreferredOrientations(

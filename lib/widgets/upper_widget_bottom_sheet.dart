@@ -6,11 +6,13 @@ class UpperWidgetOfBottomSheet extends StatelessWidget {
   final IconData icon;
   final bool toShow;
   final Color? color;
+  final bool isTap;
 
   const UpperWidgetOfBottomSheet({
     required this.tapHandler,
     required this.icon,
     this.toShow = false,
+    this.isTap = true,
     this.color,
     Key? key,
   }) : super(key: key);
@@ -49,7 +51,7 @@ class UpperWidgetOfBottomSheet extends StatelessWidget {
                 Row(
                   children: [
                     GestureDetector(
-                      onTap: tapHandler,
+                      onTap: isTap ? tapHandler : null,
                       child: Container(
                         padding: const EdgeInsets.all(5),
                         decoration: const BoxDecoration(

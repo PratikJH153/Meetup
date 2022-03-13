@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meetupapp/screens/HomePage.dart';
+import 'package:meetupapp/widgets/ask_dialog_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
 import '/screens/post/CommentPage.dart';
 import '/widgets/tag_widget.dart';
 import '/helper/GlobalFunctions.dart';
@@ -28,6 +29,8 @@ class ViewPostPage extends StatefulWidget {
 
 class _ViewPostPageState extends State<ViewPostPage> {
   bool isAddingInterests = false;
+  bool isDeleting = false;
+
   _ProfileRow() => Row(
         children: [
           SizedBox(
@@ -125,8 +128,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
                           bool isTheSamePostAsCurrent =
                               post.postID == widget.thePost.postID;
 
-                          return isTheSamePostAsCurrent
-                              ? const SizedBox()
+                          return isTheSamePostAsCurrent && posts.length == 1
+                              ? const Text("No Related Posts Found.")
                               : GestureDetector(
                                   onTap: () {
                                     Navigator.of(context).push(
@@ -201,9 +204,30 @@ class _ViewPostPageState extends State<ViewPostPage> {
         body: Column(
           children: [
             UpperWidgetOfBottomSheet(
-              tapHandler: () {},
-              toShow: false,
-              icon: CupertinoIcons.delete,
+              tapHandler: () async {
+                setState(() {
+                  isDeleting = true;
+                });
+                await showDialog(
+                  context: context,
+                  builder: (ctx) => AskDialogWidget(
+                    tapHandler: () async {
+                      await deletePost(context, widget.thePost);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          HomePage.routeName, (route) => false);
+                    },
+                    title: "Delete Post",
+                    des: "Do you really want to delete your post?",
+                  ),
+                );
+                setState(() {
+                  isDeleting = false;
+                });
+              },
+              toShow: showDelete,
+              icon: Icons.delete,
+              color: Colors.red[400],
+              isTap: !isDeleting,
             ),
             Expanded(
               child: Container(
@@ -259,34 +283,6 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                   color: Colors.grey,
                                 ),
                               ),
-                              if (showDelete)
-                                PopupMenuButton(
-                                  itemBuilder: (BuildContext context) {
-                                    return [
-                                      PopupMenuItem(
-                                        child: Row(
-                                          children: const [
-                                            Icon(Icons.delete),
-                                            Text("Delete"),
-                                          ],
-                                        ),
-                                        onTap: () async {
-                                          setState(() {
-                                            isAddingInterests = true;
-                                          });
-                                          await deletePost(
-                                              context, widget.thePost);
-                                          setState(() {
-                                            isAddingInterests = false;
-                                          });
-                                          Fluttertoast.showToast(
-                                              msg: "Deleted Post!");
-                                          Navigator.pop(context);
-                                        },
-                                      )
-                                    ];
-                                  },
-                                )
                             ],
                           ),
                           const SizedBox(

@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:meetupapp/helper/GlobalFunctions.dart';
+import 'package:meetupapp/helper/ad_helper.dart';
 import 'package:meetupapp/helper/utils/loader.dart';
 import 'package:meetupapp/widgets/placeholder_widget.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +15,9 @@ import 'constants.dart';
 import 'feed_tile.dart';
 
 class FollowingList extends StatelessWidget {
-  const FollowingList({Key? key}) : super(key: key);
+  FollowingList({Key? key}) : super(key: key);
+
+  final AdmobHelper admobHelper = AdmobHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +26,6 @@ class FollowingList extends StatelessWidget {
     Map postList = postProvider.loadedPosts;
     bool isLoadedAllPosts = postProvider.isLoadedPosts;
     bool wentWrongAllPosts = postProvider.wentWrongAllPosts;
-
-    // ca-app-pub-9642025607553033/6867963976
 
     return Container(
       margin: const EdgeInsets.symmetric(
@@ -73,16 +77,33 @@ class FollowingList extends StatelessWidget {
                             Post currPost =
                                 Post.fromJson(postList.values.toList()[index]);
 
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (ctx) => ViewPostPage(currPost),
-                                  ),
-                                );
-                              },
-                              child: FeedTile(currPost),
-                            );
+                            return (currPost.author != null &&
+                                    currPost.title != null)
+                                ? GestureDetector(
+                                    onTap: () {
+                                      var rng = Random();
+
+                                      if (rng.nextInt(3) == 1) {
+                                        admobHelper.showInterad(() {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (ctx) =>
+                                                  ViewPostPage(currPost),
+                                            ),
+                                          );
+                                        });
+                                      } else {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                ViewPostPage(currPost),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: FeedTile(currPost),
+                                  )
+                                : const SizedBox();
                           },
                         ),
                       ),
@@ -90,3 +111,28 @@ class FollowingList extends StatelessWidget {
     );
   }
 }
+
+ // if (isAdLoaded &&
+                                      //     index > 0 &&
+                                      //     index % 5 == 0)
+                                      //   Container(
+                                      //     child: AdWidget(ad: _ad!),
+                                      //     padding: const EdgeInsets.all(15.0),
+                                      //     margin:
+                                      //         const EdgeInsets.only(bottom: 20),
+                                      //     height: 80,
+                                      //     alignment: Alignment.center,
+                                      //     decoration: BoxDecoration(
+                                      //       borderRadius:
+                                      //           BorderRadius.circular(20),
+                                      //       color: Colors.white,
+                                      //       boxShadow: const [
+                                      //         BoxShadow(
+                                      //           color: Color(0xFFf2f4f9),
+                                      //           blurRadius: 5,
+                                      //           spreadRadius: 0.5,
+                                      //           offset: Offset(0, 2),
+                                      //         )
+                                      //       ],
+                                      //     ),
+                                      //   ),

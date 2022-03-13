@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:meetupapp/helper/ad_helper.dart';
 import 'package:meetupapp/helper/utils/loader.dart';
 import 'package:meetupapp/widgets/placeholder_widget.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +32,8 @@ class _TrendingListState extends State<TrendingList> {
 
     super.initState();
   }
+
+  final AdmobHelper admobHelper = AdmobHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -89,16 +94,34 @@ class _TrendingListState extends State<TrendingList> {
                           itemBuilder: (ctx, index) {
                             Post currPost =
                                 Post.fromJson(postList.values.toList()[index]);
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (ctx) => ViewPostPage(currPost),
-                                  ),
-                                );
-                              },
-                              child: FeedTile(currPost),
-                            );
+                            return (currPost.author != null &&
+                                    currPost.title != null)
+                                ? GestureDetector(
+                                    onTap: () {
+                                      var rng = Random();
+
+                                      if (rng.nextInt(3) == 1) {
+                                        admobHelper.showInterad(() {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (ctx) =>
+                                                  ViewPostPage(currPost),
+                                            ),
+                                          );
+                                        });
+                                      } else {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                ViewPostPage(currPost),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: FeedTile(currPost),
+                                  )
+                                : const SizedBox();
+                            ;
                           },
                         ),
                       ),
