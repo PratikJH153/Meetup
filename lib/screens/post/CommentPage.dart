@@ -133,6 +133,9 @@ class _CommentPageState extends State<CommentPage> {
         body: Column(
           children: [
             UpperWidgetOfBottomSheet(
+              backTapHandler: () {
+                Navigator.of(context).pop();
+              },
               tapHandler: () {},
               icon: Icons.stop,
             ),

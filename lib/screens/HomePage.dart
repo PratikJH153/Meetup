@@ -152,7 +152,19 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                body: _widgetOptions[_selectedIndex],
+                body: WillPopScope(
+                  onWillPop: () async {
+                    if (_selectedIndex == 1) {
+                      setState(() {
+                        _selectedIndex = 0;
+                      });
+                      return false;
+                    } else {
+                      return true;
+                    }
+                  },
+                  child: _widgetOptions[_selectedIndex],
+                ),
               );
   }
 }

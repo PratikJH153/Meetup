@@ -29,6 +29,9 @@ class _ChoiceChipDisplayState extends State<ChoiceChipDisplay> {
         body: Column(
           children: [
             UpperWidgetOfBottomSheet(
+              backTapHandler: () {
+                Navigator.of(context).pop();
+              },
               tapHandler: () {},
               icon: Icons.stop,
               toShow: false,

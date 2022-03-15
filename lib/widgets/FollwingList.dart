@@ -82,8 +82,9 @@ class FollowingList extends StatelessWidget {
                                 ? GestureDetector(
                                     onTap: () {
                                       var rng = Random();
-
-                                      if (rng.nextInt(3) == 1) {
+                                      int random_num = rng.nextInt(2);
+                                      print(random_num);
+                                      if (random_num == 1) {
                                         admobHelper.showInterad(() {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(

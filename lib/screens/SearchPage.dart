@@ -73,6 +73,7 @@ class _SearchPageState extends State<SearchPage> {
           top: 15,
           left: 20,
           right: 20,
+          bottom: 100,
         ),
         itemBuilder: (context, index) {
           Post currPost = Post.fromJson(postList[index]);
@@ -104,6 +105,9 @@ class _SearchPageState extends State<SearchPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             UpperWidgetOfBottomSheet(
+              backTapHandler: () {
+                Navigator.of(context).pop();
+              },
               tapHandler: () {},
               icon: Icons.search,
               toShow: false,

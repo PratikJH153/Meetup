@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meetupapp/helper/utils/loader.dart';
 import 'package:meetupapp/screens/authentication/SelectInterestPage.dart';
+import 'package:meetupapp/widgets/ask_dialog_widget.dart';
 import 'package:meetupapp/widgets/snackBar_widget.dart';
 import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -90,6 +91,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
             const Color(0xFFff2954),
             context,
           );
+          setState(() {
+            updatingNow = false;
+          });
           return;
         }
       }
@@ -144,6 +148,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
               : userProvider.getUser()!.profileURL,
         );
         Fluttertoast.showToast(msg: "Updated Profile successfully!");
+        setState(() {
+          updatingNow = false;
+        });
       } else {
         Fluttertoast.showToast(msg: "Couldn't update Profile!");
         setState(() {
@@ -152,10 +159,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         return;
       }
     }
-
-    setState(() {
-      updatingNow = false;
-    });
   }
 
   final genders = const [
@@ -165,7 +168,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   ];
 
   bool updatingNow = false;
-  bool madeAnyChanges = false;
 
   late String gendervalue;
   late String profileURL;
@@ -173,12 +175,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   File? image;
   Map interests = {};
-
-  void changedSomething() {
-    setState(() {
-      madeAnyChanges = true;
-    });
-  }
 
   @override
   void initState() {
@@ -237,10 +233,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     child: Column(
                       children: [
                         UpperWidgetOfBottomSheet(
+                          backTapHandler: () {
+                            Navigator.of(context).pop();
+                          },
                           tapHandler: _updateProfile,
                           icon: Icons.check,
                           toShow: true,
-                          color: madeAnyChanges ? Colors.deepPurple : null,
                         ),
                         Form(
                           key: _editProfileKey,

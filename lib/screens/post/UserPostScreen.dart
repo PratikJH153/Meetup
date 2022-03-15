@@ -22,7 +22,6 @@ class UserPosts extends StatefulWidget {
 }
 
 class _UserPostsState extends State<UserPosts> {
-
   @override
   void initState() {
     initializeUserPosts(context);
@@ -52,6 +51,9 @@ class _UserPostsState extends State<UserPosts> {
                 : Column(
                     children: [
                       UpperWidgetOfBottomSheet(
+                        backTapHandler: () {
+                          Navigator.of(context).pop();
+                        },
                         tapHandler: () {},
                         icon: Icons.stop,
                         toShow: false,

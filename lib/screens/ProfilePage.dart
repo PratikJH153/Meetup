@@ -40,8 +40,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
     bool userLoaded = user != null;
 
-    //TODO:POST COUNT NOT UPDATING
-
     return SafeArea(
       child: Scaffold(
           body: !userLoaded || isLoading
@@ -327,7 +325,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         _deleteUser(ctx);
                                       },
                                       title: "Delete Account",
-                                      des: "Do you really want to permanently delete account?",
+                                      des:
+                                          "Do you really want to permanently delete account?",
                                     ),
                                   );
                                 },

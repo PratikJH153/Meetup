@@ -48,6 +48,9 @@ class _SelectInterestPageState extends State<SelectInterestPage> {
             : Column(
                 children: [
                   UpperWidgetOfBottomSheet(
+                    backTapHandler: () {
+                      Navigator.of(context).pop();
+                    },
                     tapHandler: () async {
                       if (interestMap.length >= 5) {
                         _updateInterests(context);

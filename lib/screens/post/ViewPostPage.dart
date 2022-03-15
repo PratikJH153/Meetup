@@ -141,7 +141,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                   onTap: () {
                                     var rng = Random();
 
-                                    if (rng.nextInt(3) == 1) {
+                                    if (rng.nextInt(2) == 1) {
                                       admobHelper.showInterad(() {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
@@ -228,6 +228,9 @@ class _ViewPostPageState extends State<ViewPostPage> {
         body: Column(
           children: [
             UpperWidgetOfBottomSheet(
+              backTapHandler: () {
+                Navigator.of(context).pop();
+              },
               tapHandler: () async {
                 await showDialog(
                   context: context,

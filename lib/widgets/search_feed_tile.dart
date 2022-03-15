@@ -83,7 +83,7 @@ class _SearchFeedTileState extends State<SearchFeedTile> {
                 children: [
                   Text(
                     username,
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.fade,
                     style: const TextStyle(
                       fontSize: 12,

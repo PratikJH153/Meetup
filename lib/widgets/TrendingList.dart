@@ -100,7 +100,7 @@ class _TrendingListState extends State<TrendingList> {
                                     onTap: () {
                                       var rng = Random();
 
-                                      if (rng.nextInt(3) == 1) {
+                                      if (rng.nextInt(2) == 1) {
                                         admobHelper.showInterad(() {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(

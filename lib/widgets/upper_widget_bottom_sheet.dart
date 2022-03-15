@@ -7,10 +7,12 @@ class UpperWidgetOfBottomSheet extends StatelessWidget {
   final bool toShow;
   final Color? color;
   final bool isTap;
+  final VoidCallback backTapHandler;
 
   const UpperWidgetOfBottomSheet({
     required this.tapHandler,
     required this.icon,
+    required this.backTapHandler,
     this.toShow = false,
     this.isTap = true,
     this.color,
@@ -34,7 +36,7 @@ class UpperWidgetOfBottomSheet extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: backTapHandler,
                 child: Container(
                   padding: const EdgeInsets.all(5),
                   decoration: const BoxDecoration(
