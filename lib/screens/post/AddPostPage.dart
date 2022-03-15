@@ -209,7 +209,7 @@ class _AddPostState extends State<AddPost> {
                                           fontSize: 15,
                                           color: Colors.grey[800],
                                         ),
-                                        maxLength: 1000,
+                                        maxLength: 5000,
                                         textCapitalization:
                                             TextCapitalization.sentences,
                                         decoration: InputDecoration(
