@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/cupertino.dart';
 
 class PostProvider with ChangeNotifier {
@@ -38,7 +40,7 @@ class PostProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleUserPostsLoaded(bool didLoad){
+  void toggleUserPostsLoaded(bool didLoad) {
     isLoadedUserPosts = didLoad;
     notifyListeners();
   }

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:meetupapp/widgets/constants.dart';
 import 'package:meetupapp/widgets/interest_tag_widget.dart';

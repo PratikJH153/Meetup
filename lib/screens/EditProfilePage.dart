@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, deprecated_member_use
+
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,7 +9,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meetupapp/helper/utils/loader.dart';
 import 'package:meetupapp/screens/authentication/SelectInterestPage.dart';
-import 'package:meetupapp/widgets/ask_dialog_widget.dart';
 import 'package:meetupapp/widgets/snackBar_widget.dart';
 import 'package:meetupapp/widgets/upper_widget_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -60,7 +61,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         FirebaseStorage.instance.ref().child("user_images").child(uid + ".jpg");
 
     await ref.putFile(image!).whenComplete(() {
-      print("Done");
+      // print("Done");
     });
 
     final url = await ref.getDownloadURL();

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 class UserClass {
   String? userID;
   String? firstname;
@@ -35,7 +37,6 @@ class UserClass {
   });
 
   factory UserClass.fromJson(Map<dynamic, dynamic> userData) {
-
     return UserClass(
         userID: userData["_id"],
         postCount: userData["posts"].length,

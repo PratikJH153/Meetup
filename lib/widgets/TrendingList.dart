@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -121,7 +123,6 @@ class _TrendingListState extends State<TrendingList> {
                                     child: FeedTile(currPost),
                                   )
                                 : const SizedBox();
-                            ;
                           },
                         ),
                       ),

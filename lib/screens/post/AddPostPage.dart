@@ -1,7 +1,8 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:meetupapp/providers/PostProvider.dart';
 import 'package:meetupapp/providers/PostProvider.dart';
 import 'package:meetupapp/widgets/ask_dialog_widget.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,7 @@ import '/widgets/constants.dart';
 class AddPost extends StatefulWidget {
   static const routeName = "/addpost";
 
-  const AddPost();
+  const AddPost({Key? key}) : super(key: key);
 
   @override
   _AddPostState createState() => _AddPostState();
@@ -143,7 +144,7 @@ class _AddPostState extends State<AddPost> {
 
   @override
   Widget build(BuildContext context) {
-    print("ADD POST PAGE BUILD");
+    // print("ADD POST PAGE BUILD");
     return WillPopScope(
       onWillPop: () async {
         if (lookForChanges()) {

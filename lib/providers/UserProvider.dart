@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import '/models/post.dart';
 import '/models/UserClass.dart';
@@ -25,13 +27,13 @@ class UserProvider with ChangeNotifier {
 
   void addVoteToProcessing(String postId) {
     _processingVotePosts[postId] = true;
-    print("ADD:" + _processingVotePosts.keys.toString());
+    // print("ADD:" + _processingVotePosts.keys.toString());
     notifyListeners();
   }
 
   void removeVoteFromProcess(String postId) {
     _processingVotePosts.remove(postId);
-    print("REMOVE:" + _processingVotePosts.keys.toString());
+    // print("REMOVE:" + _processingVotePosts.keys.toString());
     notifyListeners();
   }
 

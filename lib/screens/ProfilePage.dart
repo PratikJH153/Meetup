@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,11 +31,10 @@ class _ProfilePageState extends State<ProfilePage> {
   bool openAbout = false;
   bool openInterests = false;
   bool isLoading = false;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    print("PROFILE PAGE BUILD");
+    // print("PROFILE PAGE BUILD");
     UserProvider userProvider = Provider.of<UserProvider>(context);
     UserClass? user = userProvider.getUser();
     int userPostCount = userProvider.userPostCount;
@@ -348,11 +349,11 @@ class _ProfilePageState extends State<ProfilePage> {
     final deleteResult =
         await UserAPIS.deleteUser(FirebaseAuth.instance.currentUser!.uid);
     Map result = unPackLocally(deleteResult);
-    print("DELETE USER!!");
-    print(result);
+    // print("DELETE USER!!");
+    // print(result);
 
     if (result["success"] == 1) {
-      print("reached");
+      // print("reached");
       await FireAuth.signOut(context);
       Fluttertoast.showToast(msg: "Deleted Profile Successfully");
     } else {

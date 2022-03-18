@@ -1,5 +1,6 @@
+// ignore_for_file: file_names
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -49,7 +50,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("HOME PAGE BUILD");
+    // print("HOME PAGE BUILD");
     UserProvider userProvider = Provider.of<UserProvider>(context);
     bool isLoadingComplete = userProvider.isUserDataLoaded;
     bool wentWrong = userProvider.wentWrongUser;

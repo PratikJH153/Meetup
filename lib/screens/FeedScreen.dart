@@ -1,7 +1,7 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:meetupapp/helper/ad_helper.dart';
 import 'package:meetupapp/widgets/tab_button.dart';
 import '/widgets/FollwingList.dart';
 import '/widgets/TrendingList.dart';
@@ -154,7 +154,7 @@ class _FeedPageState extends State<FeedPage>
 
   @override
   Widget build(BuildContext context) {
-    print("FEED PAGE BUILD");
+    // print("FEED PAGE BUILD");
     return SafeArea(
       child: Scaffold(
         body: Container(

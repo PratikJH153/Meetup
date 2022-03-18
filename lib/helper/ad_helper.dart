@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/cupertino.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -8,6 +10,7 @@ class AdmobHelper {
 
   void showInterad(VoidCallback tapHandler) {
     RewardedAd.load(
+      // ignore: deprecated_member_use
       adUnitId: RewardedAd.testAdUnitId,
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
@@ -32,14 +35,14 @@ class AdmobHelper {
 
     _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
       onAdShowedFullScreenContent: (RewardedAd ad) {
-        print("ad onAdshowedFullScreen");
+        // print("ad onAdshowedFullScreen");
       },
       onAdDismissedFullScreenContent: (RewardedAd ad) {
-        print("ad Disposed");
+        // print("ad Disposed");
         ad.dispose();
       },
       onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError aderror) {
-        print("$ad OnAdFailed $aderror");
+        // print("$ad OnAdFailed $aderror");
         ad.dispose();
         showInterad(tapHandler);
       },

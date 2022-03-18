@@ -25,6 +25,7 @@ class Validator {
     if (result.isEmpty) {
       return message;
     }
+    return null;
   }
 
   static String? validateAuthFields(
@@ -38,6 +39,7 @@ class Validator {
     } else if (result.length < 3 || result.length > 30) {
       return "Limit (3-30)";
     }
+    return null;
   }
 
   static String? validateTitle(
@@ -53,6 +55,7 @@ class Validator {
     } else if (result.length < 5) {
       return "Atleast 5 characters needed";
     }
+    return null;
   }
 
   static String? validatePassword(
@@ -67,6 +70,7 @@ class Validator {
     if (result.length < 6) {
       return "Password must be at-least than 6 characters long!";
     }
+    return null;
   }
 
   static String? validateNumberField(
@@ -97,5 +101,6 @@ class Validator {
     } catch (e) {
       return "Enter a proper value!";
     }
+    return null;
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 class Comment {
   final String? commentID;
   final String? userID;
@@ -16,15 +18,15 @@ class Comment {
   });
 
   factory Comment.fromJson(Map data) {
-    print("COMMENT DATA");
-    print(data);
+    // print("COMMENT DATA");
+    // print(data);
 
     var user = data["userID"];
     var profile;
     var username;
     var uid;
 
-    if(user != null){
+    if (user != null) {
       uid = data["userID"]["_id"];
       profile = data["userID"]["profileURL"];
       username = data["userID"]["username"];

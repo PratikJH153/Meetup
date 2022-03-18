@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, non_constant_identifier_names
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,50 +14,9 @@ import '/widgets/snackBar_widget.dart';
 import '/models/post.dart';
 import '/widgets/feed_interact_button.dart';
 import '/helper/backend/database.dart';
-import 'utils/UserSharedPreferences.dart';
 import '/providers/PostProvider.dart';
 import '/helper/backend/apis.dart';
 import '/providers/UserProvider.dart';
-
-const String extra =
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa"
-    "aosiduiaduiaduiahgdiuahdihasdiasdoa";
 
 const placeholder =
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
@@ -113,16 +74,17 @@ Future<void> addInterests(
 
   if (unpackedData["success"] == 1) {
     Fluttertoast.showToast(msg: "Added Interest successfully!");
-    List new_interests = userProvider.getUser()!.interests ?? [];
-    new_interests.add(interest);
-    userProvider.updateUserInfo(interests: new_interests);
+    List newInterests = userProvider.getUser()!.interests ?? [];
+    newInterests.add(interest);
+    userProvider.updateUserInfo(interests: newInterests);
   } else {
     Fluttertoast.showToast(msg: "Couldn't add Interest");
   }
 }
 
 Future<void> deletePost(BuildContext context, Post post) async {
-  final deleteData = await PostAPIS.deletePost(post.postID!,post.author!["_id"]);
+  final deleteData =
+      await PostAPIS.deletePost(post.postID!, post.author!["_id"]);
 
   UserProvider u = Provider.of<UserProvider>(context, listen: false);
   PostProvider p = Provider.of<PostProvider>(context, listen: false);
@@ -166,7 +128,7 @@ Future<int> checkUserExists(BuildContext context, String uid) async {
   //   return 1;
   // }
 
-  print("CHECK USER EXISTS CALLING");
+  // print("CHECK USER EXISTS CALLING");
   final response = await UserAPIS.getCheckUserExists(uid);
 
   Map responseData = unPackLocally(response);
@@ -210,11 +172,10 @@ Future<int> checkUsernameExists(BuildContext context, String username) async {
 }
 
 Future<void> initializeUserPosts(BuildContext context) async {
-
   UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
   PostProvider postProvider = Provider.of<PostProvider>(context, listen: false);
 
-  if(postProvider.isLoadedUserPosts){
+  if (postProvider.isLoadedUserPosts) {
     return;
   }
 
@@ -226,7 +187,8 @@ Future<void> initializeUserPosts(BuildContext context) async {
   }
 
   // postProvider.toggleUserPostsLoaded(false);
-  final initResult = await PostAPIS.getUserPosts(FirebaseAuth.instance.currentUser!.uid);
+  final initResult =
+      await PostAPIS.getUserPosts(FirebaseAuth.instance.currentUser!.uid);
   Map unpackedData = unPackLocally(initResult);
   postProvider.toggleUserPostsLoaded(true);
 
@@ -241,7 +203,6 @@ Future<void> initializeUserPosts(BuildContext context) async {
     Fluttertoast.showToast(msg: "Something went wrong!");
   }
 }
-
 
 Future<void> initialize(BuildContext context) async {
   User? user = FirebaseAuth.instance.currentUser;
@@ -355,7 +316,7 @@ Container VoteSection(BuildContext context, Post post) {
           color: upvoteColor,
           tapHandler: () async {
             if (userProvider.isProcessing(post.postID!)) {
-              print("Ello");
+              // print("Ello");
               Fluttertoast.showToast(msg: "Ruko jara sabar karo!");
               return;
             }
@@ -443,7 +404,7 @@ Future<void> vote(
 
   userProvider.removeVoteFromProcess(postID);
   if (unpackedVote["success"] == 1) {
-    print("${isUpvote ? "UPVOTE" : "DOWNVOTE"} SUCCESSFUL!");
+    // print("${isUpvote ? "UPVOTE" : "DOWNVOTE"} SUCCESSFUL!");
   } else {
     Fluttertoast.showToast(msg: "Couldn't vote!");
   }
@@ -466,7 +427,7 @@ Future<void> cancelVote(BuildContext context,
 
   userProvider.removeVoteFromProcess(postID);
   if (unpackedVote["success"] == 1) {
-    print("CANCEL ${isCancelUpvote ? "UPVOTE" : "DOWNVOTE"} SUCCESSFUL!");
+    // print("CANCEL ${isCancelUpvote ? "UPVOTE" : "DOWNVOTE"} SUCCESSFUL!");
   } else {
     Fluttertoast.showToast(msg: "Couldn't vote!");
   }

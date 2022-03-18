@@ -11,8 +11,8 @@ class Post {
   final List? comments;
 
   int timeReadCalc() {
-    String desc_refined = desc??"";
-    return (((title! + " " + desc_refined).split(" ").length) / 180).round() + 1;
+    String descRefined = desc ?? "";
+    return (((title! + " " + descRefined).split(" ").length) / 180).round() + 1;
   }
 
   Post({
@@ -36,8 +36,8 @@ class Post {
       tag: data["tag"],
       author: data["author"],
       comments: data["comments"] ?? [],
-      upvotes: data["upvotes"]??0,
-      downvotes: data["downvotes"]??0,
+      upvotes: data["upvotes"] ?? 0,
+      downvotes: data["downvotes"] ?? 0,
     );
   }
 

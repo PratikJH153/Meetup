@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/widgets/constants.dart';
 
 class TagWidget extends StatelessWidget {
   final String tag;

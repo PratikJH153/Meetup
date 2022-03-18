@@ -1,8 +1,9 @@
+// ignore_for_file: non_constant_identifier_names, prefer_typing_uninitialized_variables
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
 import 'database.dart';
 
 final client = Dio();
@@ -10,7 +11,6 @@ final client = Dio();
 Function _post = client.post;
 Function _patch = client.patch;
 Function _delete = client.delete;
-Function _deleteHTTP = http.delete;
 Function _get = client.get;
 
 Future<Map> GET(String url) async {
@@ -54,10 +54,10 @@ Future<Map> REQUEST(Function function, String url, {Map? body}) async {
     result["local_result"] = socketErrorMessage;
     result["local_status"] = error.response!.statusCode;
   } on SocketException {
-    print("This is socket exception");
+    // print("This is socket exception");
     result["local_result"] = socketErrorMessage;
     result["local_status"] = SERVER_ERROR_CODE;
-  } on Exception catch (e) {
+  } on Exception {
     result["local_result"] = miscellaneousErrorMessage;
     result["local_status"] = SERVER_ERROR_CODE;
   }

@@ -1,7 +1,8 @@
+// ignore_for_file: file_names
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:meetupapp/helper/GlobalFunctions.dart';
 import 'package:meetupapp/helper/ad_helper.dart';
 import 'package:meetupapp/helper/utils/loader.dart';
@@ -82,9 +83,9 @@ class FollowingList extends StatelessWidget {
                                 ? GestureDetector(
                                     onTap: () {
                                       var rng = Random();
-                                      int random_num = rng.nextInt(2);
-                                      print(random_num);
-                                      if (random_num == 1) {
+                                      int randomNum = rng.nextInt(2);
+                                      // print(random_num);
+                                      if (randomNum == 1) {
                                         admobHelper.showInterad(() {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(

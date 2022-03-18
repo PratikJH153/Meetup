@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 const SERVER_ERROR_CODE = 500;
 const SUCCESS_CODE = 200;
 
@@ -53,12 +55,12 @@ Map unPackLocally(Map data, {bool toPrint = true}) {
     if (dataReceivedSuccessfully) {
       var requestedSuccessData = localData["data"];
 
-      if (toPrint) {
-        print("Server responded! Status:${localData["status"]}");
-        print("SUCCESS DATA:");
-        print(requestedSuccessData);
-        print("-----------------\n\n");
-      }
+      // if (toPrint) {
+      //   print("Server responded! Status:${localData["status"]}");
+      //   print("SUCCESS DATA:");
+      //   print(requestedSuccessData);
+      //   print("-----------------\n\n");
+      // }
 
       success = 1;
       status = 200;
@@ -68,20 +70,20 @@ Map unPackLocally(Map data, {bool toPrint = true}) {
     status = 404;
     success = 0;
     dataReceived = localData;
-    if (toPrint) {
-      print("Server Responded! Dio Error Received:");
-      print(localData);
-      print("-----------------\n\n");
-    }
+    // if (toPrint) {
+    //   print("Server Responded! Dio Error Received:");
+    //   print(localData);
+    //   print("-----------------\n\n");
+    // }
   } else {
     status = 500;
     success = 0;
     dataReceived = "Couldn't reach the servers!";
-    if (toPrint) {
-      print(localData);
-      print("Server Down! Status:$localData");
-      print("-----------------\n\n");
-    }
+    // if (toPrint) {
+    //   print(localData);
+    //   print("Server Down! Status:$localData");
+    //   print("-----------------\n\n");
+    // }
   }
   return {"success": success, "unpacked": dataReceived, "status": status};
 }

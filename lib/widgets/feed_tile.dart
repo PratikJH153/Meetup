@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import '/helper/backend/apis.dart';
 import '/helper/utils/loader.dart';
-import '/helper/backend/database.dart';
 import '/widgets/tag_widget.dart';
 import '/providers/UserProvider.dart';
 import '/helper/GlobalFunctions.dart';
@@ -36,11 +33,10 @@ class _FeedTileState extends State<FeedTile> {
     });
   }
 
-  //TODO: REMOVE RUKO JARA SABAR KARO
-
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
 
     Map authorMap = widget.thePost.author ?? {};
     String username = authorMap["username"] ?? "Unnamed";

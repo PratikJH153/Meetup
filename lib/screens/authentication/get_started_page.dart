@@ -101,7 +101,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("GET STARTED BUILD");
+    // print("GET STARTED BUILD");
     return SafeArea(
       child: Scaffold(
         body: Container(

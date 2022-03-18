@@ -1,8 +1,9 @@
+// ignore_for_file: file_names, non_constant_identifier_names
+
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meetupapp/helper/ad_helper.dart';
 import 'package:meetupapp/screens/HomePage.dart';
 import 'package:meetupapp/screens/post/CommentPage.dart';
@@ -15,7 +16,6 @@ import '/helper/backend/database.dart';
 import '/helper/backend/apis.dart';
 import '/providers/CurrentPostProvider.dart';
 import '/providers/UserProvider.dart';
-import '/screens/post/AddPostPage.dart';
 import '/helper/utils/loader.dart';
 import '/models/post.dart';
 import '/widgets/constants.dart';
@@ -137,8 +137,8 @@ class _ViewPostPageState extends State<ViewPostPage> {
 
                           return isTheSamePostAsCurrent && posts.length == 1
                               ? const Text("No Related Posts Found.")
-                              : post.author != null ||
-                                      post.title != null ||
+                              : post.author != null &&
+                                      post.title != null &&
                                       post.desc != null
                                   ? GestureDetector(
                                       onTap: () {
@@ -211,7 +211,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("VIEW POST PAGE BUILD");
+    // print("VIEW POST PAGE BUILD");
 
     CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(
       context,

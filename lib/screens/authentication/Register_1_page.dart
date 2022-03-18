@@ -1,5 +1,6 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:meetupapp/helper/utils/validator.dart';
 import 'package:meetupapp/widgets/text_field_widget.dart';
 

@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// ignore_for_file: file_names, non_constant_identifier_names
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meetupapp/models/UserClass.dart';
-import 'package:meetupapp/widgets/placeholder_widget.dart';
 import 'package:provider/provider.dart';
 import '/helper/GlobalFunctions.dart';
 import '/helper/backend/database.dart';
@@ -14,7 +14,6 @@ import '/helper/backend/apis.dart';
 import '/models/post.dart';
 import '/models/comment.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
-import '../../helper/utils/string_extension.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class CommentPage extends StatefulWidget {
@@ -33,8 +32,6 @@ class CommentPage extends StatefulWidget {
 
 class _CommentPageState extends State<CommentPage> {
   final TextEditingController _commentController = TextEditingController();
-
-  final PostAPIS _postAPI = PostAPIS();
 
   Future<void> _addComment() async {
     if (_commentController.text.trim().isNotEmpty) {
@@ -122,7 +119,7 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("COMMENT PAGE BUILD");
+    // print("COMMENT PAGE BUILD");
     CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context);
     List commentList = currentPost.comments;
 

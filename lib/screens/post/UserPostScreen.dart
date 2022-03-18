@@ -1,12 +1,12 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:meetupapp/providers/PostProvider.dart';
 import 'package:provider/provider.dart';
 
 import '/helper/GlobalFunctions.dart';
 import '/helper/utils/loader.dart';
-import '/helper/backend/database.dart';
 import '/models/post.dart';
-import '/providers/UserProvider.dart';
 import '/screens/post/ViewPostPage.dart';
 import '/widgets/constants.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
@@ -32,9 +32,9 @@ class _UserPostsState extends State<UserPosts> {
 
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) {
-      print("USER POSTS PAGE BUILD");
-    }
+    // if (kDebugMode) {
+    //   print("USER POSTS PAGE BUILD");
+    // }
     PostProvider postProvider = Provider.of<PostProvider>(context);
     bool isLoadedUserPosts = postProvider.isLoadedUserPosts;
     bool wentWrongUserPosts = postProvider.wentWrongUserPosts;

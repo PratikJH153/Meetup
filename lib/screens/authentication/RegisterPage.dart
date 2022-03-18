@@ -1,5 +1,6 @@
+// ignore_for_file: file_names, deprecated_member_use
+
 import 'dart:io';
-import 'package:meetupapp/helper/utils/UserSharedPreferences.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -70,7 +71,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (step == 1) {
       if (_registerFormKey.currentState!.validate()) {
-        print("GO FORWARD");
+        // print("GO FORWARD");
         final response = await checkUsernameExists(
           context,
           _nameTextController.text.trim().toLowerCase(),
@@ -116,7 +117,7 @@ class _RegisterPageState extends State<RegisterPage> {
           };
 
           Map result = await UserAPIS.addUser(userMap);
-          print(result);
+          // print(result);
           if (result["local_status"] != 200) {
             // UserSharedPreferences.setLoginStatus();
             snackBarWidget("Sorry couldn't create your profile",
@@ -164,7 +165,7 @@ class _RegisterPageState extends State<RegisterPage> {
         FirebaseStorage.instance.ref().child("user_images").child(uid + ".jpg");
 
     await ref.putFile(image!).whenComplete(() {
-      print("Done");
+      // print("Done");
     });
 
     final url = await ref.getDownloadURL();
@@ -174,7 +175,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("REGISTER PAGE BUILD");
+    // print("REGISTER PAGE BUILD");
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();

@@ -1,7 +1,8 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meetupapp/helper/backend/database.dart';
 import '/helper/backend/apis.dart';
 import '/helper/utils/loader.dart';
@@ -30,8 +31,6 @@ class _SearchPageState extends State<SearchPage> {
   String _searchString = "";
 
   Future<void> _searchApi() async {
-    bool didGoWrong = false;
-
     setState(() {
       _isLoading = true;
     });
@@ -41,11 +40,9 @@ class _SearchPageState extends State<SearchPage> {
     final Map requestData = unPackLocally(result);
 
     if (requestData["success"] == 1) {
-      print("-------");
-      print(requestData);
-    } else {
-      didGoWrong = true;
-    }
+      // print("-------");
+      // print(requestData);
+    } else {}
 
     setState(() {
       postList = requestData["unpacked"];
@@ -98,7 +95,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("SEARCH PAGE BUILD");
+    // print("SEARCH PAGE BUILD");
     return SafeArea(
       child: Scaffold(
         body: Column(
