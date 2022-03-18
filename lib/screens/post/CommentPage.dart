@@ -137,6 +137,7 @@ class _CommentPageState extends State<CommentPage> {
                 Navigator.of(context).pop();
               },
               tapHandler: () {},
+              toShow: false,
               icon: Icons.stop,
             ),
             wentWrongComments
@@ -215,9 +216,7 @@ class _CommentPageState extends State<CommentPage> {
                                     );
                                   },
                                   child: !commentList.isNotEmpty
-                                      ? const Expanded(
-                                          child: SizedBox(),
-                                        )
+                                      ? const SizedBox()
                                       : _CommentList(commentList),
                                 ),
                               ),

@@ -59,6 +59,7 @@ class _SearchFeedTileState extends State<SearchFeedTile> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -76,32 +77,36 @@ class _SearchFeedTileState extends State<SearchFeedTile> {
                 ),
               ),
               const SizedBox(
-                width: 15,
+                width: 10,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    username,
-                    maxLines: 1,
-                    overflow: TextOverflow.fade,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: "Quicksand",
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FittedBox(
+                      child: Text(
+                        username,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: "Quicksand",
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 3,
-                  ),
-                  Text(
-                    "${widget.post.timeReadCalc()} mins read",
-                    style: const TextStyle(
-                      fontSize: 10,
-                      color: Colors.grey,
+                    const SizedBox(
+                      height: 3,
                     ),
-                  ),
-                ],
+                    Text(
+                      "${widget.post.timeReadCalc()} mins read",
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

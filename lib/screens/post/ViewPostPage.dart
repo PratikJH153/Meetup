@@ -137,29 +137,34 @@ class _ViewPostPageState extends State<ViewPostPage> {
 
                           return isTheSamePostAsCurrent && posts.length == 1
                               ? const Text("No Related Posts Found.")
-                              : GestureDetector(
-                                  onTap: () {
-                                    var rng = Random();
+                              : post.author != null ||
+                                      post.title != null ||
+                                      post.desc != null
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        var rng = Random();
 
-                                    if (rng.nextInt(2) == 1) {
-                                      admobHelper.showInterad(() {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (ctx) =>
-                                                ViewPostPage(post),
-                                          ),
-                                        );
-                                      });
-                                    } else {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (ctx) => ViewPostPage(post),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  child: RecommededFeedTile(post),
-                                );
+                                        if (rng.nextInt(2) == 1) {
+                                          admobHelper.showInterad(() {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (ctx) =>
+                                                    ViewPostPage(post),
+                                              ),
+                                            );
+                                          });
+                                        } else {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (ctx) =>
+                                                  ViewPostPage(post),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: RecommededFeedTile(post),
+                                    )
+                                  : const SizedBox();
                         },
                       ),
       );
