@@ -356,12 +356,14 @@ class _ProfilePageState extends State<ProfilePage> {
       // print("reached");
       await FireAuth.signOut(context);
       Fluttertoast.showToast(msg: "Deleted Profile Successfully");
+      setState(() {
+        isLoading = false;
+      });
     } else {
       Fluttertoast.showToast(msg: "Couldn't delete Profile!");
+      setState(() {
+        isLoading = false;
+      });
     }
-
-    setState(() {
-      isLoading = false;
-    });
   }
 }
