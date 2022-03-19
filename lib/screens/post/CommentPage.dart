@@ -298,6 +298,7 @@ class _CommentPageState extends State<CommentPage> {
 
   ListView _CommentList(List commentList) {
     return ListView.builder(
+      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 100),
       itemCount: commentList.length,
       itemBuilder: (ctx, index) {

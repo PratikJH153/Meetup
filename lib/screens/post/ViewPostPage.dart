@@ -137,9 +137,10 @@ class _ViewPostPageState extends State<ViewPostPage> {
 
                           return isTheSamePostAsCurrent && posts.length == 1
                               ? const Text("No Related Posts Found.")
-                              : post.author != null &&
-                                      post.title != null &&
-                                      post.desc != null
+                              : (post.author != null &&
+                                          post.title != null &&
+                                          post.desc != null) ||
+                                      !isTheSamePostAsCurrent
                                   ? GestureDetector(
                                       onTap: () {
                                         var rng = Random();
