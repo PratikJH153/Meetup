@@ -102,6 +102,8 @@ class _AddPostState extends State<AddPost> {
 
   Widget _filterBox() {
     return DropdownButton(
+      icon: null,
+      iconSize: 0,
       hint: Text(_selectedTag),
       elevation: 1,
       borderRadius: BorderRadius.circular(15),
@@ -218,6 +220,7 @@ class _AddPostState extends State<AddPost> {
                                         ),
                                         TextFormField(
                                           maxLines: null,
+                                          maxLength: 200,
                                           controller: _titleController,
                                           style: TextStyle(
                                             height: 1.3,

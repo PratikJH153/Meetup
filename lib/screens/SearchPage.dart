@@ -47,6 +47,7 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       postList = requestData["unpacked"];
       _isLoading = false;
+      _searchString = "";
     });
     if (postList.isEmpty) {
       snackBarWidget(
@@ -54,6 +55,9 @@ class _SearchPageState extends State<SearchPage> {
         const Color(0xFFff2954),
         context,
       );
+      setState(() {
+        _searchString = "";
+      });
     }
   }
 
@@ -130,82 +134,85 @@ class _SearchPageState extends State<SearchPage> {
                           : LayoutBuilder(
                               builder: (context, constraint) {
                                 return SingleChildScrollView(
-                                    child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                      minHeight: constraint.maxHeight),
-                                  child: IntrinsicHeight(
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color:
-                                                      const Color(0xFFf5f5fc),
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                ),
-                                                child: TextField(
-                                                  onChanged: (val) {
-                                                    setState(() {
-                                                      _searchString = val;
-                                                    });
-                                                  },
-                                                  style: const TextStyle(
-                                                    fontSize: 13,
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                        minHeight: constraint.maxHeight),
+                                    child: IntrinsicHeight(
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        const Color(0xFFf5f5fc),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
                                                   ),
-                                                  cursorColor: Colors.black,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    hintText:
-                                                        "Search any post...",
-                                                    border: InputBorder.none,
-                                                    contentPadding:
-                                                        EdgeInsets.only(
-                                                      left: 20,
+                                                  child: TextField(
+                                                    onChanged: (val) {
+                                                      setState(() {
+                                                        _searchString = val;
+                                                      });
+                                                    },
+                                                    style: const TextStyle(
+                                                      fontSize: 13,
+                                                    ),
+                                                    cursorColor: Colors.black,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      hintText:
+                                                          "Search any post...",
+                                                      border: InputBorder.none,
+                                                      contentPadding:
+                                                          EdgeInsets.only(
+                                                        left: 20,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
+                                              ), //
+                                              const SizedBox(
+                                                width: 10,
                                               ),
-                                            ), //
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            _isLoading
-                                                ? const CircularProgressIndicator(
-                                                    color: Colors.black)
-                                                : ButtonWidget(
-                                                    icon: CupertinoIcons.search,
-                                                    tapHandler: () async {
-                                                      if (_searchString
-                                                          .trim()
-                                                          .isEmpty) {
-                                                        snackBarWidget(
-                                                          "Seach query can't be empty",
-                                                          Colors.black87,
-                                                          context,
-                                                        );
-                                                        return;
-                                                      }
-                                                      _searchApi();
-                                                    },
-                                                  ),
-                                          ],
-                                        ),
-                                        postList.isEmpty ||
-                                                _searchString.trim().isEmpty
-                                            ? const PlaceholderWidget(
-                                                imageURL:
-                                                    "assets/images/search.png",
-                                                label:
-                                                    "Search what you like!\nDiscover some new feeds.",
-                                              )
-                                            : const SizedBox()
-                                      ],
+                                              _isLoading
+                                                  ? const CircularProgressIndicator(
+                                                      color: Colors.black)
+                                                  : ButtonWidget(
+                                                      icon:
+                                                          CupertinoIcons.search,
+                                                      tapHandler: () async {
+                                                        if (_searchString
+                                                            .trim()
+                                                            .isEmpty) {
+                                                          snackBarWidget(
+                                                            "Seach query can't be empty",
+                                                            Colors.black87,
+                                                            context,
+                                                          );
+                                                          return;
+                                                        }
+                                                        _searchApi();
+                                                      },
+                                                    ),
+                                            ],
+                                          ),
+                                          postList.isEmpty ||
+                                                  _searchString.trim().isEmpty
+                                              ? const PlaceholderWidget(
+                                                  imageURL:
+                                                      "assets/images/search.png",
+                                                  label:
+                                                      "Search what you like!\nDiscover some new feeds.",
+                                                )
+                                              : const SizedBox()
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ));
+                                );
                               },
                             ),
                     ),
