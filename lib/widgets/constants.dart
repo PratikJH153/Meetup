@@ -80,3 +80,9 @@ const Map<String, List<String>> interests = {
     "Storytime"
   ],
 };
+
+const kAboutButtonTextStyle = TextStyle(
+  height: 1.5,
+  color: Color.fromARGB(255, 63, 63, 63),
+  fontSize: 14,
+);

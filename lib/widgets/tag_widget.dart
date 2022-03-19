@@ -49,7 +49,7 @@ class TagWidget extends StatelessWidget {
                     fontWeight: FontWeight.w900,
                     fontFamily: "Raleway",
                     letterSpacing: 0.8,
-                    fontSize: 11,
+                    fontSize: 10,
                   ),
                 ),
               ),

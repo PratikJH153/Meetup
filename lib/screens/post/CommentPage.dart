@@ -165,7 +165,7 @@ class _CommentPageState extends State<CommentPage> {
                                     style: TextStyle(
                                       fontFamily: "Quicksand",
                                       fontWeight: FontWeight.w500,
-                                      fontSize: 17,
+                                      fontSize: 15,
                                     ),
                                   ),
                                   const SizedBox(
@@ -233,8 +233,8 @@ class _CommentPageState extends State<CommentPage> {
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.only(
-                        top: 3,
-                        bottom: 3,
+                        top: 1,
+                        bottom: 1,
                       ),
                       decoration: const BoxDecoration(
                         color: Color(0xFFf5f5fc),
@@ -253,7 +253,7 @@ class _CommentPageState extends State<CommentPage> {
                           contentPadding: EdgeInsets.only(left: 20),
                           hintStyle: TextStyle(
                             color: Color(0xFF404040),
-                            fontSize: 16,
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -264,7 +264,7 @@ class _CommentPageState extends State<CommentPage> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
-                        vertical: 15,
+                        vertical: 13,
                       ),
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(

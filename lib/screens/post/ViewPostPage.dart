@@ -144,7 +144,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                       onTap: () {
                                         var rng = Random();
 
-                                        if (rng.nextInt(2) == 1) {
+                                        if (rng.nextInt(2) == 0) {
                                           admobHelper.showInterad(() {
                                             Navigator.of(context).push(
                                               MaterialPageRoute(

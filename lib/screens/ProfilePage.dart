@@ -189,7 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               const Text(
                                 "Content",
                                 style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: 14,
                                   height: 1.5,
                                   color: Colors.black54,
                                   fontWeight: FontWeight.w700,
@@ -270,7 +270,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               const Text(
                                 "Preferences",
                                 style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: 14,
                                   height: 1.5,
                                   color: Colors.black54,
                                   fontWeight: FontWeight.w700,

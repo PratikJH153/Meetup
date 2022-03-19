@@ -85,7 +85,7 @@ class FollowingList extends StatelessWidget {
                                       var rng = Random();
                                       int randomNum = rng.nextInt(2);
                                       // print(random_num);
-                                      if (randomNum == 1) {
+                                      if (randomNum == 0) {
                                         admobHelper.showInterad(() {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(

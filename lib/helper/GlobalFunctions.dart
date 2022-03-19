@@ -317,7 +317,7 @@ Container VoteSection(BuildContext context, Post post) {
           tapHandler: () async {
             if (userProvider.isProcessing(post.postID!)) {
               // print("Ello");
-              Fluttertoast.showToast(msg: "Ruko jara sabar karo!");
+              Fluttertoast.showToast(msg: "Please wait.");
               return;
             }
 
@@ -343,9 +343,6 @@ Container VoteSection(BuildContext context, Post post) {
             }
           },
         ),
-        const SizedBox(
-          width: 5,
-        ),
         FeedInteractButton(
           icon: CupertinoIcons.arrowtriangle_down_circle,
           label: numberParser(downvotes),
@@ -353,7 +350,7 @@ Container VoteSection(BuildContext context, Post post) {
           tapHandler: () async {
             /// DOWNVOTE PRESSED
             if (userProvider.isProcessing(post.postID!)) {
-              Fluttertoast.showToast(msg: "Ruko jara sabar karo!");
+              Fluttertoast.showToast(msg: "Please wait.");
               return;
             }
 

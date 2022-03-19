@@ -33,7 +33,7 @@ class FeedInteractButton extends StatelessWidget {
             Icon(
               icon,
               color: color == Colors.white ? Colors.grey : Colors.white,
-              size: 20,
+              size: 18,
             ),
             const SizedBox(
               width: 3,
@@ -43,7 +43,7 @@ class FeedInteractButton extends StatelessWidget {
               style: TextStyle(
                 fontFamily: "Ubuntu",
                 fontWeight: FontWeight.w500,
-                fontSize: 15,
+                fontSize: 14,
                 color: color == Colors.white ? Colors.grey : Colors.white,
               ),
             ),
