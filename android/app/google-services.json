@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "527211828446-4domcopr1lrha6rh21vmsi1nehi9vsh0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.meetupapp",
+            "certificate_hash": "39bcb8c4d2f7659f963233747edf97217a796350"
+          }
+        },
+        {
           "client_id": "527211828446-j1ehp9ed41jvtv6132glh6vq15cjc78v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

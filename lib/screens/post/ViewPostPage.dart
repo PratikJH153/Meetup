@@ -1,16 +1,14 @@
-// ignore_for_file: file_names, non_constant_identifier_names
-
 import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetupapp/helper/ad_helper.dart';
-import 'package:meetupapp/screens/HomePage.dart';
-import 'package:meetupapp/screens/post/CommentPage.dart';
-import 'package:meetupapp/widgets/ask_dialog_widget.dart';
-import 'package:meetupapp/widgets/tag_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
+import '/helper/ad_helper.dart';
+import '/screens/HomePage.dart';
+import '/screens/post/CommentPage.dart';
+import '/widgets/ask_dialog_widget.dart';
+import '/widgets/tag_widget.dart';
 import '/helper/GlobalFunctions.dart';
 import '/helper/backend/database.dart';
 import '/helper/backend/apis.dart';
@@ -21,7 +19,6 @@ import '/models/post.dart';
 import '/widgets/constants.dart';
 import '/widgets/recommended_feed_tile.dart';
 import '/widgets/upper_widget_bottom_sheet.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class ViewPostPage extends StatefulWidget {
   final Post thePost;
@@ -112,62 +109,81 @@ class _ViewPostPageState extends State<ViewPostPage> {
       );
 
   _ReccomendedPostsSection(
-          {required List posts,
-          required bool wentWrong,
-          required bool isLoading}) =>
-      SizedBox(
-        height: 230,
-        child: wentWrong
-            ? const Text("Couldn't fetch Posts")
-            : isLoading
-                ? const GlobalLoader()
-                : posts.isEmpty
-                    ? const Text("No Related Posts Found.")
-                    : ListView.builder(
-                        padding: const EdgeInsets.only(
-                          bottom: 30,
-                        ),
-                        physics: const BouncingScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: posts.length,
-                        itemBuilder: (ctx, index) {
-                          Post post = Post.fromJson(posts[index]);
-                          bool isTheSamePostAsCurrent =
-                              post.postID == widget.thePost.postID;
+      {required List posts, required bool wentWrong, required bool isLoading}) {
+    String currPostUserID = widget.thePost.author!["_id"];
 
-                          return isTheSamePostAsCurrent && posts.length == 1
-                              ? const Text("No Related Posts Found.")
-                              : post.author != null &&
-                                      post.title != null &&
-                                      post.desc != null
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        var rng = Random();
+    List filtered = [];
 
-                                        if (rng.nextInt(2) == 0) {
-                                          admobHelper.showInterad(() {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (ctx) =>
-                                                    ViewPostPage(post),
-                                              ),
-                                            );
-                                          });
-                                        } else {
+    for (int i = 0; i < posts.length; i++) {
+      print(posts[i]);
+      bool isAuthorNull = posts[i]["author"] == null;
+      bool isSameUser = true;
+      if (!isAuthorNull) {
+        if (posts[i]["author"] != currPostUserID) {
+          isSameUser = false;
+        }
+      }
+      if (!isSameUser && !isAuthorNull) {
+        filtered.add(posts[i]);
+      }
+    }
+
+    posts = filtered;
+
+    return SizedBox(
+      height: 230,
+      child: wentWrong
+          ? const Text("Couldn't fetch Posts")
+          : isLoading
+              ? const GlobalLoader()
+              : posts.isEmpty
+                  ? const Text("No Related Posts Found.")
+                  : ListView.builder(
+                      padding: const EdgeInsets.only(
+                        bottom: 30,
+                      ),
+                      physics: const BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: posts.length,
+                      itemBuilder: (ctx, index) {
+                        Post post = Post.fromJson(posts[index]);
+                        bool isTheSamePostAsCurrent =
+                            post.postID == widget.thePost.postID;
+
+                        return isTheSamePostAsCurrent && posts.length == 1
+                            ? const Text("No Related Posts Found.")
+                            : post.author != null &&
+                                    post.title != null &&
+                                    post.desc != null
+                                ? GestureDetector(
+                                    onTap: () {
+                                      var rng = Random();
+
+                                      if (rng.nextInt(2) == 0) {
+                                        admobHelper.showInterad(() {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(
                                               builder: (ctx) =>
                                                   ViewPostPage(post),
                                             ),
                                           );
-                                        }
-                                      },
-                                      child: RecommededFeedTile(post),
-                                    )
-                                  : const SizedBox();
-                        },
-                      ),
-      );
+                                        });
+                                      } else {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                ViewPostPage(post),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: RecommededFeedTile(post),
+                                  )
+                                : const SizedBox();
+                      },
+                    ),
+    );
+  }
 
   Future<void> _initialize() async {
     final CurrentPostProvider currentPost =
@@ -212,15 +228,11 @@ class _ViewPostPageState extends State<ViewPostPage> {
   @override
   Widget build(BuildContext context) {
     // print("VIEW POST PAGE BUILD");
-
-    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(
-      context,
-    );
-
+    CurrentPostProvider currentPost = Provider.of<CurrentPostProvider>(context);
     UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
 
-    List trendingList = currentPost.relatedPost;
+    List relatedList = currentPost.relatedPost;
 
     bool isLoadedTrending = currentPost.isRelatedLoaded;
     bool wentWrongTrending = currentPost.wentWrongRelated;
@@ -377,7 +389,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
                                   height: 10,
                                 ),
                                 _ReccomendedPostsSection(
-                                  posts: trendingList,
+                                  posts: relatedList,
                                   wentWrong: wentWrongTrending,
                                   isLoading: !isLoadedTrending,
                                 )

@@ -1,5 +1,3 @@
-// ignore_for_file: file_names
-
 import 'package:flutter/cupertino.dart';
 
 class CurrentPostProvider extends ChangeNotifier {

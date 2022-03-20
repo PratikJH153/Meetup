@@ -1,9 +1,8 @@
-// ignore_for_file: file_names
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:meetupapp/helper/backend/database.dart';
+
+import '/helper/backend/database.dart';
 import '/helper/backend/apis.dart';
 import '/helper/utils/loader.dart';
 import '/widgets/placeholder_widget.dart';
@@ -42,10 +41,17 @@ class _SearchPageState extends State<SearchPage> {
     if (requestData["success"] == 1) {
       // print("-------");
       // print(requestData);
-    } else {}
+    }
+    List filteredList = [];
+
+    requestData["unpacked"].forEach((e) {
+      if (e["author"] != null) {
+        filteredList.add(e);
+      }
+    });
 
     setState(() {
-      postList = requestData["unpacked"];
+      postList = filteredList;
       _isLoading = false;
       _searchString = "";
     });
