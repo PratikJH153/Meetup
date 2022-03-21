@@ -125,6 +125,11 @@ class _CommentPageState extends State<CommentPage> {
 
     bool isLoadedComments = currentPost.isCommentsLoaded;
     bool wentWrongComments = currentPost.wentWrongComments;
+
+    commentList.forEach((element) {
+      print(element);
+    });
+
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -305,70 +310,72 @@ class _CommentPageState extends State<CommentPage> {
         bool corruptComment =
             Comment.fromJson(commentList[index]).userID == null;
 
-        return corruptComment
-            ? const SizedBox()
-            : Container(
-                margin: const EdgeInsets.only(bottom: 25),
-                child: Row(
+        return Container(
+          margin: const EdgeInsets.only(bottom: 25),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 35,
+                width: 35,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(
+                      corruptComment
+                          ? placeholder
+                          : commentList[index]["userID"]["profileURL"],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 35,
-                      width: 35,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                            commentList[index]["userID"]["profileURL"],
-                          ),
-                        ),
+                    Text(
+                      corruptComment
+                          ? "Unnamed"
+                          : commentList[index]["userID"]["username"].toString(),
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey,
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            commentList[index]["userID"]["username"].toString(),
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          SelectableText(
-                            commentList[index]["message"],
-                            style: const TextStyle(
-                              fontSize: 15,
-                              color: Colors.black,
-                              height: 1.3,
-                            ),
-                          ),
-                        ],
+                    SelectableText(
+                      commentList[index]["message"],
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
+                        height: 1.3,
                       ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // CustomPopupMenu(
-                        //     dataset: commentDataset, showOther: isTheSamePerson),
-                        Text(
-                          timeago.format(
-                            DateTime.parse(commentList[index]["timestamp"]),
-                          ),
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
-              );
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // CustomPopupMenu(
+                  //     dataset: commentDataset, showOther: isTheSamePerson),
+                  Text(
+                    timeago.format(
+                      DateTime.parse(commentList[index]["timestamp"]),
+                    ),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
       },
     );
   }
