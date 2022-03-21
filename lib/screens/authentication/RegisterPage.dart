@@ -111,7 +111,7 @@ class _RegisterPageState extends State<RegisterPage> {
             "age": age,
             "bio": _bioTextController.text.trim() != ""
                 ? _bioTextController.text.trim()
-                : "A meetup user!",
+                : "A Becapy user!",
             "interests": _selectedInterests.keys.toList(),
             "joinedAt": DateTime.now().toIso8601String(),
           };

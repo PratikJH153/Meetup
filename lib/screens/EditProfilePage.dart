@@ -190,6 +190,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
 
     String _firstname = user.firstname ?? "Undefined";
+    String _aboutme = user.bio ?? "Undefined";
     String _lastname = user.lastname ?? "Undefined";
     String _username = user.username ?? "Undefined";
     String _gender = user.gender ?? "Undefined";
@@ -198,6 +199,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     String _profileUrl = user.profileURL ?? placeholder;
 
     firstNameController.text = _firstname;
+    bioController.text = _aboutme;
     lastNameController.text = _lastname;
     usernameController.text = _username;
     bioController.text = _bio;
@@ -419,6 +421,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     ),
                                     IconButton(
                                       onPressed: () {
+                                        Focus.of(context).unfocus();
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
                                             builder: (ctx) =>
