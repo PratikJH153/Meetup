@@ -1,4 +1,4 @@
-package com.example.meetupapp
+package com.haum.becapy
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine

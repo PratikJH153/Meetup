@@ -1,4 +1,4 @@
-package com.example.meetupapp
+package com.haum.becapy
 
 import android.content.Context
 import android.view.LayoutInflater
